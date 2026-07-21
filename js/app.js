@@ -5,11 +5,11 @@
 
 /* ----------------------------------------------------------
    LEAD ROUTING CONFIG
-   Each completed flow builds a structured lead and submits it
-   to the endpoint below. Point `endpoint` at a Formspree/Zapier
-   webhook per agent, and BHHS Connect's email-to-lead parser
-   address in `crmEmail`, and leads land in each agent's CRM
-   with full context. See README for hookup steps.
+   Each completed flow POSTs to a Netlify Form (`formName`). In the
+   Netlify dashboard (Forms → notifications) set that form's email
+   recipient to each agent's BHHS Connect lead-import address — leads
+   land in the CRM with full context. `crmEmail` documents the intended
+   recipient / fallback inbox. See README for the go-live steps.
 ---------------------------------------------------------- */
 const LEAD_ROUTING = {
   seller: {
@@ -20,8 +20,8 @@ const LEAD_ROUTING = {
     phone: '9043216689',
     prettyPhone: '904-321-6689',
     crmEmail: 'Will@HeymannWilliamsRealty.com',
-    endpoint: '', // e.g. https://formspree.io/f/XXXXXXX (Will's form)
-    routedLabel: "Lead routed to Will's BHHS Connect — he's been notified"
+    formName: 'seller-lead',
+    routedLabel: "Sent to Will's BHHS Connect — he'll follow up personally"
   },
   buyer: {
     agent: 'Kelly Marine',
@@ -31,32 +31,35 @@ const LEAD_ROUTING = {
     phone: '6786770858',
     prettyPhone: '678-677-0858',
     crmEmail: 'KellyMarineRealtor@gmail.com',
-    endpoint: '', // e.g. https://formspree.io/f/YYYYYYY (Kelly's form)
-    routedLabel: "Lead routed to Kelly's BHHS Connect — she's been notified"
+    formName: 'buyer-lead',
+    routedLabel: "Sent to Kelly's BHHS Connect — she'll follow up personally"
   }
 };
 
+// Respect users who ask for less motion.
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Flatten answer values (arrays → comma strings) for a readable CRM email.
+function flatten(v) { return Array.isArray(v) ? v.join(', ') : (v == null ? '' : String(v)); }
+
+// POST a lead to its Netlify form. Netlify emails it to the configured
+// BHHS Connect recipient. Returns true even on network error so the
+// visitor still sees the confirmation (their info is retried below).
 async function submitLead(type, lead) {
   const route = LEAD_ROUTING[type];
-  const payload = {
-    _subject: `New ${type} lead — SoldOnAmeliaIsland.com`,
-    routed_to: route.agent,
-    crm: 'BHHS Connect',
-    crm_email: route.crmEmail,
-    submitted_at: new Date().toISOString(),
-    ...lead
-  };
-  console.info('[SoldOnAmeliaIsland] lead captured →', payload);
-  if (!route.endpoint) return true; // demo mode: no endpoint wired yet
+  const fields = { 'form-name': route.formName, 'bot-field': '' };
+  Object.keys(lead).forEach(k => { fields[k] = flatten(lead[k]); });
+  const body = new URLSearchParams(fields).toString();
+  console.info('[SoldOnAmeliaIsland] lead →', route.formName, fields);
   try {
-    await fetch(route.endpoint, {
+    await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body
     });
     return true;
   } catch (err) {
-    console.warn('Lead submit failed (will still show success UI):', err);
+    console.warn('Lead submit failed (confirmation still shown):', err);
     return false;
   }
 }
@@ -110,7 +113,8 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-(function animateMist() {
+if (prefersReduced) { canvas.style.display = 'none'; }
+else (function animateMist() {
   ctx.clearRect(0, 0, W, H);
   currentV += (targetV - currentV) * 0.1;
   targetV *= 0.9;
@@ -205,6 +209,7 @@ function setSlide(i) {
 }
 function restartSlideTimer() {
   clearInterval(slideTimer);
+  if (prefersReduced) return; // no auto-advance for reduced motion
   slideTimer = setInterval(() => setSlide((slideIdx + 1) % slides.length), 7000);
 }
 restartSlideTimer();
@@ -220,54 +225,55 @@ tickTime();
 setInterval(tickTime, 15000);
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* ---------- Testimonials ---------- */
-const TESTIMONIALS = [
-  { q: '"Kelly found us a home we didn’t know existed, and Will sold ours in nine days over asking. Working with both of them felt like having family on the inside."', a: '— The Parkers, relocated from Atlanta' },
-  { q: '"Will’s pricing strategy was surgical. Three offers the first weekend. He walked us through every clause like we were his only clients."', a: '— D. & M. Whitfield, Fernandina Beach' },
-  { q: '"We texted Kelly a sunset photo and said ‘this, but ours.’ Six weeks later we closed two blocks from that exact beach walkover."', a: '— The Romanos, Amelia Island' }
-];
-const tQuote = document.getElementById('testimonialQuote');
-const tAuthor = document.getElementById('testimonialAuthor');
-const tDots = document.getElementById('testimonialDots');
-let tIdx = 0, tTimer;
-
-TESTIMONIALS.forEach((_, i) => {
-  const d = document.createElement('button');
-  d.className = 'hero-dot interactive' + (i === 0 ? ' active' : '');
-  d.setAttribute('aria-label', 'Testimonial ' + (i + 1));
-  d.onclick = () => { setTestimonial(i); clearInterval(tTimer); tTimer = setInterval(nextTestimonial, 8000); };
-  tDots.appendChild(d);
-});
-function setTestimonial(i) {
-  tQuote.style.opacity = 0; tAuthor.style.opacity = 0;
-  setTimeout(() => {
-    tIdx = i;
-    tQuote.textContent = TESTIMONIALS[i].q;
-    tAuthor.textContent = TESTIMONIALS[i].a;
-    Array.from(tDots.children).forEach((d, j) => d.classList.toggle('active', j === i));
-    tQuote.style.opacity = 1; tAuthor.style.opacity = 1;
-  }, 400);
-}
-function nextTestimonial() { setTestimonial((tIdx + 1) % TESTIMONIALS.length); }
-tTimer = setInterval(nextTestimonial, 8000);
-
 /* ---------- Mobile menu ---------- */
 function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-  document.getElementById('navBurger').classList.toggle('open');
+  const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('navBurger');
+  const open = menu.classList.toggle('open');
+  burger.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  document.body.style.overflow = open ? 'hidden' : '';
 }
 
-/* ---------- Newsletter ---------- */
+/* ---------- Newsletter → Netlify "newsletter" form ---------- */
 function handleNewsletter(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('button');
-  const input = e.target.querySelector('input');
-  submitLead('buyer', { form: 'The Coastal Edit newsletter', email: input.value });
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const input = form.querySelector('input[type="email"]');
+  const body = new URLSearchParams({ 'form-name': 'newsletter', 'bot-field': '', email: input.value }).toString();
+  fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body }).catch(() => {});
   btn.textContent = 'Welcome Aboard ⛵';
   input.value = '';
   setTimeout(() => (btn.textContent = 'Subscribe'), 3500);
   return false;
 }
+
+/* ---------- Mortgage calculator ---------- */
+(function initCalculator() {
+  const price = document.getElementById('calcPrice');
+  if (!price) return;
+  const down = document.getElementById('calcDown');
+  const rate = document.getElementById('calcRate');
+  const term = document.getElementById('calcTerm');
+  const usd0 = n => '$' + Math.round(n).toLocaleString('en-US');
+  function update() {
+    const P = +price.value, dPct = +down.value, r = +rate.value, yrs = +term.value;
+    const downAmt = P * dPct / 100;
+    const loan = P - downAmt;
+    const i = (r / 100) / 12, n = yrs * 12;
+    const monthly = i === 0 ? loan / n : loan * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+    document.getElementById('calcPriceOut').textContent = usd0(P);
+    document.getElementById('calcDownOut').textContent = dPct + '% · ' + usd0(downAmt);
+    document.getElementById('calcRateOut').textContent = r.toFixed(1) + '%';
+    document.getElementById('calcTermOut').textContent = yrs + ' years';
+    document.getElementById('calcLoan').textContent = usd0(loan);
+    document.getElementById('calcDownAmt').textContent = usd0(downAmt);
+    document.getElementById('calcMonthly').textContent = usd0(monthly);
+  }
+  [price, down, rate, term].forEach(el => el.addEventListener('input', update));
+  update();
+})();
 
 /* ==========================================================
    LEAD FLOW ENGINE
@@ -486,16 +492,16 @@ function renderContact() {
   stage.innerHTML = `
     <div class="flow-step">
       <span class="flow-step-kicker">Last Step</span>
-      <h2>${isBuyer ? 'Your matches are ready.' : 'Your valuation is ready.'}</h2>
+      <h2>${isBuyer ? 'Where should Kelly reach you?' : 'Where should Will reach you?'}</h2>
       <p class="flow-sub">${isBuyer
-        ? 'Tell Kelly where to send your private portal.'
-        : 'Tell Will where to send your market analysis.'}</p>
+        ? 'Kelly will personally send handpicked matches and set up your search.'
+        : 'Will will prepare your personalized market analysis and follow up.'}</p>
       <div class="flow-form">
         <div class="flow-field"><label for="leadName">Full Name</label><input id="leadName" autocomplete="name" placeholder="Jane Doe"></div>
         <div class="flow-field"><label for="leadEmail">Email</label><input id="leadEmail" type="email" autocomplete="email" placeholder="jane@example.com"></div>
         <div class="flow-field"><label for="leadPhone">Phone</label><input id="leadPhone" type="tel" autocomplete="tel" placeholder="(904) 555-0123"></div>
         <p class="flow-consent">By continuing you agree that ${route.agent} may contact you about your ${isBuyer ? 'home search' : 'home valuation'}. No spam — ever.</p>
-        <button class="btn-gold interactive" style="width:100%" onclick="submitContact()">${isBuyer ? 'Unlock My Private Portal' : 'Reveal My Home Value'}</button>
+        <button class="btn-gold interactive" style="width:100%" onclick="submitContact()">${isBuyer ? 'Send to Kelly' : 'Send to Will'}</button>
         <div style="text-align:center"><span class="flow-route-note">Routes directly to ${route.agent.split(' ')[0]}'s BHHS Connect</span></div>
       </div>
       <div class="flow-nav"><button class="flow-back interactive" onclick="flowBack()">← Back</button></div>
@@ -516,14 +522,20 @@ async function submitContact() {
   const okPhone = validateField('leadPhone', v => v.replace(/\D/g, '').length >= 7);
   if (!okName || !okEmail || !okPhone) return;
 
-  flow.answers.name = document.getElementById('leadName').value.trim();
-  flow.answers.email = document.getElementById('leadEmail').value.trim();
-  flow.answers.phone = document.getElementById('leadPhone').value.trim();
+  const a = flow.answers;
+  a.name = document.getElementById('leadName').value.trim();
+  a.email = document.getElementById('leadEmail').value.trim();
+  a.phone = document.getElementById('leadPhone').value.trim();
 
-  submitLead(flow.type, flow.answers);
+  // Map to the Netlify form field names for a clean CRM email.
+  const lead = flow.type === 'buyer'
+    ? { name: a.name, email: a.email, phone: a.phone, vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
+    : { name: a.name, email: a.email, phone: a.phone, address: a.address, property_type: a.ptype, timeline: a.timeline };
+  submitLead(flow.type, lead);
+
   await showLoading(flow.type === 'buyer'
-    ? ['Reading your wish list…', 'Scanning island inventory…', 'Curating your matches…']
-    : ['Locating your property…', 'Pulling live island comps…', 'Modeling your value range…']);
+    ? ['Saving your search…', 'Sending it to Kelly…', 'Getting you set up…']
+    : ['Saving your details…', 'Sending them to Will…', 'Getting your analysis started…']);
 
   if (flow.type === 'buyer') renderBuyerPortal();
   else renderSellerReveal();
@@ -550,114 +562,82 @@ function showLoading(lines) {
   });
 }
 
-/* ---------- Buyer portal reveal ---------- */
-const BUYER_MATCHES = [
-  { img: 'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?auto=format&fit=crop&w=900&q=80', price: '$1,250,000', addr: '842 Ocean Ave · Amelia Island', meta: '3 bd · 2.5 ba · 2,100 sqft', match: 98 },
-  { img: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80', price: '$975,000', addr: '115 Center St · Fernandina Beach', meta: '4 bd · 3 ba · 2,800 sqft', match: 94 },
-  { img: 'https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=900&q=80', price: '$1,450,000', addr: '33 Marsh View Dr · Nassau County', meta: '4 bd · 4 ba · 3,500 sqft', match: 91 }
+/* ---------- Buyer confirmation → live search ---------- */
+const SEARCH_URL = 'https://ameliaisland.heymannwilliams.com/search';
+const BUYER_CATEGORIES = [
+  { img: './assets/img/collect-1.jpg', label: 'Oceanfront & Beach', sub: 'See live oceanfront homes' },
+  { img: './assets/img/collect-2.jpg', label: 'Historic Downtown', sub: 'See live Fernandina homes' },
+  { img: './assets/img/area-3.jpg', label: 'New Construction', sub: 'See Yulee & Wildlight homes' }
 ];
 
 function renderBuyerPortal() {
-  const first = (flow.answers.name || 'friend').split(' ')[0];
+  const first = (flow.answers.name || 'there').split(' ')[0];
   stage.innerHTML = `
     <div class="flow-dash">
       <div class="flow-dash-head">
-        <span class="flow-step-kicker">Your Private Portal</span>
-        <h2>Welcome home, <span class="gold">${esc(first)}</span>.</h2>
-        <p>Kelly curated these from "${esc(flow.answers.vision || 'your wish list')}"</p>
+        <span class="flow-step-kicker">You're all set</span>
+        <h2>Thank you, <span class="gold">${esc(first)}</span>.</h2>
+        <p>Kelly will personally hand-pick homes for "${esc(flow.answers.vision || 'your search')}" and reach out within 24 hours.</p>
       </div>
       <div class="flow-routed-banner">${LEAD_ROUTING.buyer.routedLabel}</div>
+      <p class="dash-subhead">While you wait — browse the current island inventory live:</p>
       <div class="dash-grid">
-        ${BUYER_MATCHES.map(m => `
-          <div class="dash-card glass-dark">
+        ${BUYER_CATEGORIES.map(c => `
+          <a class="dash-card glass-dark interactive" href="${SEARCH_URL}" target="_blank" rel="noopener">
             <div class="listing-img">
-              <img src="${m.img}" alt="Matched home">
-              <span class="match-badge">${m.match}% Match</span>
-              <button class="dash-fav interactive" onclick="this.classList.toggle('faved'); this.textContent = this.classList.contains('faved') ? '♥' : '♡'">♡</button>
+              <img src="${c.img}" alt="${esc(c.label)} listings" loading="lazy" decoding="async">
+              <span class="match-badge">Live listings</span>
             </div>
             <div class="listing-info">
-              <div class="listing-price serif">${m.price}</div>
-              <div class="listing-addr">${m.addr}</div>
-              <div class="listing-meta"><span>${m.meta}</span></div>
+              <div class="listing-price serif">${c.label}</div>
+              <div class="listing-meta"><span>${c.sub} &rarr;</span></div>
             </div>
-          </div>`).join('')}
+          </a>`).join('')}
         <div class="dash-cta glass-dark">
-          <h3>Ready to step inside?</h3>
-          <p>Kelly is standing by to schedule private tours of your favorites.</p>
+          <h3>Want to talk it through now?</h3>
+          <p>Kelly answers her own phone — reach her directly anytime.</p>
           <div class="dash-cta-row">
             <a href="tel:${LEAD_ROUTING.buyer.phone}" class="btn-gold interactive">Call Kelly</a>
-            <a href="sms:${LEAD_ROUTING.buyer.phone}" class="btn-outline interactive">Text Kelly Live</a>
-            <a href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener" class="btn-outline interactive">Browse All Listings</a>
+            <a href="sms:${LEAD_ROUTING.buyer.phone}" class="btn-outline interactive">Text Kelly</a>
+            <a href="${SEARCH_URL}" target="_blank" rel="noopener" class="btn-outline interactive">Browse All Listings</a>
           </div>
         </div>
       </div>
     </div>`;
 }
 
-/* ---------- Seller valuation reveal ---------- */
+/* ---------- Seller confirmation (honest — no fabricated numbers) ---------- */
 function renderSellerReveal() {
-  const first = (flow.answers.name || 'neighbor').split(' ')[0];
+  const first = (flow.answers.name || 'there').split(' ')[0];
   const addr = flow.answers.address || 'your home';
   stage.innerHTML = `
     <div class="flow-dash">
       <div class="flow-dash-head">
-        <span class="flow-step-kicker">Preliminary Market Analysis</span>
-        <h2>Good news, <span class="gold">${esc(first)}</span>.</h2>
-        <p>Will's first read on ${esc(addr)}</p>
+        <span class="flow-step-kicker">Request Received</span>
+        <h2>Thank you, <span class="gold">${esc(first)}</span>.</h2>
+        <p>Will is preparing your personalized market analysis for ${esc(addr)}.</p>
       </div>
       <div class="flow-routed-banner">${LEAD_ROUTING.seller.routedLabel}</div>
-      <div class="dash-grid">
-        <div class="insight-card glass-dark">
-          <span class="insight-label">Estimated Value Range</span>
-          <div class="insight-value" id="valRange">$0</div>
-          <p class="insight-desc">Based on recent comparable island sales.</p>
-        </div>
-        <div class="insight-card glass-dark">
-          <span class="insight-label">Market Temperature</span>
-          <div class="insight-value teal">High Demand</div>
-          <div class="temp-gauge"><div class="temp-gauge-fill" id="tempFill"></div></div>
-          <p class="insight-desc">Similar homes average 11 days on market.</p>
-        </div>
-        <div class="insight-card glass-dark">
-          <span class="insight-label">Buyer Activity</span>
-          <div class="insight-value" id="buyerCount">0</div>
-          <p class="insight-desc">Active buyers matched to homes like yours right now.</p>
-        </div>
-        <div class="dash-cta glass-dark">
-          <h3>This is the estimate. Will finds the ceiling.</h3>
-          <p>A 15-minute walkthrough turns this range into an exact pricing strategy — complimentary, no obligation.</p>
-          <div class="dash-cta-row">
-            <a href="tel:${LEAD_ROUTING.seller.phone}" class="btn-gold interactive">Call Will</a>
-            <a href="sms:${LEAD_ROUTING.seller.phone}" class="btn-outline interactive">Text Will Live</a>
-            <a href="mailto:${LEAD_ROUTING.seller.crmEmail}" class="btn-outline interactive">Email Will</a>
-          </div>
+      <div class="dash-steps">
+        <div class="dash-step glass-dark"><span class="dash-step-n serif">1</span><h4>He studies your home</h4><p>Will reviews recent comparable island sales and current demand for a home like yours.</p></div>
+        <div class="dash-step glass-dark"><span class="dash-step-n serif">2</span><h4>He builds your strategy</h4><p>A custom pricing &amp; marketing plan tuned to today's Amelia Island market.</p></div>
+        <div class="dash-step glass-dark"><span class="dash-step-n serif">3</span><h4>He calls you</h4><p>Will personally walks you through the numbers — complimentary, no obligation.</p></div>
+      </div>
+      <div class="dash-cta glass-dark">
+        <h3>Prefer to talk now?</h3>
+        <p>Will answers his own phone — reach him directly anytime.</p>
+        <div class="dash-cta-row">
+          <a href="tel:${LEAD_ROUTING.seller.phone}" class="btn-gold interactive">Call Will</a>
+          <a href="sms:${LEAD_ROUTING.seller.phone}" class="btn-outline interactive">Text Will</a>
+          <a href="mailto:${LEAD_ROUTING.seller.crmEmail}" class="btn-outline interactive">Email Will</a>
         </div>
       </div>
     </div>`;
-
-  // Animate the reveal numbers
-  const rangeEl = document.getElementById('valRange');
-  const low = 850, high = 920, t0 = performance.now(), dur = 1900;
-  (function tick(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    const eased = 1 - Math.pow(1 - p, 4);
-    rangeEl.textContent = `$${Math.round(low * eased)}k – $${Math.round(high * eased)}k`;
-    if (p < 1) requestAnimationFrame(tick);
-  })(t0);
-
-  const buyerEl = document.getElementById('buyerCount');
-  const bT0 = performance.now();
-  (function tickB(now) {
-    const p = Math.min((now - bT0) / 1600, 1);
-    buyerEl.textContent = Math.round(37 * (1 - Math.pow(1 - p, 3)));
-    if (p < 1) requestAnimationFrame(tickB);
-  })(bT0);
-
-  setTimeout(() => { const f = document.getElementById('tempFill'); if (f) f.style.width = '86%'; }, 200);
 }
 
 /* ---------- Sparkles ---------- */
 function sprinkleSparkles() {
+  if (prefersReduced) return;
   const glyphs = ['✦', '✧', '⋆'];
   for (let i = 0; i < 14; i++) {
     const s = document.createElement('span');

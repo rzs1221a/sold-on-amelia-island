@@ -659,3 +659,95 @@ nav#navbar.scrolled {
   .area-tile { height: 300px; }
   .stats { padding: 3.5rem 1.2rem; }
 }
+
+/* ==========================================================
+   PRODUCTION ADDITIONS
+   ========================================================== */
+
+/* Stat value props now hold words, not numbers */
+.stat-num { line-height: 1.05; }
+
+/* ---------- Mortgage calculator ---------- */
+.calc { padding: 5rem 2rem 6rem; max-width: 1200px; margin: 0 auto; }
+.calc-card { display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.4rem; padding: 2.8rem; }
+.calc-controls { display: flex; flex-direction: column; gap: 1.8rem; }
+.calc-field label {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  font-size: .62rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: .8rem;
+}
+.calc-field output { font-family: 'Playfair Display', serif; font-style: italic; font-size: .95rem; letter-spacing: 0; text-transform: none; color: var(--champagne); font-weight: 400; }
+.calc-field input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: 999px; background: rgba(255,255,255,.12); outline: none; }
+.calc-field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(120deg, var(--gold), #e8cd6f); cursor: pointer; border: 2px solid var(--night);
+  box-shadow: 0 4px 12px rgba(212,175,55,.4);
+}
+.calc-field input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--night);
+  background: linear-gradient(120deg, var(--gold), #e8cd6f); cursor: pointer; box-shadow: 0 4px 12px rgba(212,175,55,.4);
+}
+.calc-result {
+  display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center;
+  gap: .5rem; padding: 2rem 1.6rem; border-radius: 1.3rem;
+  background: linear-gradient(160deg, rgba(92,11,37,.35), rgba(11,7,16,.25));
+  border: 1px solid rgba(212,175,55,.28);
+}
+.calc-result-label { font-size: .6rem; font-weight: 800; letter-spacing: .26em; text-transform: uppercase; color: var(--gold); }
+.calc-result-value { font-size: clamp(2.6rem, 6vw, 3.6rem); color: var(--champagne); line-height: 1; font-variant-numeric: tabular-nums; }
+.calc-result-note { font-size: .74rem; color: var(--ink-faint); margin-bottom: .6rem; }
+.calc-breakdown { display: flex; gap: 1.6rem; margin: .4rem 0 1.4rem; }
+.calc-breakdown div { display: flex; flex-direction: column; gap: .2rem; }
+.calc-breakdown span { font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); }
+.calc-breakdown strong { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--pearl); font-variant-numeric: tabular-nums; }
+
+/* ---------- Trust panel ---------- */
+.trust { padding: 2rem 2rem 6rem; max-width: 1200px; margin: 0 auto; }
+.trust-stage { padding: 3.6rem 3rem 4rem; text-align: center; }
+.trust-stage h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 2.6rem; }
+.trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; text-align: left; }
+.trust-item { padding: 1.4rem; }
+.trust-icon { font-size: 1.8rem; margin-bottom: .8rem; }
+.trust-item h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: .5rem; color: var(--champagne); }
+.trust-item p { font-size: .9rem; color: var(--ink-soft); }
+
+/* ---------- Areas map CTA ---------- */
+.areas-map-cta { text-align: center; margin-top: 2.4rem; }
+
+/* ---------- Buyer/seller confirmation extras ---------- */
+.dash-subhead { text-align: center; color: var(--ink-soft); font-style: italic; font-family: 'Playfair Display', serif; margin-bottom: 1.6rem; }
+.dash-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 1.4rem; }
+.dash-step { padding: 1.8rem 1.6rem; border-top: 2px solid rgba(212,175,55,.5); }
+.dash-step-n { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(212,175,55,.14); color: var(--gold); font-size: 1.2rem; margin-bottom: .9rem; }
+.dash-step h4 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: .35rem; color: var(--champagne); }
+.dash-step p { font-size: .85rem; color: var(--ink-soft); }
+.dash-card { text-decoration: none; }
+
+/* ---------- Accessibility: visible focus ---------- */
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+body.cursor-on :focus-visible { outline: 2px solid var(--gold); }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important; scroll-behavior: auto !important;
+  }
+  .bg-ambient, .hero-slide.active { animation: none !important; }
+  .hero-slide.active { transform: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .ticker-track { animation: none !important; }
+  .duo-portrait-ring { animation: none !important; }
+}
+
+/* ---------- Responsive: new sections ---------- */
+@media (max-width: 900px) {
+  .calc-card { grid-template-columns: 1fr; gap: 1.8rem; }
+  .trust-grid { grid-template-columns: 1fr; }
+  .dash-steps { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .calc, .trust { padding-left: 1.2rem; padding-right: 1.2rem; }
+  .calc-card { padding: 1.8rem 1.4rem; }
+  .trust-stage { padding: 2.4rem 1.5rem; }
+}

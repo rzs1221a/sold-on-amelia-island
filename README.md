@@ -1,45 +1,55 @@
-# SOLD ON AMELIA ISLAND — Kelly Marine & Will Henderson
+# Sold on Amelia Island — Kelly Marine & Will Henderson
 
-A cinematic, conversion-focused site for Kelly Marine (buyer specialist) and Will
-Henderson (listing specialist) of Berkshire Hathaway HomeServices Heymann Williams
-Realty — *The Spouses Who Sell Houses*.
+Production website for Kelly Marine (buyer specialist) & Will Henderson (listing
+specialist), Berkshire Hathaway HomeServices Heymann Williams Realty —
+*The Spouses Who Sell Houses*.
 
-Static site: no build step, no framework. `index.html` + `css/site.css` + `js/app.js`.
+Static site, no build step: `index.html` + `css/site.css` + `js/app.js` + `assets/`.
 
-## What it does
+## Features
 
-- **Seller path (Will)** — address + property details → contact capture (name,
-  address, email, phone) → animated valuation reveal. Lead is packaged and routed
-  to Will.
-- **Buyer path (Kelly)** — guided questionnaire (vision, budget, size, areas,
-  timeline) → contact capture (name, email, phone) → private portal reveal with
-  curated matches. Lead is packaged and routed to Kelly.
-- Featured property (2337 S Fletcher Ave), curated collection, Around Town
-  events, The Coastal Edit newsletter signup, neighborhood tiles, testimonials.
+- **Seller flow (Will):** address → property details → timeline → contact → honest
+  "we're preparing your analysis" confirmation. Lead emailed to Will's BHHS Connect.
+- **Buyer flow (Kelly):** guided questionnaire → contact → confirmation + live MLS
+  search links. Lead emailed to Kelly's BHHS Connect.
+- **Mortgage calculator**, **live BoldTrail listing/map links**, **working newsletter**,
+  cinematic hero, self-hosted imagery, full SEO/OG/schema, reduced-motion + a11y.
 
-## Lead routing → BHHS Connect
+## How leads are delivered (Netlify Forms → BHHS Connect)
 
-All routing lives in one place: `LEAD_ROUTING` at the top of `js/app.js`.
+Both flows POST to **Netlify Forms** (`buyer-lead`, `seller-lead`) plus a `newsletter`
+form. Netlify captures every submission and emails it to whatever recipient you set.
+No third-party account, no server code.
 
-Each agent gets their own `endpoint` (a Formspree form or Zapier webhook works).
-Point the form's notification/forward address at the agent's **BHHS Connect
-email-to-lead parser address** and every submission lands in the right agent's
-CRM with the full questionnaire context attached. Until an endpoint is set, the
-site runs in demo mode (leads are logged to the browser console and the success
-UI still plays).
+Field mapping is in `LEAD_ROUTING` / `submitLead()` at the top of `js/app.js`.
 
-## Deploy
+## GO-LIVE CHECKLIST (~20 min)
 
-1. Connect this repo to Netlify — build command blank, publish directory `/`.
-2. Point the SoldOnAmeliaIsland.com domain at Netlify.
+1. **Deploy:** Netlify → *Add new project* → import `sold-on-amelia-island` →
+   Deploy (build command blank, publish directory `/`). Netlify auto-detects the forms.
+2. **Route leads to BHHS Connect:** Netlify → *Forms* → select `buyer-lead`, add an
+   **email notification** to Kelly's BHHS Connect lead-import address (and her
+   `KellyMarineRealtor@gmail.com` as backup). Repeat for `seller-lead` → Will's BHHS
+   Connect address + `Will@HeymannWilliamsRealty.com`. Add `newsletter` → whoever manages
+   the list. *(Don't have the BHHS Connect import addresses handy? Point them at the
+   agents' direct emails now and swap in the CRM addresses anytime — no redeploy needed.)*
+3. **Domain:** Netlify → *Domain settings* → add `soldonameliaisland.com`, follow the DNS
+   steps, enable HTTPS. (If the domain differs, update the canonical/OG/sitemap URLs.)
+4. **Analytics (optional):** paste a GA4 Measurement ID into `window.GA_MEASUREMENT_ID`
+   near the top of `index.html`.
+5. **Spam (optional):** Netlify → Forms → enable reCAPTCHA if volume warrants (honeypot
+   is already active).
 
-`netlify.toml` proxies `/details/*`, `/search/*`, and `/property/*` to the
-BoldTrail-served `ameliaisland.heymannwilliams.com` host so property-alert email
-links resolve on this domain.
+## Swap in real assets anytime
 
-## Swap-ins before launch
+- Headshots: replace the `K`/`W` monogram avatars.
+- Photography: drop real listing/island photos into `assets/img/` (same filenames).
+- Testimonials: real quotes go in the marked slot in the "trust" section of `index.html`.
+- Featured/collection cards link to the live Heymann Williams BoldTrail search.
 
-- Replace the monogram avatars (`K` / `W`) with real headshots.
-- Replace Unsplash imagery with listing/island photography.
-- Set both `endpoint` values in `LEAD_ROUTING`.
-- Update the Around Town cards (or wire them to the weekly newsletter).
+## Notes
+
+- `netlify.toml` proxies `/details/*`, `/search/*`, `/property/*` to
+  `ameliaisland.heymannwilliams.com`, and sets security + asset-cache headers.
+- All content is intentionally honest — no fabricated stats, testimonials, or per-home
+  valuations — appropriate for a licensed agent's public site.
