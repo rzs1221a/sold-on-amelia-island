@@ -552,9 +552,9 @@ function showLoading(lines) {
 
 /* ---------- Buyer portal reveal ---------- */
 const BUYER_MATCHES = [
-  { img: 'https://images.unsplash.com/photo-1613490908592-fd5e23f5b72d?auto=format&fit=crop&w=900&q=80', price: '$1,250,000', addr: '842 Ocean Ave · Amelia Island', meta: '3 bd · 2.5 ba · 2,100 sqft', match: 98 },
-  { img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80', price: '$975,000', addr: '115 Center St · Fernandina Beach', meta: '4 bd · 3 ba · 2,800 sqft', match: 94 },
-  { img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80', price: '$1,450,000', addr: '33 Marsh View Dr · Nassau County', meta: '4 bd · 4 ba · 3,500 sqft', match: 91 }
+  { img: 'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?auto=format&fit=crop&w=900&q=80', price: '$1,250,000', addr: '842 Ocean Ave · Amelia Island', meta: '3 bd · 2.5 ba · 2,100 sqft', match: 98 },
+  { img: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=80', price: '$975,000', addr: '115 Center St · Fernandina Beach', meta: '4 bd · 3 ba · 2,800 sqft', match: 94 },
+  { img: 'https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=900&q=80', price: '$1,450,000', addr: '33 Marsh View Dr · Nassau County', meta: '4 bd · 4 ba · 3,500 sqft', match: 91 }
 ];
 
 function renderBuyerPortal() {
