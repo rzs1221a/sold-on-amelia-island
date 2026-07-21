@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>SOLD ON AMELIA ISLAND | Kelly Marine &amp; Will Henderson — Coastal Luxury Real Estate</title>
+  <meta name="description" content="Kelly Marine & Will Henderson — The Spouses Who Sell Houses. Berkshire Hathaway HomeServices Heymann Williams Realty. Buy and sell on Amelia Island, Fernandina Beach, and Nassau County.">
+  <meta property="og:title" content="SOLD ON AMELIA ISLAND | Kelly & Will">
+  <meta property="og:description" content="The Spouses Who Sell Houses — coastal luxury real estate on Amelia Island.">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235c0b25'/%3E%3Cpath d='M8 40c6-8 14-8 20 0s14 8 20 0 8-6 8-6' stroke='%23d4af37' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M8 50c6-6 14-6 20 0s14 6 20 0' stroke='%23f5e9d0' stroke-width='3' fill='none' stroke-linecap='round' opacity='.7'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/site.css">
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-monogram serif">K<span class="amp">&amp;</span>W</div>
+      <svg class="preloader-wave" viewBox="0 0 120 24" fill="none">
+        <path d="M2 14c10-12 20-12 30 0s20 12 30 0 20-12 30 0 20 12 26 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div class="preloader-sub">Sold on Amelia Island</div>
+    </div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div id="scroll-progress"></div>
+
+  <!-- CUSTOM CURSOR -->
+  <div id="custom-cursor"></div>
+
+  <!-- AMBIENT LAYERS -->
+  <div class="bg-ambient" aria-hidden="true"></div>
+  <canvas id="seaMistCanvas" aria-hidden="true"></canvas>
+  <div id="depth-pressure" aria-hidden="true"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-brand interactive" href="#top" aria-label="Sold on Amelia Island — home">
+        <div class="nav-monogram serif">K<span>&amp;</span>W</div>
+        <div class="nav-brand-text">
+          <strong>SOLD ON AMELIA ISLAND</strong>
+          <span>The Spouses Who Sell Houses</span>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a href="#duo" class="interactive">Kelly &amp; Will</a>
+        <a href="#featured" class="interactive">Featured</a>
+        <a href="#around-town" class="interactive">Around Town</a>
+        <a href="#areas" class="interactive">Neighborhoods</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://heymannwilliams.com" target="_blank" rel="noopener" class="nav-logo-box interactive" aria-label="Berkshire Hathaway HomeServices Heymann Williams Realty">
+          <img src="./assets/logo.png" alt="BHHS Heymann Williams Realty">
+        </a>
+        <button class="btn-nav btn-nav-outline interactive" onclick="openFlow('seller')">Sell <em>with Will</em></button>
+        <button class="btn-nav btn-nav-gold interactive" onclick="openFlow('buyer')">Buy <em>with Kelly</em></button>
+      </div>
+
+      <button class="nav-burger interactive" id="navBurger" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu">
+    <div class="mobile-menu-inner">
+      <a href="#duo" class="mm-link serif" onclick="toggleMobileMenu()">Kelly &amp; Will</a>
+      <a href="#featured" class="mm-link serif" onclick="toggleMobileMenu()">Featured Homes</a>
+      <a href="#around-town" class="mm-link serif" onclick="toggleMobileMenu()">Around Town</a>
+      <a href="#areas" class="mm-link serif" onclick="toggleMobileMenu()">Neighborhoods</a>
+      <div class="mm-divider"></div>
+      <button class="mm-cta mm-cta-outline" onclick="toggleMobileMenu(); openFlow('seller')">What's My Home Worth? <span>Sell with Will</span></button>
+      <button class="mm-cta mm-cta-gold" onclick="toggleMobileMenu(); openFlow('buyer')">Find My Coastal Home <span>Buy with Kelly</span></button>
+      <a href="https://heymannwilliams.com" target="_blank" rel="noopener" class="mm-logo"><img src="./assets/logo.png" alt="BHHS Heymann Williams Realty"></a>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=80')"></div>
+      <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=2400&q=80')"></div>
+      <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2400&q=80')"></div>
+      <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=2400&q=80')"></div>
+    </div>
+    <div class="hero-scrim"></div>
+
+    <div class="hero-content">
+      <div class="hero-masthead reveal">
+        <span class="masthead-names">Kelly <span class="amp-script">&amp;</span> Will <span class="masthead-are">are</span></span>
+        <h1 class="masthead-title serif">Sold on<br>Amelia Island<span class="masthead-dot">.com</span></h1>
+        <p class="masthead-tag">The Spouses Who Sell Houses &nbsp;·&nbsp; Berkshire Hathaway HomeServices Heymann Williams Realty</p>
+      </div>
+
+      <div class="hero-cards reveal delay-200">
+        <button class="hero-card interactive" onclick="openFlow('seller')">
+          <div class="hero-card-avatar will">W</div>
+          <div class="hero-card-body">
+            <span class="hero-card-kicker">Thinking of Selling?</span>
+            <span class="hero-card-title serif">What's my home worth?</span>
+            <span class="hero-card-sub">Instant valuation experience with Will Henderson</span>
+          </div>
+          <span class="hero-card-arrow">&rarr;</span>
+        </button>
+        <button class="hero-card interactive" onclick="openFlow('buyer')">
+          <div class="hero-card-avatar kelly">K</div>
+          <div class="hero-card-body">
+            <span class="hero-card-kicker">Looking to Purchase?</span>
+            <span class="hero-card-title serif">Find my coastal home</span>
+            <span class="hero-card-sub">A guided search curated by Kelly Marine</span>
+          </div>
+          <span class="hero-card-arrow">&rarr;</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-footerline reveal delay-300">
+      <div class="hero-dots" id="heroDots"></div>
+      <div class="hero-scrollcue"><span></span>Scroll to explore</div>
+      <div class="hero-time"><span class="live-dot"></span>Fernandina Beach&nbsp;·&nbsp;<span id="localTime">–:–</span></div>
+    </div>
+  </header>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack">
+      <span>Oceanfront</span><i>◆</i><span>Historic District</span><i>◆</i><span>Amelia Island Plantation</span><i>◆</i><span>Marsh Front</span><i>◆</i><span>Golf &amp; Club</span><i>◆</i><span>Crane Island</span><i>◆</i><span>Downtown Fernandina</span><i>◆</i><span>Yulee &amp; Wildlight</span><i>◆</i><span>Oceanfront</span><i>◆</i><span>Historic District</span><i>◆</i><span>Amelia Island Plantation</span><i>◆</i><span>Marsh Front</span><i>◆</i><span>Golf &amp; Club</span><i>◆</i><span>Crane Island</span><i>◆</i><span>Downtown Fernandina</span><i>◆</i><span>Yulee &amp; Wildlight</span><i>◆</i>
+    </div>
+  </div>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="stats-grid">
+      <div class="stat reveal"><div class="stat-num serif"><span data-count="52" data-prefix="$" data-suffix="M+">0</span></div><div class="stat-label">In Coastal Homes Sold</div></div>
+      <div class="stat reveal delay-100"><div class="stat-num serif"><span data-count="94" data-suffix="+">0</span></div><div class="stat-label">Families Guided Home</div></div>
+      <div class="stat reveal delay-200"><div class="stat-num serif"><span data-count="11">0</span></div><div class="stat-label">Avg. Days on Market</div></div>
+      <div class="stat reveal delay-300"><div class="stat-num serif"><span data-count="5" data-suffix=".0★">0</span></div><div class="stat-label">Client Rating</div></div>
+    </div>
+  </section>
+
+  <!-- ============ MEET KELLY & WILL ============ -->
+  <section class="duo" id="duo">
+    <div class="section-head reveal">
+      <span class="kicker">Two Agents. One Team. One Island.</span>
+      <h2 class="serif">Meet Kelly <span class="amp-script gold">&amp;</span> Will</h2>
+      <p class="section-sub">Married partners in life and in real estate — Kelly guides buyers home while Will maximizes value for sellers. You get both, always.</p>
+    </div>
+
+    <div class="duo-grid">
+      <article class="duo-card glass reveal">
+        <div class="duo-portrait kelly">
+          <span class="duo-initial serif">K</span>
+          <div class="duo-portrait-ring"></div>
+        </div>
+        <span class="duo-role">Buyer Specialist</span>
+        <h3 class="serif">Kelly Marine</h3>
+        <p class="duo-script">Navigating the real estate waters</p>
+        <p class="duo-bio">Kelly turns wish lists into keys-in-hand. From first call to closing table, she curates every showing, negotiates fiercely, and knows which street catches the sunrise — because she lives here too.</p>
+        <div class="duo-contacts">
+          <a class="duo-contact interactive" href="tel:6786770858">Call</a>
+          <a class="duo-contact interactive" href="sms:6786770858">Text</a>
+          <a class="duo-contact interactive" href="mailto:KellyMarineRealtor@gmail.com">Email</a>
+        </div>
+        <button class="btn-gold interactive" onclick="openFlow('buyer')">Start Your Search with Kelly</button>
+      </article>
+
+      <div class="duo-heart reveal delay-100" aria-hidden="true">
+        <svg viewBox="0 0 60 60" fill="none"><path d="M30 50C14 38 6 29 6 19.5 6 12 12 6 19.5 6c4.5 0 8.5 2.3 10.5 6 2-3.7 6-6 10.5-6C48 6 54 12 54 19.5 54 29 46 38 30 50z" stroke="currentColor" stroke-width="2.5"/></svg>
+        <span>The Spouses<br>Who Sell Houses</span>
+      </div>
+
+      <article class="duo-card glass reveal delay-200">
+        <div class="duo-portrait will">
+          <span class="duo-initial serif">W</span>
+          <div class="duo-portrait-ring"></div>
+        </div>
+        <span class="duo-role">Listing Specialist</span>
+        <h3 class="serif">Will Henderson</h3>
+        <p class="duo-script">Every home has a number. He finds the highest one.</p>
+        <p class="duo-bio">Will architects the sale: pricing strategy built on live island comps, cinematic marketing, and negotiation that protects every dollar of your equity. Data first, handshake always.</p>
+        <div class="duo-contacts">
+          <a class="duo-contact interactive" href="tel:9043216689">Call</a>
+          <a class="duo-contact interactive" href="sms:9043216689">Text</a>
+          <a class="duo-contact interactive" href="mailto:Will@HeymannWilliamsRealty.com">Email</a>
+        </div>
+        <button class="btn-outline interactive" onclick="openFlow('seller')">Get Your Valuation from Will</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED PROPERTY ============ -->
+  <section class="featured" id="featured">
+    <div class="featured-inner glass-dark reveal">
+      <div class="featured-media">
+        <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1600&q=80" alt="2337 S Fletcher Ave — ocean-view duplex">
+        <span class="featured-badge">Featured Property</span>
+      </div>
+      <div class="featured-body">
+        <span class="kicker">Fernandina Beach, Florida</span>
+        <h2 class="serif">2337 S Fletcher Ave</h2>
+        <p class="featured-desc">Ocean-view duplex with outstanding potential for investors and beach lovers alike. Keep it as income property, create a vacation home while renting the second unit, or convert to a spacious single-family. Enclosed porch with charming peek-a-boo ocean views — sunrises in front, sunsets out back.</p>
+        <div class="featured-chips">
+          <span>Ocean View</span><span>Duplex</span><span>Income Potential</span><span>Steps to Sand</span>
+        </div>
+        <div class="featured-ctas">
+          <button class="btn-gold interactive" onclick="openFlow('buyer', '2337 S Fletcher Ave')">Tour This Property</button>
+          <a class="btn-outline interactive" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">See All Island Listings</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="collection-head reveal">
+      <span class="kicker">Curated Coastal Collection</span>
+      <h2 class="serif">Homes We Love Right Now</h2>
+    </div>
+    <div class="collection-grid">
+      <button class="listing-card glass-dark interactive reveal" onclick="openFlow('buyer','an oceanfront home on S Fletcher')">
+        <div class="listing-img"><img src="https://images.unsplash.com/photo-1613490908592-fd5e23f5b72d?auto=format&fit=crop&w=1000&q=80" alt="Oceanfront estate"><span class="listing-tag">Oceanfront</span></div>
+        <div class="listing-info">
+          <div class="listing-price serif">$1,850,000</div>
+          <div class="listing-addr">1240 S Fletcher Ave · Fernandina Beach</div>
+          <div class="listing-meta"><span>4 bd</span><span>3.5 ba</span><span>3,200 sqft</span></div>
+        </div>
+      </button>
+      <button class="listing-card glass-dark interactive reveal delay-100" onclick="openFlow('buyer','a historic home in downtown Fernandina')">
+        <div class="listing-img"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80" alt="Historic district home"><span class="listing-tag">Historic District</span></div>
+        <div class="listing-info">
+          <div class="listing-price serif">$925,000</div>
+          <div class="listing-addr">214 N 6th St · Fernandina Beach</div>
+          <div class="listing-meta"><span>3 bd</span><span>2 ba</span><span>2,100 sqft</span></div>
+        </div>
+      </button>
+      <button class="listing-card glass-dark interactive reveal delay-200" onclick="openFlow('buyer','a home in Amelia Island Plantation')">
+        <div class="listing-img"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Plantation estate"><span class="listing-tag">Plantation</span></div>
+        <div class="listing-info">
+          <div class="listing-price serif">$2,400,000</div>
+          <div class="listing-addr">45 Marsh Creek Rd · Amelia Island</div>
+          <div class="listing-meta"><span>5 bd</span><span>5 ba</span><span>4,500 sqft</span></div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ SPLIT PATHWAYS BANNER ============ -->
+  <section class="pathways-banner">
+    <button class="pathway sell interactive" onclick="openFlow('seller')">
+      <div class="pathway-bg" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80')"></div>
+      <div class="pathway-content">
+        <span class="kicker light">Selling with Will</span>
+        <h3 class="serif">Your equity deserves<br>a strategy.</h3>
+        <span class="pathway-cta">Get My Home Value &rarr;</span>
+      </div>
+    </button>
+    <button class="pathway buy interactive" onclick="openFlow('buyer')">
+      <div class="pathway-bg" style="background-image:url('https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1600&q=80')"></div>
+      <div class="pathway-content">
+        <span class="kicker light">Buying with Kelly</span>
+        <h3 class="serif">Your island life<br>starts here.</h3>
+        <span class="pathway-cta">Start My Search &rarr;</span>
+      </div>
+    </button>
+  </section>
+
+  <!-- ============ AROUND TOWN ============ -->
+  <section class="around" id="around-town">
+    <div class="section-head reveal">
+      <span class="kicker">Island Life, Curated Weekly</span>
+      <h2 class="serif">Around Town</h2>
+      <p class="section-sub">Kelly &amp; Will's picks from their weekly newsletter — the definitive guide to Amelia Island living.</p>
+    </div>
+    <div class="around-rail" id="aroundRail">
+      <div class="around-card glass reveal"><span class="around-day">Wed</span><h4>Fernandina Midweek Market</h4><p>14th &amp; Lime · 9am–1pm</p></div>
+      <div class="around-card glass reveal delay-100"><span class="around-day">Sat</span><h4>Farmers &amp; Art Market</h4><p>Downtown Fernandina · 9am–1pm</p></div>
+      <div class="around-card glass reveal delay-200"><span class="around-day">Tue</span><h4>Poetry Canteen Open Mic</h4><p>Story &amp; Song Bookstore · 3:30pm</p></div>
+      <div class="around-card glass reveal delay-300"><span class="around-day">Fri</span><h4>Sounds on Centre</h4><p>Live music downtown · 6pm</p></div>
+      <div class="around-card glass reveal delay-300"><span class="around-day">Sun</span><h4>Sunrise on Main Beach</h4><p>Bring coffee. Trust us. · 6:45am</p></div>
+    </div>
+    <div class="around-newsletter glass-dark reveal">
+      <div>
+        <h3 class="serif">The Coastal Edit</h3>
+        <p>Local insights, exclusive property features, and island events — every week, from Kelly &amp; Will.</p>
+      </div>
+      <form class="newsletter-form" onsubmit="return handleNewsletter(event)">
+        <input type="email" required placeholder="Your email address" aria-label="Email address">
+        <button type="submit" class="btn-gold interactive">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ AREAS ============ -->
+  <section class="areas" id="areas">
+    <div class="section-head reveal">
+      <span class="kicker">Know the Coast</span>
+      <h2 class="serif">Explore the Neighborhoods</h2>
+    </div>
+    <div class="areas-grid">
+      <a class="area-tile interactive reveal" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">
+        <div class="area-bg" style="background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="area-label"><h3 class="serif">Amelia Island</h3><span>Resort &amp; oceanfront living</span></div>
+      </a>
+      <a class="area-tile interactive reveal delay-100" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">
+        <div class="area-bg" style="background-image:url('https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="area-label"><h3 class="serif">Fernandina Beach</h3><span>Historic charm, walkable downtown</span></div>
+      </a>
+      <a class="area-tile interactive reveal delay-200" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">
+        <div class="area-bg" style="background-image:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="area-label"><h3 class="serif">Yulee &amp; Wildlight</h3><span>New construction &amp; room to grow</span></div>
+      </a>
+      <a class="area-tile interactive reveal delay-300" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">
+        <div class="area-bg" style="background-image:url('https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=900&q=80')"></div>
+        <div class="area-label"><h3 class="serif">Nassau County</h3><span>Marsh views &amp; quiet acreage</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="testimonials">
+    <div class="testimonial-stage glass-dark reveal">
+      <div class="testimonial-quote serif" id="testimonialQuote">"Kelly found us a home we didn't know existed, and Will sold ours in nine days over asking. Working with both of them felt like having family on the inside."</div>
+      <div class="testimonial-author" id="testimonialAuthor">— The Parkers, relocated from Atlanta</div>
+      <div class="testimonial-dots" id="testimonialDots"></div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer-mast serif">Sold on Amelia Island<span>.com</span></div>
+    <div class="footer-agents">
+      <div class="footer-agent">
+        <strong>Kelly Marine</strong><span>Buyer Specialist · Realtor®</span>
+        <a href="tel:6786770858" class="interactive">678-677-0858</a>
+        <a href="mailto:KellyMarineRealtor@gmail.com" class="interactive">KellyMarineRealtor@gmail.com</a>
+      </div>
+      <a class="footer-logo interactive" href="https://heymannwilliams.com" target="_blank" rel="noopener">
+        <img src="./assets/logo.png" alt="Berkshire Hathaway HomeServices Heymann Williams Realty">
+      </a>
+      <div class="footer-agent">
+        <strong>Will Henderson</strong><span>Listing Specialist · Realtor®</span>
+        <a href="tel:9043216689" class="interactive">904-321-6689</a>
+        <a href="mailto:Will@HeymannWilliamsRealty.com" class="interactive">Will@HeymannWilliamsRealty.com</a>
+      </div>
+    </div>
+    <p class="footer-legal">© <span id="year"></span> Berkshire Hathaway HomeServices Heymann Williams Realty. A member of the franchise system of BHH Affiliates, LLC. Equal Housing Opportunity. <span class="eho" aria-label="Equal Housing Opportunity">⌂</span></p>
+  </footer>
+
+  <!-- MOBILE STICKY BAR -->
+  <div class="mobile-sticky-bar">
+    <button class="msb-btn msb-outline interactive" onclick="openFlow('seller')">Sell · Will</button>
+    <button class="msb-btn msb-gold interactive" onclick="openFlow('buyer')">Buy · Kelly</button>
+  </div>
+
+  <!-- ================================================
+       LEAD FLOW OVERLAY (Buyer & Seller)
+  ================================================= -->
+  <div class="flow-overlay" id="flowOverlay" role="dialog" aria-modal="true">
+    <div class="flow-chrome">
+      <div class="flow-agent-chip" id="flowAgentChip"></div>
+      <div class="flow-chrome-actions">
+        <a href="#" id="flowTextLink" class="flow-live-text interactive" target="_blank">Text Live</a>
+        <button class="flow-close interactive" onclick="closeFlow()" aria-label="Close">✕</button>
+      </div>
+    </div>
+
+    <div class="flow-progress"><div class="flow-progress-fill" id="flowProgressFill"></div><div class="flow-progress-boat" id="flowProgressBoat">⛵</div></div>
+
+    <div class="flow-stage" id="flowStage">
+      <!-- steps injected by JS -->
+    </div>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>

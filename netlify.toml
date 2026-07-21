@@ -1,0 +1,23 @@
+[build]
+publish = "/"
+
+# Proxy BoldTrail property-alert email links through to the BoldTrail-served
+# host so they resolve on this domain instead of 404ing. These must stay
+# above any future catch-all redirect since Netlify matches top-down.
+[[redirects]]
+from = "/details/*"
+to = "https://ameliaisland.heymannwilliams.com/details/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/search/*"
+to = "https://ameliaisland.heymannwilliams.com/search/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/property/*"
+to = "https://ameliaisland.heymannwilliams.com/property/:splat"
+status = 200
+force = true
