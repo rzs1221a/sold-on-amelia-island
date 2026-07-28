@@ -506,7 +506,8 @@ function renderContact() {
       </div>
       <div class="flow-nav"><button class="flow-back interactive" onclick="flowBack()">← Back</button></div>
     </div>`;
-  setTimeout(() => document.getElementById('leadName').focus(), 350);
+  const nameInput = document.getElementById('leadName');
+  setTimeout(() => { if (nameInput) nameInput.focus(); }, 350);
 }
 
 function validateField(id, test) {

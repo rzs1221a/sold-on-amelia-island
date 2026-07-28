@@ -37,6 +37,12 @@
   <link rel="preload" as="image" href="./assets/img/hero-1.jpg">
   <link rel="stylesheet" href="./css/site.css">
 
+  <!-- Netlify Identity: required so invite/password-reset email links (which
+       land here, on the site root) open the account-setup modal, then send
+       Kelly & Will into the /admin editor. Harmless no-op until Identity is
+       enabled for this site in the Netlify dashboard. -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
   <!-- Structured data: the team + both agents -->
   <script type="application/ld+json">
   {
@@ -523,5 +529,17 @@
 
   <script src="./js/app.js"></script>
   <script src="./js/boldtrail.js"></script>
+  <script>
+    // Invite / password-reset links from Netlify Identity land here with a
+    // #invite_token or #recovery_token. The widget auto-detects it and opens
+    // its modal; once Kelly or Will finish that, send them into the editor.
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', user => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
+        }
+      });
+    }
+  </script>
 </body>
 </html>
