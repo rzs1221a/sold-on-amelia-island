@@ -53,40 +53,69 @@ in that case keep the lifestyle link cards, which always show live inventory.
 ## 2. Leads posting directly into BoldTrail CRM
 
 **Already working today:** leads submit to Netlify Forms, which emails them to any
-address you configure — including BoldTrail's lead-parser address. That path needs
-no credentials.
+address you configure. **BHHS Connect (kvCORE/BoldTrail) already gives every agent
+their own lead-capture email** — in the app under **Lead Engine Tools & Features →
+Web & IDX → Leads Sync**, switch the "Agent" search field at top from your own name
+to **Kelly Marine**, copy her `EMAIL` value, then repeat for **Will Henderson**.
+Those two addresses go straight into Netlify's form notifications (`buyer-lead` →
+Kelly's, `seller-lead` → Will's) — zero code, works the same day. Do this regardless
+of the API work below; it's not a fallback, it's a real, correctly-assigned path.
 
-**Direct API posting** is built and dormant. The key open question is agent
-assignment, so ask this explicitly:
+**Decision: building the direct API path** (chosen over Zapier). This is more work
+because, unlike the Zapier Key on that same screen — which plugs into Zapier's own
+pre-built BoldTrail "Create Lead" action and doesn't require knowing BoldTrail's
+private request format — a raw bearer token only authenticates a request. It doesn't
+tell me the endpoint URL or the shape of the JSON body, and guessing wrong there
+means leads could silently fail or land unassigned. So before this can be wired,
+I need the **actual API reference**, not just a token.
 
-> We want to post leads from an external website directly into our BoldTrail CRM.
->
-> 1. Do you offer a lead-capture API endpoint or webhook for this? Please provide
->    the endpoint URL, authentication method, and an example payload.
-> 2. **How is an incoming lead assigned to a specific agent?** We have two agents
->    (Kelly Marine — buyers, Will Henderson — sellers) and need buyer leads to go to
->    Kelly and seller leads to Will. Specifically:
->    - Which field controls assignment (`agent_id`, `agent_email`, `user_id`, other)?
->    - Where do we find each agent's BoldTrail ID?
->    - Or is assignment controlled on your side by routing rules / round-robin,
->      in which case can rules be set per lead source or lead type?
-> 3. Is there a lead-parser email address per agent as an alternative? If so,
->    please provide Kelly's and Will's.
-> 4. Are there rate limits or IP whitelisting requirements?
+### What to get (send all of these, not just the token)
+
+1. **API documentation.** BHHS Connect's Lead Engine screen doesn't show a base URL
+   or endpoint list, so this needs to come from kvCORE/BoldTrail support or their
+   developer docs. Ask support directly:
+
+   > We generated an API token from BHHS Connect → Lead Engine Tools & Features →
+   > Web & IDX → Leads Sync ("My API Tokens", scope: Contacts, Users). We want to
+   > use it to create a Contact/Lead from an external website form submission.
+   > Please send: the base API URL, the endpoint + HTTP method for creating a
+   > contact, the required auth header format, and an example request/response.
+
+2. **How agent assignment actually works with this token.** Two real possibilities,
+   and the answer changes what I build:
+   - The token is tied to whichever person is logged in when it's generated — if
+     so, Kelly and Will each need to log into their **own** BHHS Connect account
+     and generate their **own** token from their own "My API Tokens" panel.
+   - The token is account/office-wide, and a field in the request body (e.g.
+     `agent_id`, `owner_id`, `user_id`) assigns the lead to a specific person — if
+     so, ask support how to find Kelly's and Will's IDs for that field.
+
+   You can partly test this yourself: switch the "Agent" selector at the top of
+   that page from your name to Kelly's, and check whether the **"My API Tokens"**
+   panel at bottom-right changes too, or stays the same. If it doesn't change,
+   that panel is almost certainly tied to your login, not to whichever agent is
+   selected above it — which points to the first bullet above.
+
+3. **A fresh, dedicated token.** Generate a new one now (Contacts + Users scope,
+   the checkboxes are already there) specifically for this website, rather than
+   reusing an existing one shared with other tools — it can then be revoked
+   independently if this integration is ever retired. Note the expiration date
+   shown next to it; these tokens aren't permanent.
 
 ### Where it goes
 
 ```js
 lead: {
-  endpoint: 'https://...',      // from their answer to #1
-  apiKey:   '...',
-  agentIdField: 'agent_id',     // whatever field they say controls assignment
-  agentIds: { kelly: '...', will: '...' }
+  endpoint: 'https://...',      // base URL + path, from support's answer
+  apiKey:   '...',              // the fresh token from step 3
+  agentIdField: 'agent_id',     // whatever field controls assignment, from step 2
+  agentIds: { kelly: '...', will: '...' }   // only needed if assignment is by ID field
 }
 ```
 
-Leads then post to **both** Netlify (always) and BoldTrail (when configured), so a
-failed API call can never lose a lead.
+Once endpoint + payload shape + assignment method are confirmed, leads will post to
+**both** Netlify (always) and BoldTrail (via this API), so a failed API call can
+never lose a lead — the email/Netlify path stays as the permanent safety net.
 
 ---
 
