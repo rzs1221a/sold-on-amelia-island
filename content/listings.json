@@ -1,0 +1,25 @@
+{
+  "cards": [
+    {
+      "title": "Oceanfront & Beach",
+      "tag": "Oceanfront",
+      "subtitle": "Amelia Island · Fernandina Beach",
+      "image": "/assets/img/collect-1.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "title": "Historic Downtown",
+      "tag": "Historic District",
+      "subtitle": "Centre Street & the Historic District",
+      "image": "/assets/img/collect-2.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "title": "Plantation & Golf",
+      "tag": "Plantation & Golf",
+      "subtitle": "Amelia Island Plantation · Marsh Creek",
+      "image": "/assets/img/collect-3.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    }
+  ]
+}

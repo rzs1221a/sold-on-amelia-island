@@ -1,0 +1,150 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/img/uploads"
+public_folder: "/assets/img/uploads"
+
+site_url: https://soldonameliaisland.com
+display_url: https://soldonameliaisland.com
+logo_url: https://soldonameliaisland.com/assets/apple-touch-icon.png
+
+publish_mode: simple
+
+collections:
+  # ---------------------------------------------------------------
+  # HOMEPAGE CONTENT — everything Kelly & Will change week to week
+  # ---------------------------------------------------------------
+  - name: "homepage"
+    label: "Website Content"
+    files:
+      - name: "hero"
+        label: "Top of Page (Headline & Photos)"
+        file: "content/hero.json"
+        description: "The big headline area visitors see first, and the rotating background photos."
+        fields:
+          - { name: names_line, label: "Names line", widget: string, hint: "Shown small above the headline. Example: Kelly & Will are" }
+          - { name: headline_line_1, label: "Headline — first line", widget: string }
+          - { name: headline_line_2, label: "Headline — second line", widget: string }
+          - { name: tagline, label: "Tagline under the headline", widget: string }
+          - name: slides
+            label: "Background photos (rotating)"
+            widget: list
+            min: 1
+            summary: "{{fields.alt}}"
+            fields:
+              - { name: image, label: "Photo", widget: image }
+              - { name: alt, label: "Photo description (for accessibility)", widget: string }
+
+      - name: "agents"
+        label: "About Kelly & Will"
+        file: "content/agents.json"
+        description: "Your names, titles, phone numbers, emails, and bios."
+        fields:
+          - name: kelly
+            label: "Kelly"
+            widget: object
+            fields:
+              - { name: name, label: "Name", widget: string }
+              - { name: role, label: "Title", widget: string }
+              - { name: script, label: "Tagline (script font)", widget: string }
+              - { name: bio, label: "Bio", widget: text }
+              - { name: phone, label: "Phone (digits only)", widget: string, pattern: ['^[0-9]{10}$', "Enter 10 digits, no dashes. Example: 6786770858"] }
+              - { name: email, label: "Email", widget: string }
+              - { name: photo, label: "Headshot (optional — leave empty to use the K monogram)", widget: image, required: false }
+          - name: will
+            label: "Will"
+            widget: object
+            fields:
+              - { name: name, label: "Name", widget: string }
+              - { name: role, label: "Title", widget: string }
+              - { name: script, label: "Tagline (script font)", widget: string }
+              - { name: bio, label: "Bio", widget: text }
+              - { name: phone, label: "Phone (digits only)", widget: string, pattern: ['^[0-9]{10}$', "Enter 10 digits, no dashes. Example: 9043216689"] }
+              - { name: email, label: "Email", widget: string }
+              - { name: photo, label: "Headshot (optional — leave empty to use the W monogram)", widget: image, required: false }
+
+      - name: "featured"
+        label: "Featured Property"
+        file: "content/featured.json"
+        description: "The large highlighted property near the top of the page."
+        fields:
+          - { name: kicker, label: "Location line", widget: string, hint: "Example: Fernandina Beach, Florida" }
+          - { name: title, label: "Property title", widget: string }
+          - { name: description, label: "Description", widget: text }
+          - { name: image, label: "Photo", widget: image }
+          - { name: badge, label: "Corner badge text", widget: string, default: "Signature Listing" }
+          - name: chips
+            label: "Feature tags"
+            widget: list
+            field: { name: label, label: "Tag", widget: string }
+          - { name: link, label: "'See all listings' button link", widget: string, hint: "Usually your BoldTrail search page." }
+
+      - name: "listings"
+        label: "Listing Cards"
+        file: "content/listings.json"
+        description: "The three cards under 'Explore Live Island Listings'. Each links to a search on your BoldTrail site."
+        fields:
+          - name: cards
+            label: "Cards"
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { name: title, label: "Card title", widget: string }
+              - { name: tag, label: "Corner tag", widget: string }
+              - { name: subtitle, label: "Subtitle / area", widget: string }
+              - { name: image, label: "Photo", widget: image }
+              - { name: link, label: "Link (BoldTrail search URL)", widget: string }
+
+      - name: "events"
+        label: "Around Town Events"
+        file: "content/events.json"
+        description: "Local happenings shown in the Around Town section. Add, remove, or reorder freely."
+        fields:
+          - name: events
+            label: "Events"
+            widget: list
+            summary: "{{fields.day}} — {{fields.title}}"
+            fields:
+              - { name: day, label: "Day badge", widget: string, hint: "Example: Sat" }
+              - { name: title, label: "Event name", widget: string }
+              - { name: detail, label: "Where & when", widget: string }
+
+      - name: "areas"
+        label: "Neighborhoods"
+        file: "content/areas.json"
+        description: "The four neighborhood tiles and the interactive map button."
+        fields:
+          - name: tiles
+            label: "Neighborhood tiles"
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - { name: name, label: "Neighborhood name", widget: string }
+              - { name: blurb, label: "Short description", widget: string }
+              - { name: image, label: "Photo", widget: image }
+              - { name: link, label: "Link (BoldTrail search / map URL)", widget: string }
+          - { name: map_link, label: "'Open the Interactive Island Map' button link", widget: string }
+
+      - name: "trust"
+        label: "Why Kelly & Will + Testimonials"
+        file: "content/trust.json"
+        description: "Your three selling points, and real client testimonials once you have permission to publish them."
+        fields:
+          - { name: heading, label: "Section heading", widget: string }
+          - name: items
+            label: "Selling points"
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { name: icon, label: "Icon (emoji)", widget: string }
+              - { name: title, label: "Title", widget: string }
+              - { name: body, label: "Description", widget: text }
+          - name: testimonials
+            label: "Client testimonials (only publish real ones you have permission to use)"
+            widget: list
+            required: false
+            summary: "{{fields.author}}"
+            fields:
+              - { name: quote, label: "What they said", widget: text }
+              - { name: author, label: "Who said it", widget: string, hint: "Example: The Parkers, relocated from Atlanta" }

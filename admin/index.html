@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Sold on Amelia Island — Edit Your Site</title>
+  <link rel="icon" type="image/png" href="../assets/favicon-32.png">
+  <style>
+    body { margin: 0; font-family: Inter, -apple-system, sans-serif; }
+    #nc-root:empty::after {
+      content: 'Loading your editor…';
+      display: block; padding: 4rem; text-align: center;
+      color: #5c0b25; font-size: 1rem; letter-spacing: .08em;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+  <script>
+    // Send invited users straight into the editor after they set a password.
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', user => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

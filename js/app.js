@@ -532,6 +532,8 @@ async function submitContact() {
     ? { name: a.name, email: a.email, phone: a.phone, vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
     : { name: a.name, email: a.email, phone: a.phone, address: a.address, property_type: a.ptype, timeline: a.timeline };
   submitLead(flow.type, lead);
+  // Also push straight into BoldTrail when its API is configured (see js/boldtrail.js).
+  if (typeof pushLeadToBoldTrail === 'function') pushLeadToBoldTrail(flow.type, lead);
 
   await showLoading(flow.type === 'buyer'
     ? ['Saving your search…', 'Sending it to Kelly…', 'Getting you set up…']
@@ -651,4 +653,219 @@ function sprinkleSparkles() {
     document.body.appendChild(s);
     setTimeout(() => s.remove(), 2600);
   }
+}
+
+/* ==========================================================
+   CMS CONTENT HYDRATION
+   Reads /content/*.json (edited by Kelly & Will at /admin) and
+   applies it to the page. The HTML ships with sensible defaults,
+   so the site still renders correctly if a fetch fails.
+   ========================================================== */
+(function hydrateFromCMS() {
+  const get = path => fetch(path, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const setText = (sel, val) => { const el = document.querySelector(sel); if (el && val) el.textContent = val; };
+
+  // --- Hero ---
+  get('/content/hero.json').then(d => {
+    if (!d) return;
+    const namesEl = document.querySelector('.masthead-names');
+    if (namesEl && d.names_line) {
+      // Preserve the script ampersand + "are" styling by rebuilding the line.
+      const m = d.names_line.match(/^(.*?)\s*&\s*(.*?)(\s+are)?$/i);
+      namesEl.innerHTML = m
+        ? `${esc(m[1])} <span class="amp-script">&amp;</span> ${esc(m[2])}${m[3] ? ' <span class="masthead-are">are</span>' : ''}`
+        : esc(d.names_line);
+    }
+    const h1 = document.querySelector('.masthead-title');
+    if (h1 && d.headline_line_1) {
+      h1.innerHTML = `${esc(d.headline_line_1)}<br>${esc(d.headline_line_2 || '')}<span class="masthead-dot">.com</span>`;
+    }
+    setText('.masthead-tag', d.tagline);
+
+    if (Array.isArray(d.slides) && d.slides.length) {
+      const wrap = document.getElementById('heroSlides');
+      const dots = document.getElementById('heroDots');
+      if (wrap && dots) {
+        wrap.innerHTML = d.slides.map((s, i) =>
+          `<div class="hero-slide${i === 0 ? ' active' : ''}" role="img" aria-label="${esc(s.alt || '')}" style="background-image:url('${esc(s.image)}')"></div>`
+        ).join('');
+        dots.innerHTML = '';
+        rebuildHeroSlides();
+      }
+    }
+  });
+
+  // --- Agents ---
+  get('/content/agents.json').then(d => {
+    if (!d) return;
+    [['kelly', 0], ['will', 1]].forEach(([key, idx]) => {
+      const a = d[key]; if (!a) return;
+      const card = document.querySelectorAll('.duo-card')[idx];
+      if (card) {
+        setTextIn(card, '.duo-role', a.role);
+        setTextIn(card, 'h3', a.name);
+        setTextIn(card, '.duo-script', a.script);
+        setTextIn(card, '.duo-bio', a.bio);
+        const links = card.querySelectorAll('.duo-contact');
+        if (links[0] && a.phone) links[0].href = 'tel:' + a.phone;
+        if (links[1] && a.phone) links[1].href = 'sms:' + a.phone;
+        if (links[2] && a.email) links[2].href = 'mailto:' + a.email;
+        // Optional real headshot replaces the monogram.
+        const portrait = card.querySelector('.duo-portrait');
+        if (portrait && a.photo) {
+          portrait.style.backgroundImage = `url('${a.photo}')`;
+          portrait.style.backgroundSize = 'cover';
+          portrait.style.backgroundPosition = 'center';
+          const initial = portrait.querySelector('.duo-initial');
+          if (initial) initial.style.display = 'none';
+        }
+      }
+      // Footer + lead routing stay in sync with edited contact details.
+      const foot = document.querySelectorAll('.footer-agent')[idx];
+      if (foot) {
+        setTextIn(foot, 'strong', a.name);
+        setTextIn(foot, 'span', `${a.role} · Realtor®`);
+        const fl = foot.querySelectorAll('a');
+        if (fl[0] && a.phone) { fl[0].href = 'tel:' + a.phone; fl[0].textContent = formatPhone(a.phone); }
+        if (fl[1] && a.email) { fl[1].href = 'mailto:' + a.email; fl[1].textContent = a.email; }
+      }
+      const route = LEAD_ROUTING[key === 'kelly' ? 'buyer' : 'seller'];
+      if (route) {
+        if (a.name) route.agent = a.name;
+        if (a.role) route.title = a.role;
+        if (a.phone) { route.phone = a.phone; route.prettyPhone = formatPhone(a.phone); }
+        if (a.email) route.crmEmail = a.email;
+      }
+    });
+  });
+
+  // --- Featured property ---
+  get('/content/featured.json').then(d => {
+    if (!d) return;
+    const sec = document.querySelector('#listings .featured-inner'); if (!sec) return;
+    setTextIn(sec, '.kicker', d.kicker);
+    setTextIn(sec, 'h2', d.title);
+    setTextIn(sec, '.featured-desc', d.description);
+    setTextIn(sec, '.featured-badge', d.badge);
+    const img = sec.querySelector('.featured-media img');
+    if (img && d.image) { img.src = d.image; img.alt = d.title || img.alt; }
+    const chips = sec.querySelector('.featured-chips');
+    if (chips && Array.isArray(d.chips)) chips.innerHTML = d.chips.map(c => `<span>${esc(c)}</span>`).join('');
+    const seeAll = sec.querySelector('.featured-ctas a');
+    if (seeAll && d.link) seeAll.href = d.link;
+  });
+
+  // --- Listing cards ---
+  get('/content/listings.json').then(d => {
+    if (!d || !Array.isArray(d.cards)) return;
+    const grid = document.querySelector('.collection-grid'); if (!grid) return;
+    grid.innerHTML = d.cards.map((c, i) => `
+      <a class="listing-card glass-dark interactive reveal${i ? ' delay-' + (i * 100) : ''}" href="${esc(c.link)}" target="_blank" rel="noopener">
+        <div class="listing-img">
+          <img src="${esc(c.image)}" alt="${esc(c.title)} listings" width="1000" height="667" loading="lazy" decoding="async">
+          <span class="listing-tag">${esc(c.tag)}</span>
+        </div>
+        <div class="listing-info">
+          <div class="listing-price serif">${esc(c.title)}</div>
+          <div class="listing-addr">${esc(c.subtitle)}</div>
+          <div class="listing-meta"><span>View live listings &rarr;</span></div>
+        </div>
+      </a>`).join('');
+    reobserveReveals(grid);
+  });
+
+  // --- Around Town events ---
+  get('/content/events.json').then(d => {
+    if (!d || !Array.isArray(d.events)) return;
+    const rail = document.getElementById('aroundRail'); if (!rail) return;
+    rail.innerHTML = d.events.map((e, i) => `
+      <div class="around-card glass reveal${i ? ' delay-' + Math.min(i * 100, 300) : ''}">
+        <span class="around-day">${esc(e.day)}</span>
+        <h4>${esc(e.title)}</h4>
+        <p>${esc(e.detail)}</p>
+      </div>`).join('');
+    reobserveReveals(rail);
+  });
+
+  // --- Neighborhood tiles ---
+  get('/content/areas.json').then(d => {
+    if (!d) return;
+    const grid = document.querySelector('.areas-grid');
+    if (grid && Array.isArray(d.tiles)) {
+      grid.innerHTML = d.tiles.map((t, i) => `
+        <a class="area-tile interactive reveal${i ? ' delay-' + Math.min(i * 100, 300) : ''}" href="${esc(t.link)}" target="_blank" rel="noopener">
+          <div class="area-bg" style="background-image:url('${esc(t.image)}')"></div>
+          <div class="area-label"><h3 class="serif">${esc(t.name)}</h3><span>${esc(t.blurb)}</span></div>
+        </a>`).join('');
+      reobserveReveals(grid);
+    }
+    const mapBtn = document.querySelector('.areas-map-cta a');
+    if (mapBtn && d.map_link) mapBtn.href = d.map_link;
+  });
+
+  // --- Trust points + optional real testimonials ---
+  get('/content/trust.json').then(d => {
+    if (!d) return;
+    const stage = document.querySelector('.trust-stage'); if (!stage) return;
+    const h2 = stage.querySelector('h2');
+    if (h2 && d.heading) {
+      const words = d.heading.trim().split(/\s+/);
+      const last = words.pop();
+      h2.innerHTML = `${esc(words.join(' '))} <span class="amp-script gold">${esc(last)}</span>`;
+    }
+    const grid = stage.querySelector('.trust-grid');
+    if (grid && Array.isArray(d.items)) {
+      grid.innerHTML = d.items.map(it => `
+        <div class="trust-item">
+          <div class="trust-icon" aria-hidden="true">${esc(it.icon || '')}</div>
+          <h4>${esc(it.title)}</h4>
+          <p>${esc(it.body)}</p>
+        </div>`).join('');
+    }
+    // Only render testimonials once real ones are added in the CMS.
+    const existing = stage.querySelector('.trust-quotes');
+    if (existing) existing.remove();
+    if (Array.isArray(d.testimonials) && d.testimonials.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'trust-quotes';
+      wrap.innerHTML = d.testimonials.map(t => `
+        <figure class="trust-quote">
+          <blockquote>${esc(t.quote)}</blockquote>
+          <figcaption>— ${esc(t.author)}</figcaption>
+        </figure>`).join('');
+      stage.appendChild(wrap);
+    }
+  });
+
+  function setTextIn(root, sel, val) { const el = root.querySelector(sel); if (el && val) el.textContent = val; }
+  function formatPhone(p) {
+    const d = String(p).replace(/\D/g, '');
+    return d.length === 10 ? `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}` : p;
+  }
+  function reobserveReveals(root) {
+    root.querySelectorAll('.reveal').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('active');
+      else revealObserver.observe(el);
+    });
+  }
+})();
+
+// Rebuild the hero slideshow after CMS slides replace the markup.
+function rebuildHeroSlides() {
+  const newSlides = Array.from(document.querySelectorAll('.hero-slide'));
+  const dotsWrap = document.getElementById('heroDots');
+  if (!newSlides.length || !dotsWrap) return;
+  slides.length = 0; newSlides.forEach(s => slides.push(s));
+  dotsWrap.innerHTML = '';
+  newSlides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'hero-dot interactive' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.onclick = () => { setSlide(i); restartSlideTimer(); };
+    dotsWrap.appendChild(d);
+  });
+  heroDots.length = 0;
+  Array.from(dotsWrap.children).forEach(d => heroDots.push(d));
+  slideIdx = 0;
+  restartSlideTimer();
 }

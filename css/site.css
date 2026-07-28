@@ -751,3 +751,9 @@ body.cursor-on :focus-visible { outline: 2px solid var(--gold); }
   .calc-card { padding: 1.8rem 1.4rem; }
   .trust-stage { padding: 2.4rem 1.5rem; }
 }
+
+/* ---------- Real testimonials (appear only when added in the CMS) ---------- */
+.trust-quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.4rem; margin-top: 2.6rem; padding-top: 2.4rem; border-top: 1px solid var(--glass-border); }
+.trust-quote { margin: 0; text-align: left; padding: 1.4rem; }
+.trust-quote blockquote { margin: 0 0 .8rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.6; color: var(--champagne); }
+.trust-quote figcaption { font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }

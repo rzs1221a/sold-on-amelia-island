@@ -1,0 +1,12 @@
+{
+  "names_line": "Kelly & Will are",
+  "headline_line_1": "Sold on",
+  "headline_line_2": "Amelia Island",
+  "tagline": "The Spouses Who Sell Houses · Berkshire Hathaway HomeServices Heymann Williams Realty",
+  "slides": [
+    { "image": "/assets/img/hero-1.jpg", "alt": "Coastal home with pool at dusk" },
+    { "image": "/assets/img/hero-2.jpg", "alt": "Bright modern coastal interior" },
+    { "image": "/assets/img/hero-3.jpg", "alt": "Sunrise over the Atlantic shoreline" },
+    { "image": "/assets/img/hero-4.jpg", "alt": "Aerial view of turquoise surf and beach" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "kelly": {
+    "name": "Kelly Marine",
+    "role": "Buyer Specialist",
+    "script": "Navigating the real estate waters",
+    "bio": "Kelly turns wish lists into keys-in-hand. From first call to closing table, she curates every showing, negotiates fiercely, and knows which street catches the sunrise — because she lives here too.",
+    "phone": "6786770858",
+    "email": "KellyMarineRealtor@gmail.com",
+    "photo": ""
+  },
+  "will": {
+    "name": "Will Henderson",
+    "role": "Listing Specialist",
+    "script": "Every home has a number. He finds the right one.",
+    "bio": "Will architects the sale: pricing strategy built on live island comps, cinematic marketing, and negotiation that protects every dollar of your equity. Data first, handshake always.",
+    "phone": "9043216689",
+    "email": "Will@HeymannWilliamsRealty.com",
+    "photo": ""
+  }
+}

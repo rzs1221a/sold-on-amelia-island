@@ -1,0 +1,21 @@
+{
+  "heading": "A team built around you",
+  "items": [
+    {
+      "icon": "\u2693",
+      "title": "Backed by Berkshire Hathaway",
+      "body": "The full marketing reach and trust of Berkshire Hathaway HomeServices Heymann Williams Realty, delivered by two agents who know every street."
+    },
+    {
+      "icon": "\ud83e\udd1d",
+      "title": "Both sides of the table",
+      "body": "Kelly represents buyers, Will represents sellers. Whichever move you're making, you have a dedicated specialist \u2014 never a part-timer."
+    },
+    {
+      "icon": "\ud83c\udfdd\ufe0f",
+      "title": "Local, full-time, all-in",
+      "body": "They live here, work here, and answer their own phones. Call or text and you reach Kelly or Will \u2014 not a call center."
+    }
+  ],
+  "testimonials": []
+}
