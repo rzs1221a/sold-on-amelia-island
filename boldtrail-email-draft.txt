@@ -1,0 +1,28 @@
+Subject: External website integration — listings widget & lead API
+
+Hi,
+
+We run a BoldTrail site at ameliaisland.heymannwilliams.com for Berkshire Hathaway
+HomeServices Heymann Williams Realty. We've built an additional site for two of our
+agents, Kelly Marine and Will Henderson, at soldonameliaisland.com, and need two things:
+
+1) LIVE LISTINGS
+   - Can you provide an embeddable listings/IDX widget (script or iframe snippet)
+     for use on an external site?
+   - Can it be filtered to show only our own team's active listings?
+   - Does soldonameliaisland.com need to be whitelisted for it to render?
+   - If no embeddable widget is available on our plan, what's required to get an
+     IDX feed for an external domain (credentials, MLS application, added cost)?
+
+2) LEAD CAPTURE API
+   - Do you offer an API endpoint or webhook to post leads from an external site
+     directly into BoldTrail?
+   - How is an incoming lead assigned to a specific agent? Which field controls
+     it (agent_id, agent_email, or something else), and where do we find each
+     agent's BoldTrail ID?
+   - Alternatively, is there a lead-parser email address per agent we could use
+     instead? If so, please send Kelly's and Will's.
+   - Any rate limits or IP whitelisting requirements we should know about?
+
+Thanks,
+[Your name]
