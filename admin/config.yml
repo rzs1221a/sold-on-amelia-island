@@ -5,9 +5,9 @@ backend:
 media_folder: "assets/img/uploads"
 public_folder: "/assets/img/uploads"
 
-site_url: https://soldonameliaisland.com
-display_url: https://soldonameliaisland.com
-logo_url: https://soldonameliaisland.com/assets/apple-touch-icon.png
+site_url: https://soldonameliaisland.netlify.app
+display_url: https://soldonameliaisland.netlify.app
+logo_url: https://soldonameliaisland.netlify.app/assets/apple-touch-icon.png
 
 publish_mode: simple
 
