@@ -43,6 +43,10 @@ for = "/*"
   X-Content-Type-Options = "nosniff"
   Referrer-Policy = "strict-origin-when-cross-origin"
   Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+  # PRE-LAUNCH: strongest de-indexing signal — applies to every response,
+  # including assets and any crawler that ignores robots.txt. Delete this
+  # line to go public.
+  X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
 [[headers]]
 for = "/assets/*"

@@ -1,4 +1,9 @@
-User-agent: *
-Allow: /
+# PRE-LAUNCH: site is reachable by direct link but asks all crawlers to stay out.
+# To go public: replace the block below with "User-agent: *" / "Allow: /" and
+# restore the Sitemap line, then remove the X-Robots-Tag header in netlify.toml
+# and set the robots meta tag in index.html back to "index, follow".
 
-Sitemap: https://soldonameliaisland.com/sitemap.xml
+User-agent: *
+Disallow: /
+
+# Sitemap: https://soldonameliaisland.com/sitemap.xml
