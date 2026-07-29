@@ -5,9 +5,11 @@ backend:
 media_folder: "assets/img/uploads"
 public_folder: "/assets/img/uploads"
 
-site_url: https://soldonameliaisland.netlify.app
-display_url: https://soldonameliaisland.netlify.app
-logo_url: https://soldonameliaisland.netlify.app/assets/apple-touch-icon.png
+site_url: https://soldonameliaisland.com
+display_url: https://soldonameliaisland.com
+# Relative so the editor logo resolves on whatever host /admin is served from
+# (netlify.app, custom domain, or a deploy preview) instead of hard-coding one.
+logo_url: /assets/apple-touch-icon.png
 
 publish_mode: simple
 
