@@ -757,3 +757,26 @@ body.cursor-on :focus-visible { outline: 2px solid var(--gold); }
 .trust-quote { margin: 0; text-align: left; padding: 1.4rem; }
 .trust-quote blockquote { margin: 0 0 .8rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.6; color: var(--champagne); }
 .trust-quote figcaption { font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+
+/* ---------- Lead form: split name row + TCPA consent ---------- */
+.flow-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+@media (max-width: 480px) { .flow-field-row { grid-template-columns: 1fr; gap: 0; } }
+
+.flow-consent-check {
+  display: flex; align-items: flex-start; gap: .7rem;
+  margin: 1rem 0 1.4rem; padding: .9rem 1rem;
+  border: 1px solid var(--glass-border); border-radius: 1rem;
+  background: rgba(255,255,255,.03);
+  font-size: .72rem; line-height: 1.65; color: var(--ink-soft);
+  cursor: pointer; transition: border-color .3s, background .3s;
+}
+.flow-consent-check:hover { border-color: rgba(212,175,55,.35); }
+.flow-consent-check input[type="checkbox"] {
+  flex-shrink: 0; width: 18px; height: 18px; margin-top: .15rem;
+  accent-color: var(--gold); cursor: pointer;
+}
+.flow-consent-check.error {
+  border-color: var(--cabernet-bright);
+  background: rgba(138,23,59,.12);
+  animation: shake .4s;
+}

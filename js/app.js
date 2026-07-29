@@ -497,17 +497,35 @@ function renderContact() {
         ? 'Kelly will personally send handpicked matches and set up your search.'
         : 'Will will prepare your personalized market analysis and follow up.'}</p>
       <div class="flow-form">
-        <div class="flow-field"><label for="leadName">Full Name</label><input id="leadName" autocomplete="name" placeholder="Jane Doe"></div>
+        <div class="flow-field-row">
+          <div class="flow-field"><label for="leadFirstName">First Name</label><input id="leadFirstName" autocomplete="given-name" placeholder="Jane"></div>
+          <div class="flow-field"><label for="leadLastName">Last Name</label><input id="leadLastName" autocomplete="family-name" placeholder="Doe"></div>
+        </div>
         <div class="flow-field"><label for="leadEmail">Email</label><input id="leadEmail" type="email" autocomplete="email" placeholder="jane@example.com"></div>
         <div class="flow-field"><label for="leadPhone">Phone</label><input id="leadPhone" type="tel" autocomplete="tel" placeholder="(904) 555-0123"></div>
-        <p class="flow-consent">By continuing you agree that ${route.agent} may contact you about your ${isBuyer ? 'home search' : 'home valuation'}. No spam — ever.</p>
+        <label class="flow-consent-check" for="leadConsent">
+          <input type="checkbox" id="leadConsent">
+          <span id="leadConsentText">${consentLanguage(route.agent, isBuyer)}</span>
+        </label>
         <button class="btn-gold interactive" style="width:100%" onclick="submitContact()">${isBuyer ? 'Send to Kelly' : 'Send to Will'}</button>
         <div style="text-align:center"><span class="flow-route-note">Routes directly to ${route.agent.split(' ')[0]}'s BHHS Connect</span></div>
       </div>
       <div class="flow-nav"><button class="flow-back interactive" onclick="flowBack()">← Back</button></div>
     </div>`;
-  const nameInput = document.getElementById('leadName');
+  const nameInput = document.getElementById('leadFirstName');
   setTimeout(() => { if (nameInput) nameInput.focus(); }, 350);
+}
+
+/**
+ * Exact consent language shown to the visitor. Stored verbatim alongside the
+ * submission — if consent is ever questioned, the record must show precisely
+ * what was agreed to, not a paraphrase.
+ */
+function consentLanguage(agentName, isBuyer) {
+  return `I agree that ${agentName} may contact me about my ` +
+    `${isBuyer ? 'home search' : 'home valuation'} by phone, text, or email, ` +
+    `including automated messages. Consent is not a condition of purchase. ` +
+    `Message and data rates may apply.`;
 }
 
 function validateField(id, test) {
@@ -518,31 +536,93 @@ function validateField(id, test) {
 }
 
 async function submitContact() {
-  const okName = validateField('leadName', v => v.length > 1);
+  const okFirst = validateField('leadFirstName', v => v.length > 0);
+  const okLast = validateField('leadLastName', v => v.length > 0);
   const okEmail = validateField('leadEmail', v => /.+@.+\..+/.test(v));
   const okPhone = validateField('leadPhone', v => v.replace(/\D/g, '').length >= 7);
-  if (!okName || !okEmail || !okPhone) return;
+
+  // TCPA: consent is required and must be an affirmative action. Never
+  // pre-checked, and submission is blocked without it.
+  const consentEl = document.getElementById('leadConsent');
+  const okConsent = !!(consentEl && consentEl.checked);
+  if (!okConsent && consentEl) {
+    const wrap = consentEl.closest('.flow-consent-check');
+    if (wrap) { wrap.classList.add('error'); setTimeout(() => wrap.classList.remove('error'), 900); }
+  }
+  if (!okFirst || !okLast || !okEmail || !okPhone || !okConsent) return;
 
   const a = flow.answers;
-  a.name = document.getElementById('leadName').value.trim();
+  a.firstName = document.getElementById('leadFirstName').value.trim();
+  a.lastName = document.getElementById('leadLastName').value.trim();
+  a.name = `${a.firstName} ${a.lastName}`;
   a.email = document.getElementById('leadEmail').value.trim();
   a.phone = document.getElementById('leadPhone').value.trim();
 
-  // Map to the Netlify form field names for a clean CRM email.
-  const lead = flow.type === 'buyer'
+  const isBuyer = flow.type === 'buyer';
+
+  // 1) Netlify Forms — durable capture plus the agent's own notification, which
+  //    carries the full questionnaire the CRM dropbox has no fields for.
+  const lead = isBuyer
     ? { name: a.name, email: a.email, phone: a.phone, vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
     : { name: a.name, email: a.email, phone: a.phone, address: a.address, property_type: a.ptype, timeline: a.timeline };
   submitLead(flow.type, lead);
-  // Also push straight into BoldTrail when its API is configured (see js/boldtrail.js).
-  if (typeof pushLeadToBoldTrail === 'function') pushLeadToBoldTrail(flow.type, lead);
 
-  await showLoading(flow.type === 'buyer'
+  // 2) BoldTrail Lead Dropbox via the server function, which creates the CRM
+  //    contact. Kept separate from (1) on purpose: if the dropbox parse or the
+  //    send fails, the lead still reached the agent through Netlify.
+  const context = {};
+  Object.entries(isBuyer
+    ? { vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
+    : { propertyType: a.ptype, timeline: a.timeline }
+  ).forEach(([k, v]) => { const s = flatten(v); if (s) context[k] = s; });
+
+  postLeadToDropbox({
+    firstName: a.firstName,
+    lastName: a.lastName,
+    email: a.email,
+    phone: a.phone,
+    dealType: isBuyer ? 'Buyer' : 'Seller',
+    sellerAddress: isBuyer ? '' : flatten(a.address),
+    consent: true,
+    consentText: document.getElementById('leadConsentText')?.textContent?.trim() || '',
+    consentTimestamp: new Date().toISOString(),
+    sourceUrl: window.location.href,
+    context,
+    honeypot: ''
+  });
+
+  await showLoading(isBuyer
     ? ['Saving your search…', 'Sending it to Kelly…', 'Getting you set up…']
     : ['Saving your details…', 'Sending them to Will…', 'Getting your analysis started…']);
 
-  if (flow.type === 'buyer') renderBuyerPortal();
+  if (isBuyer) renderBuyerPortal();
   else renderSellerReveal();
   sprinkleSparkles();
+}
+
+/**
+ * Send the lead to the server function that writes it into BoldTrail.
+ *
+ * Deliberately does not block the confirmation screen: the visitor has already
+ * been captured by (1) above, so a CRM hiccup should never look like a failed
+ * submission to them. The correlation ID is logged so any missing contact can
+ * be traced to an exact payload server-side.
+ */
+async function postLeadToDropbox(payload) {
+  try {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.correlationId) {
+      console.info('[SoldOnAmeliaIsland] lead ref', data.correlationId, res.ok ? '(delivered)' : '(recorded, delivery issue)');
+    }
+    if (!res.ok) console.warn('[SoldOnAmeliaIsland] CRM delivery reported a problem:', data.error || res.status);
+  } catch (err) {
+    console.warn('[SoldOnAmeliaIsland] CRM delivery could not be reached:', err);
+  }
 }
 
 function showLoading(lines) {

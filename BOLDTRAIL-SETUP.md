@@ -50,45 +50,89 @@ in that case keep the lifestyle link cards, which always show live inventory.
 
 ---
 
-## 2. Leads posting directly into BoldTrail CRM
+## 2. Leads into BoldTrail CRM — Lead Dropbox (BUILT)
 
-**This is the chosen path — no API integration needed.** BHHS Connect
-(kvCORE/BoldTrail) already gives every agent their own lead-capture email — in the
-app under **Lead Engine Tools & Features → Web & IDX → Leads Sync**, switch the
-"Agent" search field at top from your own name to **Kelly Marine**, copy her
-`EMAIL` value, then repeat for **Will Henderson**. Send both addresses over.
+BoldTrail's Lead Dropbox is an **email parser**, not an API. Send a correctly
+formatted plain-text email to an agent-scoped address and it creates a contact
+owned by that agent (`Source: Email`, `Status: NEW LEAD`).
 
-Those two addresses go straight into Netlify's form notifications (`buyer-lead` →
-Kelly's, `seller-lead` → Will's). Zero code, works the same day, and leads land in
-BHHS Connect correctly assigned to the right agent — this isn't a workaround, it's
-the real integration.
+Implemented in **`netlify/functions/lead-submit.ts`**, exposed at **`/api/leads`**.
 
-### Where it goes
+### The format is exact — and failure is silent
 
-Netlify dashboard only, no file changes: **Forms → (select `buyer-lead`) →
-Settings & usage → add a notification → email → Kelly's address.** Repeat for
-`seller-lead` → Will's address.
+This is the part that cost hours of debugging. A malformed message is **discarded
+with no bounce and no error**; the send still reports success. Netlify's default
+form-notification email does *not* parse, which is why early tests vanished.
 
-<details>
-<summary>Later, if ever: a direct API integration</summary>
+| Requirement | Value |
+|---|---|
+| Subject | exactly `Add Contact` — no prefix, suffix, or reply marker |
+| Body | plain text only; an HTML wrapper breaks the line-based parse |
+| Fields | one per line, `Field Name: value` |
+| Extras | no signature, footer, tracking pixel, or quoted reply |
 
-BHHS Connect also exposes a Zapier Key (for Zapier's pre-built BoldTrail "Create
-Lead" action — no API docs needed) and a raw bearer API token (My API Tokens panel,
-bottom-right of that same screen) for a closer, no-middleman integration. Both are
-more setup than the email path above for no functional difference today, so this is
-parked unless a real need shows up later (e.g. wanting lead data back out of
-BoldTrail, or higher submission volume than email parsing handles comfortably).
+Known fields (**verify against the live account before trusting this list** —
+Lead Engine → Lead Dropbox → Email Import Template; the public help article
+renders incompletely, the in-account template wins):
 
-If picked up later, the raw token alone isn't enough to build against — it
-authenticates a request but doesn't say what the request looks like. Needed first:
-the base API URL, the create-contact endpoint + method, the auth header format, an
-example payload, and — the important one — whether agent assignment comes from
-*whose login generated the token* (each agent would need their own) or from a field
-like `agent_id` in the request body (in which case, ask BoldTrail support where to
-find each agent's ID). `js/boldtrail.js` already has the `lead: { endpoint, apiKey,
-agentIdField, agentIds }` block waiting for these values.
+```
+First Name:  Last Name:  Email:  Phone:  Deal Type:  Seller Address:
+```
 
-</details>
+Only these are sent. The questionnaire answers (budget, areas, timeline…) have no
+matching parser field, so they are deliberately **excluded** from the dropbox
+message — an unknown line risks silently voiding the whole lead. They're kept in
+the durable log and reach the agent through the Netlify notification instead.
+
+### Environment variables
+
+Set in Netlify → Project configuration → Environment variables (see `.env.example`):
+
+| Variable | Purpose |
+|---|---|
+| `BOLDTRAIL_DROPBOX_EMAIL_BUYER` | Kelly's agent-scoped dropbox — buyer leads |
+| `BOLDTRAIL_DROPBOX_EMAIL_SELLER` | Will's agent-scoped dropbox — seller leads |
+| `RESEND_API_KEY` | Transport |
+| `LEAD_FROM_EMAIL` | Verified sender, e.g. `leads@soldonameliaisland.com` |
+
+**The dropbox addresses are unauthenticated write credentials.** Anyone holding one
+can inject contacts into the live CRM — no sender check, no key, no signature.
+Server-side env only; never in the client bundle, never committed. If one leaks,
+rotate via Lead Engine → Lead Dropbox.
+
+> Resend requires the sending domain to be verified (DNS records) before it will
+> deliver to an outside address. Do that first or every send fails.
+
+### Safeguards built in
+
+- **Consent (TCPA)** — required, never pre-checked, blocks submit. The exact
+  language shown, an ISO-8601 timestamp, and the source URL are stored with every
+  submission. Nothing is sent unless consent is `true`.
+- **Field-injection guard** — any value containing a line break is rejected
+  outright. Without this, a newline could forge extra fields or a second contact.
+- **Honeypot** — populated ⇒ HTTP 200 and silently dropped, so bots get no signal.
+- **Rate limit** — 5 per IP per 10 minutes, backed by Netlify Blobs so it survives
+  cold starts. Hashed IPs only. *Degrades open:* if Blobs isn't available the
+  function logs `rate limit check failed` and allows the request — grep function
+  logs for that string after deploy to confirm the limiter is actually live.
+- **Traceability** — every submission is persisted to the `leads` blob store under
+  a correlation ID with the exact payload and delivery result. Because the parser
+  fails silently, a "sent" is never treated as proof of capture: if a contact is
+  missing, look up its correlation ID to see exactly what was transmitted.
+
+### Two independent paths (by design)
+
+1. `/api/leads` → Lead Dropbox → creates the **CRM contact**
+2. Netlify Forms → email notification → gives the **agent full questionnaire context**
+
+They're deliberately decoupled: if the dropbox parse or the send fails, the lead
+still reached the agent.
+
+> **Action needed:** the `buyer-lead` / `seller-lead` Netlify notifications
+> currently point at the kvCORE dropbox addresses, which never parsed. Repoint them
+> to the agents' own inboxes (`KellyMarineRealtor@gmail.com`,
+> `Will@HeymannWilliamsRealty.com`) so path 2 delivers the rich context while path 1
+> handles the CRM.
 
 ---
 

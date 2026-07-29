@@ -1,6 +1,19 @@
 [build]
 publish = "/"
 
+# Lead ingestion runs as a function. Dependencies (zod / resend / blobs) are
+# installed from package.json at deploy time; the site itself stays build-free.
+[functions]
+directory = "netlify/functions"
+node_bundler = "esbuild"
+
+# Friendly path for the lead endpoint.
+[[redirects]]
+from = "/api/leads"
+to = "/.netlify/functions/lead-submit"
+status = 200
+force = true
+
 # Proxy BoldTrail property-alert email links through to the BoldTrail-served
 # host so they resolve on this domain instead of 404ing. These must stay
 # above any future catch-all redirect since Netlify matches top-down.
