@@ -1,9 +1,29 @@
 {
-  "kicker": "Fernandina Beach, Florida",
-  "title": "Ocean-View Living on S Fletcher",
-  "description": "The kind of property Kelly & Will love to place: an ocean-view home steps from the sand, with room to live, host, or invest. Whether you want a full-time coastal residence or an income-producing beach retreat, they'll help you find — and win — the right one.",
-  "image": "/assets/img/featured.jpg",
-  "badge": "Signature Listing",
-  "chips": ["Ocean View", "Steps to Sand", "Income Potential", "Investor-Friendly"],
-  "link": "https://ameliaisland.heymannwilliams.com/search"
+  "kicker": "Gated Oyster Bay · Fernandina Beach, Florida",
+  "title": "96133 Oyster Bay Drive",
+  "status": "For Sale",
+  "price": "$1,175,000",
+  "beds": "3",
+  "baths": "3",
+  "sqft": "3,250",
+  "mls": "2145358",
+  "description": "Luxury living in gated Oyster Bay. Twelve-foot ceilings and hickory floors run through a light-filled great room with gas fireplace, built-ins, and wet bar, opening to a chef's kitchen with quartz counters and an oversized island. Two first-floor ensuite bedrooms — including the primary suite — make it ideal for multigenerational living, and every bedroom has its own bath. Triple sliders lead to a screened lanai overlooking a fenced yard with fruit trees and peaceful lagoon views.",
+  "photos": [
+    { "image": "/assets/img/oyster-bay/01.jpg", "alt": "Front elevation of 96133 Oyster Bay Drive beneath mature oaks" },
+    { "image": "/assets/img/oyster-bay/05.jpg", "alt": "Great room with gas fireplace, built-ins, and sliders to the lanai" },
+    { "image": "/assets/img/oyster-bay/03.jpg", "alt": "Chef's kitchen with quartz counters and oversized island" },
+    { "image": "/assets/img/oyster-bay/04.jpg", "alt": "Kitchen island with seating and pendant lighting" },
+    { "image": "/assets/img/oyster-bay/06.jpg", "alt": "Kitchen with stainless appliances and walk-in pantry" },
+    { "image": "/assets/img/oyster-bay/12.jpg", "alt": "Primary suite with bay windows overlooking the backyard" },
+    { "image": "/assets/img/oyster-bay/13.jpg", "alt": "Primary bath with soaking tub and tiled walk-in shower" },
+    { "image": "/assets/img/oyster-bay/07.jpg", "alt": "Screened lanai overlooking the fenced backyard" },
+    { "image": "/assets/img/oyster-bay/09.jpg", "alt": "Formal dining room with hickory floors" },
+    { "image": "/assets/img/oyster-bay/11.jpg", "alt": "Wet bar with wine storage off the great room" },
+    { "image": "/assets/img/oyster-bay/08.jpg", "alt": "Entry foyer with stained-glass front door" },
+    { "image": "/assets/img/oyster-bay/02.jpg", "alt": "Aerial view of the Oyster Bay marina and lagoon" }
+  ],
+  "image": "",
+  "badge": "Featured Listing",
+  "chips": ["Gated Community", "Lagoon Views", "Built 2019", "0.41 Acre Lot", "Every Bedroom Ensuite"],
+  "link": "https://www.bhhsheymannwilliams.com/fl/96133-oyster-bay-drive-fernandina-beach-32034/pid-432753106"
 }

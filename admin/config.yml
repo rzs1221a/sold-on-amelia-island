@@ -67,18 +67,32 @@ collections:
       - name: "featured"
         label: "Featured Property"
         file: "content/featured.json"
-        description: "The large highlighted property near the top of the page."
+        description: "The large highlighted property near the top of the page. Leave price, beds, baths, sq ft or MLS blank and they simply won't appear."
         fields:
           - { name: kicker, label: "Location line", widget: string, hint: "Example: Fernandina Beach, Florida" }
-          - { name: title, label: "Property title", widget: string }
+          - { name: title, label: "Property title or address", widget: string, hint: "Example: 96133 Oyster Bay Drive" }
+          - { name: price, label: "Price", widget: string, required: false, hint: "Example: $749,000 — leave blank to hide" }
+          - { name: status, label: "Status", widget: string, required: false, hint: "Example: For Sale, Just Listed, Pending" }
+          - { name: beds, label: "Bedrooms", widget: string, required: false }
+          - { name: baths, label: "Bathrooms", widget: string, required: false }
+          - { name: sqft, label: "Square feet", widget: string, required: false, hint: "Example: 2,148" }
+          - { name: mls, label: "MLS number", widget: string, required: false }
           - { name: description, label: "Description", widget: text }
-          - { name: image, label: "Photo", widget: image }
-          - { name: badge, label: "Corner badge text", widget: string, default: "Signature Listing" }
+          - name: photos
+            label: "Photos — first one is the main image"
+            widget: list
+            required: false
+            summary: "{{fields.alt}}"
+            fields:
+              - { name: image, label: "Photo", widget: image }
+              - { name: alt, label: "Photo description (for accessibility)", widget: string }
+          - { name: image, label: "Single photo (used only if no photos are added above)", widget: image, required: false }
+          - { name: badge, label: "Corner badge text", widget: string, default: "Featured Listing" }
           - name: chips
             label: "Feature tags"
             widget: list
             field: { name: label, label: "Tag", widget: string }
-          - { name: link, label: "'See all listings' button link", widget: string, hint: "Usually your BoldTrail search page." }
+          - { name: link, label: "Button link", widget: string, hint: "The listing's own page, or your BoldTrail search." }
 
       - name: "listings"
         label: "Listing Cards"

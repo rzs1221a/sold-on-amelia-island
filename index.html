@@ -282,20 +282,26 @@
   <section class="featured" id="listings">
     <div class="featured-inner glass-dark reveal">
       <div class="featured-media">
-        <img src="./assets/img/featured.jpg" alt="Ocean-view coastal home on Amelia Island" width="1600" height="1067" loading="lazy" decoding="async">
-        <span class="featured-badge">Signature Listing</span>
+        <img src="./assets/img/oyster-bay/01.jpg" alt="Front elevation of 96133 Oyster Bay Drive beneath mature oaks" width="1600" height="1067" loading="lazy" decoding="async" id="featuredMainPhoto">
+        <span class="featured-badge">Featured Listing</span>
+        <!-- Thumbnail strip appears only when the listing has multiple photos. -->
+        <div class="featured-gallery" id="featuredGallery" hidden></div>
       </div>
       <div class="featured-body">
-        <span class="kicker">Fernandina Beach, Florida</span>
-        <h2 class="serif">Ocean-View Living on S Fletcher</h2>
-        <p class="featured-desc">The kind of property Kelly &amp; Will love to place: an ocean-view home steps from the sand, with room to live, host, or invest. Whether you want a full-time coastal residence or an income-producing beach retreat, they'll help you find — and win — the right one.</p>
+        <span class="kicker">Gated Oyster Bay · Fernandina Beach, Florida</span>
+        <h2 class="serif">96133 Oyster Bay Drive</h2>
+        <!-- Price and specs render only when the listing data supplies them. -->
+        <div class="featured-price" id="featuredPrice"><span class="featured-price-value">$1,175,000</span><span class="featured-status">For Sale</span></div>
+        <div class="featured-specs" id="featuredSpecs"><span>3 bd</span><span>3 ba</span><span>3,250 sqft</span></div>
+        <p class="featured-desc">Luxury living in gated Oyster Bay. Twelve-foot ceilings and hickory floors run through a light-filled great room with gas fireplace, built-ins, and wet bar, opening to a chef's kitchen with quartz counters and an oversized island. Two first-floor ensuite bedrooms — including the primary suite — make it ideal for multigenerational living, and every bedroom has its own bath. Triple sliders lead to a screened lanai overlooking a fenced yard with fruit trees and peaceful lagoon views.</p>
         <div class="featured-chips">
-          <span>Ocean View</span><span>Steps to Sand</span><span>Income Potential</span><span>Investor-Friendly</span>
+          <span>Gated Community</span><span>Lagoon Views</span><span>Built 2019</span><span>0.41 Acre Lot</span><span>Every Bedroom Ensuite</span>
         </div>
         <div class="featured-ctas">
-          <button class="btn-gold interactive" onclick="openFlow('buyer', 'an ocean-view home near S Fletcher')">Ask Kelly About Homes Like This</button>
-          <a class="btn-outline interactive" href="https://ameliaisland.heymannwilliams.com/search" target="_blank" rel="noopener">See All Live Listings</a>
+          <button class="btn-gold interactive" id="featuredCta" onclick="openFlow('buyer', '96133 Oyster Bay Drive')">Schedule a Private Tour</button>
+          <a class="btn-outline interactive" href="https://www.bhhsheymannwilliams.com/fl/96133-oyster-bay-drive-fernandina-beach-32034/pid-432753106" target="_blank" rel="noopener">View Full Listing Details</a>
         </div>
+        <p class="featured-mls" id="featuredMls">MLS# 2145358</p>
       </div>
     </div>
 

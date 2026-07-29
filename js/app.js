@@ -827,13 +827,74 @@ function sprinkleSparkles() {
     setTextIn(sec, '.kicker', d.kicker);
     setTextIn(sec, 'h2', d.title);
     setTextIn(sec, '.featured-desc', d.description);
-    setTextIn(sec, '.featured-badge', d.badge);
-    const img = sec.querySelector('.featured-media img');
-    if (img && d.image) { img.src = d.image; img.alt = d.title || img.alt; }
+    setTextIn(sec, '.featured-badge', d.badge || d.status);
+
+    // Photos: `photos[]` is the real-listing gallery; `image` is the single-photo
+    // fallback so existing content keeps working untouched.
+    const gallery = Array.isArray(d.photos) && d.photos.length
+      ? d.photos
+      : (d.image ? [{ image: d.image, alt: d.title || '' }] : []);
+    const main = sec.querySelector('#featuredMainPhoto');
+    if (main && gallery.length) {
+      main.src = gallery[0].image;
+      main.alt = gallery[0].alt || d.title || main.alt;
+    }
+    const strip = sec.querySelector('#featuredGallery');
+    if (strip) {
+      if (gallery.length > 1) {
+        strip.innerHTML = gallery.map((ph, i) => `
+          <button class="featured-thumb${i === 0 ? ' active' : ''} interactive" type="button"
+            aria-label="View photo ${i + 1} of ${gallery.length}" data-src="${esc(ph.image)}" data-alt="${esc(ph.alt || '')}">
+            <img src="${esc(ph.image)}" alt="" loading="lazy" decoding="async">
+          </button>`).join('');
+        strip.hidden = false;
+        strip.querySelectorAll('.featured-thumb').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (main) { main.src = btn.dataset.src; main.alt = btn.dataset.alt || d.title || ''; }
+            strip.querySelectorAll('.featured-thumb').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+        });
+      } else {
+        strip.hidden = true;
+      }
+    }
+
+    // Price / specs / MLS render only when supplied — an empty value stays hidden
+    // rather than printing a blank or placeholder figure.
+    const priceEl = sec.querySelector('#featuredPrice');
+    if (priceEl) {
+      const bits = [d.price, d.status].filter(Boolean);
+      priceEl.innerHTML = d.price
+        ? `<span class="featured-price-value">${esc(d.price)}</span>` +
+          (d.status ? `<span class="featured-status">${esc(d.status)}</span>` : '')
+        : '';
+      priceEl.hidden = !bits.length;
+    }
+    const specsEl = sec.querySelector('#featuredSpecs');
+    if (specsEl) {
+      const specs = [
+        d.beds ? `${esc(d.beds)} bd` : null,
+        d.baths ? `${esc(d.baths)} ba` : null,
+        d.sqft ? `${esc(d.sqft)} sqft` : null
+      ].filter(Boolean);
+      specsEl.innerHTML = specs.map(s => `<span>${s}</span>`).join('');
+      specsEl.hidden = !specs.length;
+    }
+    const mlsEl = sec.querySelector('#featuredMls');
+    if (mlsEl) {
+      mlsEl.textContent = d.mls ? `MLS# ${d.mls}` : '';
+      mlsEl.hidden = !d.mls;
+    }
+
     const chips = sec.querySelector('.featured-chips');
     if (chips && Array.isArray(d.chips)) chips.innerHTML = d.chips.map(c => `<span>${esc(c)}</span>`).join('');
     const seeAll = sec.querySelector('.featured-ctas a');
     if (seeAll && d.link) seeAll.href = d.link;
+    // Seed the enquiry with whichever property is currently featured, so the
+    // CTA follows the listing without a second field to keep in sync.
+    const cta = sec.querySelector('#featuredCta');
+    if (cta && d.title) cta.setAttribute('onclick', `openFlow('buyer', ${JSON.stringify(d.title)})`);
   });
 
   // --- Listing cards ---
