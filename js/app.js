@@ -16,6 +16,7 @@ const LEAD_ROUTING = {
     agent: 'Will Henderson',
     initial: 'W',
     avatarClass: 'will',
+    photo: '/assets/img/will-henderson.jpg',
     title: 'Listing Specialist',
     phone: '9043216689',
     prettyPhone: '904-321-6689',
@@ -27,6 +28,7 @@ const LEAD_ROUTING = {
     agent: 'Kelly Marine',
     initial: 'K',
     avatarClass: 'kelly',
+    photo: '/assets/img/kelly-marine.jpg',
     title: 'Buyer Specialist',
     phone: '6786770858',
     prettyPhone: '678-677-0858',
@@ -249,32 +251,6 @@ function handleNewsletter(e) {
   return false;
 }
 
-/* ---------- Mortgage calculator ---------- */
-(function initCalculator() {
-  const price = document.getElementById('calcPrice');
-  if (!price) return;
-  const down = document.getElementById('calcDown');
-  const rate = document.getElementById('calcRate');
-  const term = document.getElementById('calcTerm');
-  const usd0 = n => '$' + Math.round(n).toLocaleString('en-US');
-  function update() {
-    const P = +price.value, dPct = +down.value, r = +rate.value, yrs = +term.value;
-    const downAmt = P * dPct / 100;
-    const loan = P - downAmt;
-    const i = (r / 100) / 12, n = yrs * 12;
-    const monthly = i === 0 ? loan / n : loan * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
-    document.getElementById('calcPriceOut').textContent = usd0(P);
-    document.getElementById('calcDownOut').textContent = dPct + '% · ' + usd0(downAmt);
-    document.getElementById('calcRateOut').textContent = r.toFixed(1) + '%';
-    document.getElementById('calcTermOut').textContent = yrs + ' years';
-    document.getElementById('calcLoan').textContent = usd0(loan);
-    document.getElementById('calcDownAmt').textContent = usd0(downAmt);
-    document.getElementById('calcMonthly').textContent = usd0(monthly);
-  }
-  [price, down, rate, term].forEach(el => el.addEventListener('input', update));
-  update();
-})();
-
 /* ==========================================================
    LEAD FLOW ENGINE
    Seller (Will): address+property → contact → valuation reveal
@@ -291,10 +267,11 @@ let flow = null; // { type, stepIndex, answers }
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+/* Three quick taps + contact — "as easy as ordering a pizza" (client ask). */
 const BUYER_STEPS = [
   {
     key: 'vision', kicker: 'Step 1 — The Vision',
-    title: 'Describe your dream home.',
+    title: 'What are you looking for?',
     sub: 'In your own words — Kelly reads every one of these personally.',
     render: a => `
       <div class="flow-input-row">
@@ -318,21 +295,7 @@ const BUYER_STEPS = [
     single: true
   },
   {
-    key: 'size', kicker: 'Step 3 — The Space',
-    title: 'How much room do you need?',
-    sub: 'Bedrooms, guests, hobbies — pick what fits.',
-    chips: ['1–2 bedrooms', '3 bedrooms', '4 bedrooms', '5+ bedrooms', 'Home office', 'Pool', 'Garage / workshop', 'Big yard'],
-    single: false
-  },
-  {
-    key: 'areas', kicker: 'Step 4 — The Place',
-    title: 'Where do you see yourself?',
-    sub: 'Choose as many as you like.',
-    chips: ['Amelia Island', 'Fernandina Beach', 'Historic Downtown', 'Amelia Island Plantation', 'Yulee / Wildlight', 'Nassau County'],
-    single: false
-  },
-  {
-    key: 'timeline', kicker: 'Step 5 — The Timing',
+    key: 'timeline', kicker: 'Step 3 — The Timing',
     title: 'When would you like keys in hand?',
     sub: 'No pressure — this just helps Kelly pace the search.',
     chips: ['ASAP', '1–3 months', '3–6 months', '6–12 months', 'Just exploring'],
@@ -381,7 +344,9 @@ function openFlow(type, seed) {
   if (seed) flow.answers.vision = type === 'buyer' ? `I'm interested in ${seed}` : seed;
 
   agentChip.innerHTML = `
-    <div class="avatar ${route.avatarClass}">${route.initial}</div>
+    <div class="avatar ${route.avatarClass}">${route.photo
+      ? `<img src="${route.photo}" alt="${esc(route.agent)}" width="46" height="46">`
+      : route.initial}</div>
     <div class="meta"><strong>${route.agent}</strong><span>${route.title} · ${route.prettyPhone}</span></div>`;
   textLink.href = 'sms:' + route.phone;
   textLink.textContent = 'Text ' + route.agent.split(' ')[0] + ' Live';
@@ -564,7 +529,7 @@ async function submitContact() {
   // 1) Netlify Forms — durable capture plus the agent's own notification, which
   //    carries the full questionnaire the CRM dropbox has no fields for.
   const lead = isBuyer
-    ? { name: a.name, email: a.email, phone: a.phone, vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
+    ? { name: a.name, email: a.email, phone: a.phone, vision: a.vision, budget: a.budget, timeline: a.timeline }
     : { name: a.name, email: a.email, phone: a.phone, address: a.address, property_type: a.ptype, timeline: a.timeline };
   submitLead(flow.type, lead);
 
@@ -573,7 +538,7 @@ async function submitContact() {
   //    send fails, the lead still reached the agent through Netlify.
   const context = {};
   Object.entries(isBuyer
-    ? { vision: a.vision, budget: a.budget, preferences: a.size, areas: a.areas, timeline: a.timeline }
+    ? { vision: a.vision, budget: a.budget, timeline: a.timeline }
     : { propertyType: a.ptype, timeline: a.timeline }
   ).forEach(([k, v]) => { const s = flatten(v); if (s) context[k] = s; });
 
@@ -928,6 +893,24 @@ function sprinkleSparkles() {
         <p>${esc(e.detail)}</p>
       </div>`).join('');
     reobserveReveals(rail);
+  });
+
+  // --- Newsletter CTA block ---
+  get('/content/newsletter.json').then(d => {
+    if (!d) return;
+    setText('#newsCtaHeading', d.heading);
+    setText('#newsCtaSub', d.sub);
+    const btn = document.getElementById('newsCtaButton');
+    if (btn) {
+      if (d.button_label) btn.textContent = d.button_label;
+      if (d.link) {
+        btn.href = d.link;
+        // External newsletter links open in a new tab; in-page anchors don't.
+        const external = /^https?:\/\//i.test(d.link);
+        if (external) { btn.target = '_blank'; btn.rel = 'noopener'; }
+        else { btn.removeAttribute('target'); btn.removeAttribute('rel'); }
+      }
+    }
   });
 
   // --- Neighborhood tiles ---

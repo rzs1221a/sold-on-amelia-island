@@ -99,7 +99,7 @@ collections:
       - name: "listings"
         label: "Listing Cards"
         file: "content/listings.json"
-        description: "The three cards under 'Explore Live Island Listings'. Each links to a search on your BoldTrail site."
+        description: "The three cards under 'Explore Listings'. Each links to a search on your BoldTrail site."
         fields:
           - name: cards
             label: "Cards"
@@ -111,6 +111,16 @@ collections:
               - { name: subtitle, label: "Subtitle / area", widget: string }
               - { name: image, label: "Photo", widget: image }
               - { name: link, label: "Link (BoldTrail search URL)", widget: string }
+
+      - name: "newsletter"
+        label: "Newsletter Button"
+        file: "content/newsletter.json"
+        description: "The 'Check Out Our Recent Newsletter' section. Paste the link to your latest newsletter - until then the button scrolls to the signup box."
+        fields:
+          - { name: heading, label: "Heading", widget: string }
+          - { name: sub, label: "Line under the heading", widget: string }
+          - { name: button_label, label: "Button text", widget: string }
+          - { name: link, label: "Button link (URL of your latest newsletter)", widget: string, hint: "Example: https://mailchi.mp/... - leave as #newsletter to scroll to the signup box." }
 
       - name: "events"
         label: "Around Town Events"

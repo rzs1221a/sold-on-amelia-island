@@ -57,8 +57,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 #preloader.done { opacity: 0; visibility: hidden; }
 .preloader-inner { text-align: center; animation: preloaderIn 1s var(--ease-ios); }
-.preloader-monogram { font-size: 4rem; letter-spacing: .05em; color: var(--pearl); }
-.preloader-monogram .amp { color: var(--fern); font-style: italic; font-size: 2.6rem; }
+.preloader-wordmark { font-family: 'Italiana', 'Playfair Display', serif; font-size: clamp(1.9rem, 6vw, 2.8rem); letter-spacing: .08em; text-transform: uppercase; color: var(--pearl); }
 .preloader-wave { width: 120px; margin: .6rem auto; color: var(--fern); }
 .preloader-wave path { stroke-dasharray: 200; stroke-dashoffset: 200; animation: waveDraw 1.6s var(--ease-ios) forwards .2s; }
 .preloader-sub { font-size: .65rem; letter-spacing: .4em; text-transform: uppercase; color: var(--ink-faint); }
@@ -147,15 +146,6 @@ nav#navbar.scrolled {
 }
 .nav-inner { max-width: 1700px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; gap: 1.5rem; }
 .nav-brand { display: flex; align-items: center; gap: .85rem; flex-shrink: 0; }
-.nav-monogram {
-  width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--cabernet), var(--cabernet-bright));
-  border: 1px solid rgba(138,169,84,.4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; font-weight: 700; color: var(--sky);
-  box-shadow: 0 8px 20px var(--cabernet-glow);
-}
-.nav-monogram span { color: var(--fern); font-style: italic; font-size: .85rem; margin: 0 1px; }
 .nav-brand-text { display: flex; flex-direction: column; line-height: 1.25; }
 .nav-brand-text strong { font-family: 'Italiana', 'Playfair Display', serif; font-size: .98rem; font-weight: 400; letter-spacing: .1em; }
 .nav-brand-text span { font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--fern); }
@@ -257,6 +247,7 @@ nav#navbar.scrolled {
 }
 .hero-card-avatar.kelly { background: radial-gradient(circle at 30% 30%, var(--cabernet-bright), var(--cabernet)); }
 .hero-card-avatar.will { background: radial-gradient(circle at 30% 30%, #23415e, #131f30); }
+.hero-card-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .hero-card-body { display: flex; flex-direction: column; gap: .15rem; flex: 1; min-width: 0; }
 .hero-card-kicker { font-size: .6rem; font-weight: 800; letter-spacing: .26em; text-transform: uppercase; color: var(--fern); }
 .hero-card-title { font-size: 1.45rem; line-height: 1.15; }
@@ -479,6 +470,7 @@ nav#navbar.scrolled {
 }
 .flow-agent-chip .avatar.kelly { background: radial-gradient(circle at 30% 30%, var(--cabernet-bright), var(--cabernet)); }
 .flow-agent-chip .avatar.will { background: radial-gradient(circle at 30% 30%, #23415e, #131f30); }
+.flow-agent-chip .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .flow-agent-chip .meta { display: flex; flex-direction: column; line-height: 1.3; }
 .flow-agent-chip .meta strong { font-size: .82rem; }
 .flow-agent-chip .meta span { font-size: .58rem; letter-spacing: .22em; text-transform: uppercase; color: var(--fern); }
@@ -673,39 +665,10 @@ nav#navbar.scrolled {
 /* Stat value props now hold words, not numbers */
 .stat-num { line-height: 1.05; }
 
-/* ---------- Mortgage calculator ---------- */
-.calc { padding: 5rem 2rem 6rem; max-width: 1200px; margin: 0 auto; }
-.calc-card { display: grid; grid-template-columns: 1.25fr 1fr; gap: 2.4rem; padding: 2.8rem; }
-.calc-controls { display: flex; flex-direction: column; gap: 1.8rem; }
-.calc-field label {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
-  font-size: .62rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--fern); margin-bottom: .8rem;
-}
-.calc-field output { font-family: 'Playfair Display', serif; font-style: italic; font-size: .95rem; letter-spacing: 0; text-transform: none; color: var(--sky); font-weight: 400; }
-.calc-field input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: 999px; background: rgba(255,255,255,.12); outline: none; }
-.calc-field input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
-  background: linear-gradient(120deg, var(--fern), #a9c778); cursor: pointer; border: 2px solid var(--night);
-  box-shadow: 0 4px 12px rgba(138,169,84,.4);
-}
-.calc-field input[type="range"]::-moz-range-thumb {
-  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--night);
-  background: linear-gradient(120deg, var(--fern), #a9c778); cursor: pointer; box-shadow: 0 4px 12px rgba(138,169,84,.4);
-}
-.calc-result {
-  display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center;
-  gap: .5rem; padding: 2rem 1.6rem; border-radius: 1.3rem;
-  background: linear-gradient(160deg, rgba(103,0,56,.35), rgba(11,7,16,.25));
-  border: 1px solid rgba(138,169,84,.28);
-}
-.calc-result-label { font-size: .6rem; font-weight: 800; letter-spacing: .26em; text-transform: uppercase; color: var(--fern); }
-.calc-result-value { font-size: clamp(2.6rem, 6vw, 3.6rem); color: var(--sky); line-height: 1; font-variant-numeric: tabular-nums; }
-.calc-result-note { font-size: .74rem; color: var(--ink-faint); margin-bottom: .6rem; }
-.calc-breakdown { display: flex; gap: 1.6rem; margin: .4rem 0 1.4rem; }
-.calc-breakdown div { display: flex; flex-direction: column; gap: .2rem; }
-.calc-breakdown span { font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); }
-.calc-breakdown strong { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--pearl); font-variant-numeric: tabular-nums; }
+/* ---------- Newsletter CTA (The Coastal Edit) ---------- */
+.news-cta { padding: 5rem 2rem 6rem; max-width: 1200px; margin: 0 auto; text-align: center; }
+.news-cta-actions { display: flex; justify-content: center; }
+.btn-news { font-size: .8rem; padding: 1.2rem 2.8rem; }
 
 /* ---------- Trust panel ---------- */
 .trust { padding: 2rem 2rem 6rem; max-width: 1200px; margin: 0 auto; }
@@ -748,13 +711,11 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
 
 /* ---------- Responsive: new sections ---------- */
 @media (max-width: 900px) {
-  .calc-card { grid-template-columns: 1fr; gap: 1.8rem; }
   .trust-grid { grid-template-columns: 1fr; }
   .dash-steps { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .calc, .trust { padding-left: 1.2rem; padding-right: 1.2rem; }
-  .calc-card { padding: 1.8rem 1.4rem; }
   .trust-stage { padding: 2.4rem 1.5rem; }
 }
 

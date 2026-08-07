@@ -1,24 +1,24 @@
 {
   "cards": [
     {
-      "title": "Oceanfront & Beach",
-      "tag": "Oceanfront",
+      "title": "On Island",
+      "tag": "On Island",
       "subtitle": "Amelia Island · Fernandina Beach",
-      "image": "/assets/img/collect-1.jpg",
+      "image": "/assets/img/area-getmedia-17.jpg",
       "link": "https://ameliaisland.heymannwilliams.com/search"
     },
     {
-      "title": "Historic Downtown",
-      "tag": "Historic District",
-      "subtitle": "Centre Street & the Historic District",
-      "image": "/assets/img/collect-2.jpg",
-      "link": "https://ameliaisland.heymannwilliams.com/search"
-    },
-    {
-      "title": "Plantation & Golf",
-      "tag": "Plantation & Golf",
-      "subtitle": "Amelia Island Plantation · Marsh Creek",
+      "title": "Amelia Island Plantation",
+      "tag": "AIP",
+      "subtitle": "Omni Amelia Island · Golf & Club Communities",
       "image": "/assets/img/collect-3.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "title": "Nassau County",
+      "tag": "Nassau County",
+      "subtitle": "Yulee · Wildlight · Marsh & Acreage",
+      "image": "/assets/img/area-getmedia-06.jpg",
       "link": "https://ameliaisland.heymannwilliams.com/search"
     }
   ]
