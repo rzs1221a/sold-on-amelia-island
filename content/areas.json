@@ -1,9 +1,29 @@
 {
   "tiles": [
-    { "name": "Amelia Island", "blurb": "Resort & oceanfront living", "image": "/assets/img/area-1.jpg", "link": "https://ameliaisland.heymannwilliams.com/search" },
-    { "name": "Fernandina Beach", "blurb": "Historic charm, walkable downtown", "image": "/assets/img/area-2.jpg", "link": "https://ameliaisland.heymannwilliams.com/search" },
-    { "name": "Yulee & Wildlight", "blurb": "New construction & room to grow", "image": "/assets/img/area-3.jpg", "link": "https://ameliaisland.heymannwilliams.com/search" },
-    { "name": "Nassau County", "blurb": "Marsh views & quiet acreage", "image": "/assets/img/area-4.jpg", "link": "https://ameliaisland.heymannwilliams.com/search" }
+    {
+      "name": "Amelia Island",
+      "blurb": "Resort & oceanfront living",
+      "image": "/assets/img/area-img-2931.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "name": "Fernandina Beach",
+      "blurb": "Historic charm, walkable downtown",
+      "image": "/assets/img/area-amelia-ar-miles-stills-008a.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "name": "Yulee & Wildlight",
+      "blurb": "New construction & room to grow",
+      "image": "/assets/img/area-3.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    },
+    {
+      "name": "Nassau County",
+      "blurb": "Marsh views & quiet acreage",
+      "image": "/assets/img/area-getmedia-06.jpg",
+      "link": "https://ameliaisland.heymannwilliams.com/search"
+    }
   ],
   "map_link": "https://ameliaisland.heymannwilliams.com/search"
 }

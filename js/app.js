@@ -106,7 +106,7 @@ function resizeCanvas() {
       s: Math.random() * 2.2 + 0.4,
       op: Math.random() * 0.45 + 0.08,
       df: (Math.random() * 2.5 + 0.5) / 3,
-      gold: Math.random() < 0.12
+      fern: Math.random() < 0.12
     });
   }
 }
@@ -124,8 +124,8 @@ else (function animateMist() {
     else if (p.y > H + 20) { p.y = -20; }
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
-    ctx.fillStyle = p.gold
-      ? `rgba(212,175,55,${p.op})`
+    ctx.fillStyle = p.fern
+      ? `rgba(138,169,84,${p.op})`
       : `rgba(255,255,255,${p.op})`;
     ctx.fill();
   });
@@ -433,7 +433,7 @@ function renderStep() {
       ${body}
       <div class="flow-nav">
         ${flow.stepIndex > 0 ? '<button class="flow-back interactive" onclick="flowBack()">← Back</button>' : ''}
-        <button class="btn-gold btn-flow-next interactive" onclick="flowNext()">Continue</button>
+        <button class="btn-accent btn-flow-next interactive" onclick="flowNext()">Continue</button>
       </div>
     </div>`;
 
@@ -507,7 +507,8 @@ function renderContact() {
           <input type="checkbox" id="leadConsent">
           <span id="leadConsentText">${consentLanguage(route.agent, isBuyer)}</span>
         </label>
-        <button class="btn-gold interactive" style="width:100%" onclick="submitContact()">${isBuyer ? 'Send to Kelly' : 'Send to Will'}</button>
+        <div class="flow-privacy-note"><a href="/privacy.html" target="_blank" rel="noopener" class="interactive">How we handle your information &rarr;</a></div>
+        <button class="btn-accent interactive" style="width:100%" onclick="submitContact()">${isBuyer ? 'Send to Kelly' : 'Send to Will'}</button>
         <div style="text-align:center"><span class="flow-route-note">Routes directly to ${route.agent.split(' ')[0]}'s BHHS Connect</span></div>
       </div>
       <div class="flow-nav"><button class="flow-back interactive" onclick="flowBack()">← Back</button></div>
@@ -659,7 +660,7 @@ function renderBuyerPortal() {
     <div class="flow-dash">
       <div class="flow-dash-head">
         <span class="flow-step-kicker">You're all set</span>
-        <h2>Thank you, <span class="gold">${esc(first)}</span>.</h2>
+        <h2>Thank you, <span class="accent">${esc(first)}</span>.</h2>
         <p>Kelly will personally hand-pick homes for "${esc(flow.answers.vision || 'your search')}" and reach out within 24 hours.</p>
       </div>
       <div class="flow-routed-banner">${LEAD_ROUTING.buyer.routedLabel}</div>
@@ -680,7 +681,7 @@ function renderBuyerPortal() {
           <h3>Want to talk it through now?</h3>
           <p>Kelly answers her own phone — reach her directly anytime.</p>
           <div class="dash-cta-row">
-            <a href="tel:${LEAD_ROUTING.buyer.phone}" class="btn-gold interactive">Call Kelly</a>
+            <a href="tel:${LEAD_ROUTING.buyer.phone}" class="btn-accent interactive">Call Kelly</a>
             <a href="sms:${LEAD_ROUTING.buyer.phone}" class="btn-outline interactive">Text Kelly</a>
             <a href="${SEARCH_URL}" target="_blank" rel="noopener" class="btn-outline interactive">Browse All Listings</a>
           </div>
@@ -697,7 +698,7 @@ function renderSellerReveal() {
     <div class="flow-dash">
       <div class="flow-dash-head">
         <span class="flow-step-kicker">Request Received</span>
-        <h2>Thank you, <span class="gold">${esc(first)}</span>.</h2>
+        <h2>Thank you, <span class="accent">${esc(first)}</span>.</h2>
         <p>Will is preparing your personalized market analysis for ${esc(addr)}.</p>
       </div>
       <div class="flow-routed-banner">${LEAD_ROUTING.seller.routedLabel}</div>
@@ -710,7 +711,7 @@ function renderSellerReveal() {
         <h3>Prefer to talk now?</h3>
         <p>Will answers his own phone — reach him directly anytime.</p>
         <div class="dash-cta-row">
-          <a href="tel:${LEAD_ROUTING.seller.phone}" class="btn-gold interactive">Call Will</a>
+          <a href="tel:${LEAD_ROUTING.seller.phone}" class="btn-accent interactive">Call Will</a>
           <a href="sms:${LEAD_ROUTING.seller.phone}" class="btn-outline interactive">Text Will</a>
           <a href="mailto:${LEAD_ROUTING.seller.crmEmail}" class="btn-outline interactive">Email Will</a>
         </div>
@@ -728,7 +729,7 @@ function sprinkleSparkles() {
     s.textContent = glyphs[i % glyphs.length];
     s.style.left = 10 + Math.random() * 80 + 'vw';
     s.style.top = 8 + Math.random() * 30 + 'vh';
-    s.style.color = i % 3 ? 'rgba(212,175,55,.9)' : 'rgba(245,233,208,.9)';
+    s.style.color = i % 3 ? 'rgba(138,169,84,.9)' : 'rgba(186,216,225,.9)';
     s.style.fontSize = 0.7 + Math.random() * 0.9 + 'rem';
     s.style.animationDelay = Math.random() * 0.5 + 's';
     document.body.appendChild(s);
@@ -751,10 +752,10 @@ function sprinkleSparkles() {
     if (!d) return;
     const namesEl = document.querySelector('.masthead-names');
     if (namesEl && d.names_line) {
-      // Preserve the script ampersand + "are" styling by rebuilding the line.
+      // Preserve the ampersand + script "are" styling by rebuilding the line.
       const m = d.names_line.match(/^(.*?)\s*&\s*(.*?)(\s+are)?$/i);
       namesEl.innerHTML = m
-        ? `${esc(m[1])} <span class="amp-script">&amp;</span> ${esc(m[2])}${m[3] ? ' <span class="masthead-are">are</span>' : ''}`
+        ? `${esc(m[1])} <span class="masthead-amp">&amp;</span> ${esc(m[2])}${m[3] ? ' <span class="masthead-are">are</span>' : ''}`
         : esc(d.names_line);
     }
     const h1 = document.querySelector('.masthead-title');
@@ -953,7 +954,7 @@ function sprinkleSparkles() {
     if (h2 && d.heading) {
       const words = d.heading.trim().split(/\s+/);
       const last = words.pop();
-      h2.innerHTML = `${esc(words.join(' '))} <span class="amp-script gold">${esc(last)}</span>`;
+      h2.innerHTML = `${esc(words.join(' '))} <span class="amp-script accent">${esc(last)}</span>`;
     }
     const grid = stage.querySelector('.trust-grid');
     if (grid && Array.isArray(d.items)) {

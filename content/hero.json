@@ -4,9 +4,21 @@
   "headline_line_2": "Amelia Island",
   "tagline": "The Spouses Who Sell Houses · Berkshire Hathaway HomeServices Heymann Williams Realty",
   "slides": [
-    { "image": "/assets/img/hero-1.jpg", "alt": "Coastal home with pool at dusk" },
-    { "image": "/assets/img/hero-2.jpg", "alt": "Bright modern coastal interior" },
-    { "image": "/assets/img/hero-3.jpg", "alt": "Sunrise over the Atlantic shoreline" },
-    { "image": "/assets/img/hero-4.jpg", "alt": "Aerial view of turquoise surf and beach" }
+    {
+      "image": "/assets/img/area-amelia-stock-shoot-093a.jpg",
+      "alt": "Aerial view of the Fernandina Harbor Marina at sunset"
+    },
+    {
+      "image": "/assets/img/area-getmedia-17.jpg",
+      "alt": "Aerial view of oceanfront homes along the Amelia Island shoreline"
+    },
+    {
+      "image": "/assets/img/area-winter-horseback-riding.jpg",
+      "alt": "Horseback riders on the beach at Amelia Island"
+    },
+    {
+      "image": "/assets/img/area-img-2932.jpg",
+      "alt": "Pelicans flying over the surf at sunset"
+    }
   ]
 }
