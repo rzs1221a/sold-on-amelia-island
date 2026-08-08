@@ -318,13 +318,32 @@ nav#navbar.scrolled {
    FEATURED + COLLECTION
    ========================================================== */
 .featured { padding: 3rem 2rem 6rem; max-width: 1500px; margin: 0 auto; }
-.featured-inner { display: grid; grid-template-columns: 1.15fr 1fr; overflow: hidden; margin-bottom: 5.5rem; }
-.featured-media { position: relative; min-height: 460px; }
-/* Direct child only: gallery thumbnails are also imgs inside .featured-media and
-   must not inherit the main photo's absolute full-bleed positioning. */
-.featured-media > img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.featured-inner { display: grid; grid-template-columns: 1.3fr 1fr; overflow: hidden; margin-bottom: 5.5rem; }
+.featured-media { display: flex; flex-direction: column; justify-content: center; gap: .55rem; padding: .55rem; }
+/* The listing photos are 3:2. Locking the frame to that ratio and containing
+   the image means the whole photograph is always visible — never cropped —
+   and an odd-ratio photo from a future import letterboxes instead of losing
+   its edges. Nothing is layered over the image. */
+.featured-photo-btn {
+  position: relative; display: block; width: 100%; aspect-ratio: 3 / 2;
+  padding: 0; border-radius: 1.15rem; overflow: hidden; background: var(--night);
+  cursor: zoom-in;
+}
+.featured-photo-btn > img { width: 100%; height: 100%; object-fit: contain; transition: opacity .45s var(--ease-ios); }
+.featured-photo-btn.swapping > img { opacity: 0; }
+.featured-expand {
+  position: absolute; right: .9rem; bottom: .9rem;
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(11,7,16,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  color: var(--pearl); border: 1px solid rgba(255,255,255,.18); border-radius: 999px;
+  font-size: .56rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+  padding: .5rem 1rem; opacity: 0; transform: translateY(6px);
+  transition: opacity .35s var(--ease-ios), transform .35s var(--ease-ios);
+}
+.featured-photo-btn:hover .featured-expand,
+.featured-photo-btn:focus-visible .featured-expand { opacity: 1; transform: translateY(0); }
 .featured-badge {
-  position: absolute; top: 1.4rem; left: 1.4rem; z-index: 2;
+  align-self: flex-start; margin-bottom: 1rem;
   background: linear-gradient(120deg, var(--fern), #a9c778); color: #0f1a09;
   font-size: .58rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
   padding: .55rem 1.1rem; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.35);
@@ -607,7 +626,6 @@ nav#navbar.scrolled {
   .nav-actions .btn-nav { display: none; }
   .nav-burger { display: flex; }
   .featured-inner { grid-template-columns: 1fr; }
-  .featured-media { min-height: 320px; }
   .featured-body { padding: 2.2rem 1.8rem; }
   .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
   .areas-grid { grid-template-columns: 1fr 1fr; }
@@ -750,33 +768,111 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
   font-size: .58rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
   color: var(--fern); border: 1px solid rgba(138,169,84,.45); border-radius: 999px; padding: .35rem .8rem;
 }
-.featured-specs { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
-.featured-specs span {
-  font-family: 'Playfair Display', serif; font-style: italic;
-  font-size: .95rem; color: var(--ink-soft); font-variant-numeric: tabular-nums;
+/* Spec cells read like a listing sheet rather than a caption. */
+.featured-specs { display: flex; flex-wrap: wrap; gap: 0; margin: .4rem 0 1.4rem; }
+.spec-cell {
+  display: flex; flex-direction: column; gap: .25rem;
+  padding: .1rem 1.25rem .1rem 0; margin-right: 1.25rem;
+  border-right: 1px solid rgba(255,255,255,.12);
+}
+.spec-cell:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.spec-label { font-size: .54rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--fern); }
+.spec-value {
+  font-family: 'Playfair Display', serif; font-size: 1.35rem;
+  color: var(--pearl); line-height: 1; font-variant-numeric: tabular-nums;
 }
 .featured-mls {
   margin-top: 1rem; font-size: .58rem; letter-spacing: .18em;
   text-transform: uppercase; color: var(--ink-faint);
 }
 
+/* Sits below the photo — never over it. */
 .featured-gallery {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  display: flex; gap: .5rem; padding: .8rem; overflow-x: auto;
-  background: linear-gradient(to top, rgba(11,7,16,.85), transparent);
-  scrollbar-width: none;
+  display: flex; gap: .5rem; overflow-x: auto;
+  scrollbar-width: none; scroll-behavior: smooth;
 }
 .featured-gallery::-webkit-scrollbar { display: none; }
 .featured-thumb {
-  flex: 0 0 auto; width: 68px; height: 48px; padding: 0; border-radius: .5rem;
-  overflow: hidden; border: 2px solid transparent; opacity: .65;
+  flex: 0 0 auto; width: 82px; height: 55px; padding: 0; border-radius: .55rem;
+  overflow: hidden; border: 2px solid transparent; opacity: .55;
   transition: opacity .3s, border-color .3s, transform .3s var(--ease-ios);
 }
 .featured-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .featured-thumb:hover { opacity: 1; transform: translateY(-2px); }
 .featured-thumb.active { opacity: 1; border-color: var(--fern); }
 
+/* ---------- Full-screen photo lightbox ---------- */
+.lightbox {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(6,4,8,.96);
+  backdrop-filter: blur(26px) saturate(160%); -webkit-backdrop-filter: blur(26px) saturate(160%);
+  display: flex; flex-direction: column;
+  opacity: 0; visibility: hidden; transition: opacity .35s var(--ease-ios), visibility .35s;
+}
+.lightbox.open { opacity: 1; visibility: visible; }
+.lightbox-chrome { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.5rem; flex-shrink: 0; }
+.lightbox-counter { font-size: .62rem; font-weight: 800; letter-spacing: .26em; text-transform: uppercase; color: var(--fern); font-variant-numeric: tabular-nums; }
+.lightbox-close {
+  width: 42px; height: 42px; border-radius: 50%; font-size: 1rem; color: var(--pearl);
+  border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.05);
+  transition: background .3s, transform .3s var(--ease-ios);
+}
+.lightbox-close:hover { background: rgba(255,255,255,.14); transform: rotate(90deg); }
+.lightbox-stage {
+  flex: 1; min-height: 0; display: flex; align-items: center; gap: 1rem;
+  padding: 0 1.5rem;
+}
+.lightbox-figure {
+  flex: 1; min-width: 0; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+}
+/* Contain, never crop — the whole photograph, whatever the screen shape. */
+.lightbox-figure img {
+  max-width: 100%; max-height: calc(100% - 2.5rem);
+  width: auto; height: auto; object-fit: contain;
+  border-radius: .6rem; box-shadow: 0 30px 80px -20px rgba(0,0,0,.8);
+  transition: opacity .3s var(--ease-ios);
+}
+.lightbox.swapping .lightbox-figure img { opacity: 0; }
+.lightbox-caption {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: .95rem; color: var(--ink-soft); text-align: center; max-width: 60ch;
+}
+.lightbox-nav {
+  flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%;
+  font-size: 2rem; line-height: 1; color: var(--pearl);
+  border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.05);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .3s, transform .3s var(--ease-ios);
+}
+.lightbox-nav:hover { background: rgba(255,255,255,.14); }
+.lightbox-nav.prev:hover { transform: translateX(-3px); }
+.lightbox-nav.next:hover { transform: translateX(3px); }
+.lightbox-rail {
+  display: flex; gap: .5rem; justify-content: center; flex-wrap: nowrap;
+  overflow-x: auto; padding: 1.1rem 1.5rem; flex-shrink: 0;
+  scrollbar-width: none; scroll-behavior: smooth;
+}
+.lightbox-rail::-webkit-scrollbar { display: none; }
+.lightbox-rail button {
+  flex: 0 0 auto; width: 92px; height: 62px; padding: 0; border-radius: .5rem;
+  overflow: hidden; border: 2px solid transparent; opacity: .45;
+  transition: opacity .3s, border-color .3s, transform .3s var(--ease-ios);
+}
+.lightbox-rail button img { width: 100%; height: 100%; object-fit: cover; }
+.lightbox-rail button:hover { opacity: 1; transform: translateY(-2px); }
+.lightbox-rail button.active { opacity: 1; border-color: var(--fern); }
+
+@media (max-width: 900px) {
+  .lightbox-stage { padding: 0 .6rem; gap: .4rem; }
+  .lightbox-nav { width: 44px; height: 44px; font-size: 1.6rem; }
+  .lightbox-rail button { width: 68px; height: 46px; }
+}
 @media (max-width: 640px) {
-  .featured-thumb { width: 56px; height: 40px; }
-  .featured-specs { gap: 1rem; }
+  .featured-thumb { width: 64px; height: 44px; }
+  .spec-cell { padding-right: .9rem; margin-right: .9rem; }
+  .spec-value { font-size: 1.15rem; }
+  .lightbox-rail { display: none; }
+  .lightbox-nav { display: none; } /* swipe instead */
+  .lightbox-caption { font-size: .85rem; }
 }

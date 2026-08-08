@@ -284,17 +284,28 @@
   <section class="featured" id="listings">
     <div class="featured-inner glass-dark reveal">
       <div class="featured-media">
-        <img src="./assets/img/oyster-bay/01.jpg" alt="Front elevation of 96133 Oyster Bay Drive beneath mature oaks" width="1600" height="1067" loading="lazy" decoding="async" id="featuredMainPhoto">
-        <span class="featured-badge">Featured Listing</span>
-        <!-- Thumbnail strip appears only when the listing has multiple photos. -->
+        <!-- The frame is locked to the photos' native 3:2 and the image is
+             contained, never cropped. Nothing is allowed to overlay it. -->
+        <button class="featured-photo-btn interactive" type="button" id="featuredPhotoBtn" aria-label="Open full-screen photo gallery">
+          <img src="./assets/img/oyster-bay/01.jpg" alt="Front elevation of 96133 Oyster Bay Drive beneath mature oaks" width="2048" height="1365" loading="lazy" decoding="async" id="featuredMainPhoto">
+          <span class="featured-expand" aria-hidden="true">View all photos</span>
+        </button>
+        <!-- Thumbnail strip sits below the photo, never on top of it. -->
         <div class="featured-gallery" id="featuredGallery" hidden></div>
       </div>
       <div class="featured-body">
         <span class="kicker">Gated Oyster Bay · Fernandina Beach, Florida</span>
+        <span class="featured-badge">Featured Listing</span>
         <h2 class="serif">96133 Oyster Bay Drive</h2>
         <!-- Price and specs render only when the listing data supplies them. -->
         <div class="featured-price" id="featuredPrice"><span class="featured-price-value">$1,175,000</span><span class="featured-status">For Sale</span></div>
-        <div class="featured-specs" id="featuredSpecs"><span>3 bd</span><span>3 ba</span><span>3,250 sqft</span></div>
+        <div class="featured-specs" id="featuredSpecs">
+          <div class="spec-cell"><span class="spec-label">Beds</span><span class="spec-value">3</span></div>
+          <div class="spec-cell"><span class="spec-label">Baths</span><span class="spec-value">3</span></div>
+          <div class="spec-cell"><span class="spec-label">Sq Ft</span><span class="spec-value">3,250</span></div>
+          <div class="spec-cell"><span class="spec-label">Lot</span><span class="spec-value">17,860</span></div>
+          <div class="spec-cell"><span class="spec-label">Built</span><span class="spec-value">2019</span></div>
+        </div>
         <p class="featured-desc">Luxury living in gated Oyster Bay. Twelve-foot ceilings and hickory floors run through a light-filled great room with gas fireplace, built-ins, and wet bar, opening to a chef's kitchen with quartz counters and an oversized island. Two first-floor ensuite bedrooms — including the primary suite — make it ideal for multigenerational living, and every bedroom has its own bath. Triple sliders lead to a screened lanai overlooking a fenced yard with fruit trees and peaceful lagoon views.</p>
         <div class="featured-chips">
           <span>Gated Community</span><span>Lagoon Views</span><span>Built 2019</span><span>0.41 Acre Lot</span><span>Every Bedroom Ensuite</span>
@@ -474,6 +485,27 @@
   <div class="mobile-sticky-bar">
     <button class="msb-btn msb-outline interactive" onclick="openFlow('seller')">Sell · Will</button>
     <button class="msb-btn msb-accent interactive" onclick="openFlow('buyer')">Buy · Kelly</button>
+  </div>
+
+  <!-- ================================================
+       PHOTO LIGHTBOX
+       Full-screen listing gallery. Every photo is shown whole
+       (object-fit: contain) — never cropped, at full resolution.
+  ================================================= -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Listing photo gallery">
+    <div class="lightbox-chrome">
+      <span class="lightbox-counter" id="lightboxCounter" aria-live="polite"></span>
+      <button class="lightbox-close interactive" id="lightboxClose" aria-label="Close gallery">✕</button>
+    </div>
+    <div class="lightbox-stage">
+      <button class="lightbox-nav prev interactive" id="lightboxPrev" aria-label="Previous photo">‹</button>
+      <figure class="lightbox-figure">
+        <img id="lightboxImg" alt="">
+        <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+      </figure>
+      <button class="lightbox-nav next interactive" id="lightboxNext" aria-label="Next photo">›</button>
+    </div>
+    <div class="lightbox-rail" id="lightboxRail"></div>
   </div>
 
   <!-- ================================================

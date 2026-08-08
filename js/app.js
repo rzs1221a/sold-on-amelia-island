@@ -703,6 +703,148 @@ function sprinkleSparkles() {
 }
 
 /* ==========================================================
+   PHOTO LIGHTBOX
+   Full-screen listing gallery. Built for the listing appointment:
+   Will opens the site with a seller and walks the whole house on a
+   big screen. Every photo is shown whole — contained, never cropped
+   — and neighbours are preloaded so paging never flashes a blank.
+   ========================================================== */
+const Lightbox = (() => {
+  const el = document.getElementById('lightbox');
+  if (!el) return { load() {}, open() {} };
+
+  const imgEl = document.getElementById('lightboxImg');
+  const capEl = document.getElementById('lightboxCaption');
+  const countEl = document.getElementById('lightboxCounter');
+  const railEl = document.getElementById('lightboxRail');
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+  const closeBtn = document.getElementById('lightboxClose');
+
+  let photos = [], title = '', idx = 0, isOpen = false, lastFocus = null;
+
+  // Keep the next/previous frames warm so paging is instant on stage.
+  function preloadAround(i) {
+    [i - 1, i + 1].forEach(n => {
+      const p = photos[(n + photos.length) % photos.length];
+      if (p) { const im = new Image(); im.src = p.image; }
+    });
+  }
+
+  function render(i, animate = true) {
+    if (!photos.length) return;
+    idx = (i + photos.length) % photos.length;
+    const ph = photos[idx];
+    const apply = () => {
+      imgEl.src = ph.image;
+      imgEl.alt = ph.alt || title;
+      el.classList.remove('swapping');
+    };
+    if (animate && !prefersReduced) {
+      el.classList.add('swapping');
+      setTimeout(apply, 180);
+    } else apply();
+
+    capEl.textContent = ph.alt || '';
+    countEl.textContent = `${idx + 1} / ${photos.length}`;
+    railEl.querySelectorAll('button').forEach((b, bi) => {
+      const on = bi === idx;
+      b.classList.toggle('active', on);
+      if (on) b.scrollIntoView({ block: 'nearest', inline: 'center' });
+    });
+    preloadAround(idx);
+  }
+
+  const next = () => render(idx + 1);
+  const prev = () => render(idx - 1);
+
+  function onKey(e) {
+    if (!isOpen) return;
+    if (e.key === 'Escape') { e.stopPropagation(); close(); }
+    else if (e.key === 'ArrowRight') next();
+    else if (e.key === 'ArrowLeft') prev();
+    else if (e.key === 'Tab') {
+      // Simple focus trap across the control set.
+      const f = [closeBtn, prevBtn, nextBtn].filter(b => b && b.offsetParent !== null);
+      if (!f.length) return;
+      const i = f.indexOf(document.activeElement);
+      e.preventDefault();
+      f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+    }
+  }
+
+  function open(i = 0, trigger) {
+    if (!photos.length) return;
+    lastFocus = trigger || document.activeElement;
+    el.classList.add('open');
+    isOpen = true;
+    document.body.style.overflow = 'hidden';
+    render(i, false);
+    closeBtn.focus();
+  }
+
+  function close() {
+    el.classList.remove('open');
+    isOpen = false;
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function load(list, listingTitle) {
+    photos = Array.isArray(list) ? list.filter(p => p && p.image) : [];
+    title = listingTitle || '';
+    railEl.innerHTML = photos.map((ph, i) => `
+      <button type="button" class="interactive${i === 0 ? ' active' : ''}" aria-label="Photo ${i + 1} of ${photos.length}">
+        <img src="${esc(ph.image)}" alt="" loading="lazy" decoding="async">
+      </button>`).join('');
+    railEl.querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => render(i)));
+    const many = photos.length > 1;
+    prevBtn.hidden = nextBtn.hidden = !many;
+  }
+
+  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', prev);
+  closeBtn.addEventListener('click', close);
+  // Clicking the dark surround closes; clicking the photo itself does not.
+  el.addEventListener('click', e => {
+    if (e.target === el || e.target.classList.contains('lightbox-stage') || e.target.classList.contains('lightbox-figure')) close();
+  });
+  document.addEventListener('keydown', onKey);
+
+  // Swipe — Will may be presenting from an iPad.
+  let touchX = null;
+  el.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 45) (dx < 0 ? next : prev)();
+    touchX = null;
+  }, { passive: true });
+
+  return { load, open };
+})();
+
+// Seed the lightbox from the page's static defaults immediately, so the
+// gallery still opens even if the CMS content fetch below fails or is slow.
+// hydrateFromCMS() calls Lightbox.load() again once real data arrives.
+(function seedLightboxDefaults() {
+  const strip = document.getElementById('featuredGallery');
+  const main = document.getElementById('featuredMainPhoto');
+  const frame = document.getElementById('featuredPhotoBtn');
+  if (!main || !frame) return;
+  const photos = strip
+    ? Array.from(strip.querySelectorAll('img')).map(img => ({ image: img.getAttribute('src'), alt: img.alt }))
+    : [{ image: main.getAttribute('src'), alt: main.alt }];
+  Lightbox.load(photos.length ? photos : [{ image: main.getAttribute('src'), alt: main.alt }], main.alt || '');
+  frame.addEventListener('click', () => {
+    const activeThumb = strip && strip.querySelector('.featured-thumb.active');
+    const thumbs = strip ? Array.from(strip.querySelectorAll('.featured-thumb')) : [];
+    const idx = activeThumb ? thumbs.indexOf(activeThumb) : 0;
+    Lightbox.open(Math.max(idx, 0), frame);
+  });
+})();
+
+/* ==========================================================
    CMS CONTENT HYDRATION
    Reads /content/*.json (edited by Kelly & Will at /admin) and
    applies it to the page. The HTML ships with sensible defaults,
@@ -801,25 +943,42 @@ function sprinkleSparkles() {
       ? d.photos
       : (d.image ? [{ image: d.image, alt: d.title || '' }] : []);
     const main = sec.querySelector('#featuredMainPhoto');
+    const frame = sec.querySelector('#featuredPhotoBtn');
     if (main && gallery.length) {
       main.src = gallery[0].image;
       main.alt = gallery[0].alt || d.title || main.alt;
     }
+
+    // Hand the gallery to the lightbox and keep the inline photo in step with it.
+    // The lightbox trigger (wired once in seedLightboxDefaults) reads whichever
+    // thumbnail carries .active at click time, so it stays correct here too.
+    Lightbox.load(gallery, d.title || '');
+    const showInline = i => {
+      const ph = gallery[i]; if (!ph || !main) return;
+      const apply = () => {
+        main.src = ph.image;
+        main.alt = ph.alt || d.title || '';
+        if (frame) frame.classList.remove('swapping');
+      };
+      // Crossfade, unless the visitor asked for less motion.
+      if (frame && !prefersReduced) {
+        frame.classList.add('swapping');
+        setTimeout(apply, 220);
+      } else apply();
+      if (strip) strip.querySelectorAll('.featured-thumb').forEach((b, bi) => b.classList.toggle('active', bi === i));
+    };
+
     const strip = sec.querySelector('#featuredGallery');
     if (strip) {
       if (gallery.length > 1) {
         strip.innerHTML = gallery.map((ph, i) => `
           <button class="featured-thumb${i === 0 ? ' active' : ''} interactive" type="button"
-            aria-label="View photo ${i + 1} of ${gallery.length}" data-src="${esc(ph.image)}" data-alt="${esc(ph.alt || '')}">
+            aria-label="View photo ${i + 1} of ${gallery.length}">
             <img src="${esc(ph.image)}" alt="" loading="lazy" decoding="async">
           </button>`).join('');
         strip.hidden = false;
-        strip.querySelectorAll('.featured-thumb').forEach(btn => {
-          btn.addEventListener('click', () => {
-            if (main) { main.src = btn.dataset.src; main.alt = btn.dataset.alt || d.title || ''; }
-            strip.querySelectorAll('.featured-thumb').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-          });
+        strip.querySelectorAll('.featured-thumb').forEach((btn, i) => {
+          btn.addEventListener('click', () => showInline(i));
         });
       } else {
         strip.hidden = true;
@@ -840,11 +999,12 @@ function sprinkleSparkles() {
     const specsEl = sec.querySelector('#featuredSpecs');
     if (specsEl) {
       const specs = [
-        d.beds ? `${esc(d.beds)} bd` : null,
-        d.baths ? `${esc(d.baths)} ba` : null,
-        d.sqft ? `${esc(d.sqft)} sqft` : null
-      ].filter(Boolean);
-      specsEl.innerHTML = specs.map(s => `<span>${s}</span>`).join('');
+        ['Beds', d.beds], ['Baths', d.baths], ['Sq Ft', d.sqft],
+        ['Lot', d.lot], ['Built', d.year]
+      ].filter(([, v]) => v);
+      specsEl.innerHTML = specs.map(([label, v]) =>
+        `<div class="spec-cell"><span class="spec-label">${esc(label)}</span><span class="spec-value">${esc(v)}</span></div>`
+      ).join('');
       specsEl.hidden = !specs.length;
     }
     const mlsEl = sec.querySelector('#featuredMls');

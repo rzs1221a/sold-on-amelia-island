@@ -69,7 +69,7 @@ collections:
       - name: "featured"
         label: "Featured Property"
         file: "content/featured.json"
-        description: "The large highlighted property near the top of the page. Leave price, beds, baths, sq ft or MLS blank and they simply won't appear."
+        description: "The large highlighted property near the top of the page. Leave price, beds, baths, sq ft, lot, year, or MLS blank and they simply won't appear."
         fields:
           - { name: kicker, label: "Location line", widget: string, hint: "Example: Fernandina Beach, Florida" }
           - { name: title, label: "Property title or address", widget: string, hint: "Example: 96133 Oyster Bay Drive" }
@@ -78,6 +78,8 @@ collections:
           - { name: beds, label: "Bedrooms", widget: string, required: false }
           - { name: baths, label: "Bathrooms", widget: string, required: false }
           - { name: sqft, label: "Square feet", widget: string, required: false, hint: "Example: 2,148" }
+          - { name: lot, label: "Lot size (sq ft)", widget: string, required: false, hint: "Example: 17,860" }
+          - { name: year, label: "Year built", widget: string, required: false, hint: "Example: 2019" }
           - { name: mls, label: "MLS number", widget: string, required: false }
           - { name: description, label: "Description", widget: text }
           - name: photos

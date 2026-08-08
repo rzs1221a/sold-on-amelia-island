@@ -61,16 +61,21 @@ const price = first(/data-price="(\$[0-9,]+)"/) || (first(/"price"\s*:\s*"?([0-9
 const ogDesc = first(/property="og:description"\s+content="([^"]+)"/);
 const beds = first(/([0-9]+)\s*bed/i) || (ogDesc.match(/([0-9]+)\s*Bedroom/i) || [])[1] || '';
 const baths = first(/data-total-bath="([0-9.]+)"/) || (ogDesc.match(/([0-9.]+)\s*Bath/i) || [])[1] || '';
-// Sqft lives in the "main-attributes-summary" specs line ("3,250 Sq. Ft").
-// Search filter widgets elsewhere on the page print range-slider labels
-// like "500 Sq Ft" / "1,000 Sq Ft" that would otherwise match first, so
-// this is scoped to the specs block specifically.
-let sqft = '';
+// Sqft and lot size both live in the "main-attributes-summary" specs line —
+// e.g. "3 bed / 3 bath / 3,250 Sq. Ft. / 17,860 Sq. Ft., 0.41 acres lot size".
+// Search filter widgets elsewhere on the page print range-slider labels like
+// "500 Sq Ft" / "1,000 Sq Ft" that would otherwise match first, so this is
+// scoped to the specs block specifically. Living-area sqft is the first
+// "Sq. Ft." figure in that block, lot size the second.
+let sqft = '', lot = '';
 {
   const specsBlock = raw.match(/cmp-property-details-main-attributes-summary[\s\S]{0,1600}/);
-  const m = specsBlock && specsBlock[0].match(/([0-9][0-9,]{2,6})\s*(?:<[^>]+>\s*)*Sq\.?\s?F/i);
-  if (m) sqft = m[1];
+  const matches = specsBlock ? [...specsBlock[0].matchAll(/([0-9][0-9,]{2,6})\s*(?:<[^>]+>\s*)*Sq\.?\s?F/gi)] : [];
+  if (matches[0]) sqft = matches[0][1];
+  if (matches[1]) lot = matches[1][1];
 }
+// Year built isn't on every BHHS template — best-effort only, never fabricated.
+const year = first(/Year Built[^0-9]{0,40}([0-9]{4})/i) || first(/\bBuilt\b[^0-9]{0,10}([0-9]{4})/i);
 
 // long description lives in .property-details-description__text > p[data-text-count]
 let description = '';
@@ -102,7 +107,7 @@ const slug = opt('slug', street.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
 const MAX = Number(opt('max', '12'));
 
 console.log('── Parsed from', htmlPath);
-console.table({ street, city, price, status, beds, baths, sqft, mls, photos: photoUrls.length, slug });
+console.table({ street, city, price, status, beds, baths, sqft, lot, year, mls, photos: photoUrls.length, slug });
 if (!street || !photoUrls.length) {
   console.error('✗ Could not find an address or any photos — is this a saved BHHS listing page?');
   process.exit(1);
@@ -132,7 +137,7 @@ const featured = {
   title: street,
   status,
   price: price || '',
-  beds, baths, sqft, mls,
+  beds, baths, sqft, lot, year, mls,
   description,
   photos: kept.map((n, i) => ({
     image: `/assets/img/${slug}/${n}.jpg`,
