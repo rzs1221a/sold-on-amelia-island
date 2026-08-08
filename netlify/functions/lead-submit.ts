@@ -192,7 +192,9 @@ export default async (req: Request): Promise<Response> => {
 
   const route = dropboxFor(lead.dealType);
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.LEAD_FROM_EMAIL;
+  // Default sender — the domain must be verified in the Resend account that
+  // owns RESEND_API_KEY. Override via env var to send from a different domain.
+  const from = process.env.LEAD_FROM_EMAIL || 'leads@soldonameliaisland.com';
   const body = formatDropboxBody(lead);
 
   // Durable record written BEFORE the send, so a lead is traceable even if the
