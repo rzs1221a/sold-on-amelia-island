@@ -64,7 +64,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   position: fixed; inset: 0; z-index: 10000;
   background: linear-gradient(-45deg, #0b0710, #1e0616, #40062a 55%, #0e1626 85%, #0b1220);
   display: flex; align-items: center; justify-content: center;
-  transition: opacity .8s var(--ease-ios), visibility .8s;
 }
 #preloader::before {
   content: ''; position: absolute; width: min(70vw, 640px); height: min(70vw, 640px);
@@ -72,7 +71,27 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background: radial-gradient(circle, rgba(151,10,82,.32), transparent 65%);
   filter: blur(10px);
 }
-#preloader.done { opacity: 0; visibility: hidden; }
+/* The exit is a bleed, not a cut: the wordmark slips away first, then the
+   cabernet gradient smears outward — blur and saturation swelling as opacity
+   falls — so its colors wash into the site's ambient background (same
+   palette) before dissolving completely. */
+#preloader.done {
+  animation: preloaderBleed 1.8s ease forwards;
+  pointer-events: none;
+}
+#preloader.done .preloader-inner { animation: preloaderInnerOut .55s var(--ease-ios) forwards; }
+@keyframes preloaderBleed {
+  0%   { opacity: 1; filter: blur(0) saturate(1); transform: scale(1); }
+  45%  { opacity: .85; filter: blur(18px) saturate(1.45); }
+  100% { opacity: 0; filter: blur(64px) saturate(1.9); transform: scale(1.08); visibility: hidden; }
+}
+@keyframes preloaderInnerOut {
+  to { opacity: 0; transform: translateY(-10px) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #preloader.done { animation: none; opacity: 0; visibility: hidden; transition: opacity .4s; }
+  #preloader.done .preloader-inner { animation: none; }
+}
 .preloader-inner { position: relative; text-align: center; animation: preloaderIn 1s var(--ease-ios); }
 .preloader-wordmark {
   font-family: 'Italiana', 'Playfair Display', serif;
