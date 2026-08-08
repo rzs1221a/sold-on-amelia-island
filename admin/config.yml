@@ -9,7 +9,7 @@ site_url: https://soldonameliaisland.com
 display_url: https://soldonameliaisland.com
 # Relative so the editor logo resolves on whatever host /admin is served from
 # (netlify.app, custom domain, or a deploy preview) instead of hard-coding one.
-logo_url: /assets/apple-touch-icon.png
+logo_url: /assets/apple-touch-icon-v2.png
 
 publish_mode: simple
 
