@@ -57,12 +57,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 #depth-pressure { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.82), #000); opacity: 0; }
 
 /* ---------- Preloader ---------- */
-/* Same world as the site behind it: the ambient cabernet-night gradient with
-   a soft glow pooled behind the wordmark, and the brand's fern + sky waves
-   drawing themselves in sequence. */
+/* The preloader's backdrop is PIXEL-IDENTICAL to .bg-ambient — same gradient,
+   same 400% canvas, same 60s flow started at the same moment — so its color
+   field IS the page's color field, not a layer sitting on top. The exit fades
+   this surface into the page while the identical gradient keeps flowing
+   beneath: the colors never move or lift, the site simply develops inside
+   them. */
 #preloader {
   position: fixed; inset: 0; z-index: 10000;
-  background: linear-gradient(-45deg, #0b0710, #1e0616, #40062a 55%, #0e1626 85%, #0b1220);
+  background: linear-gradient(-45deg, #0b0710, #1e0616, #0e1626, #40062a, #0b1220);
+  background-size: 400% 400%;
+  animation: ambientFlow 60s ease infinite;
   display: flex; align-items: center; justify-content: center;
 }
 #preloader::before {
@@ -71,26 +76,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background: radial-gradient(circle, rgba(151,10,82,.32), transparent 65%);
   filter: blur(10px);
 }
-/* The exit is a bleed, not a cut: the wordmark slips away first, then the
-   cabernet gradient smears outward — blur and saturation swelling as opacity
-   falls — so its colors wash into the site's ambient background (same
-   palette) before dissolving completely. */
+/* Exit: wordmark and glow slip away first; then a long, even dissolve. The
+   gradient keeps flowing at the same phase as .bg-ambient the whole time, so
+   where the page shows ambient color the fade is invisible — over the hero,
+   the photo slowly blooms up through the standing colors instead of a layer
+   peeling off. */
 #preloader.done {
-  animation: preloaderBleed 1.8s ease forwards;
-  pointer-events: none;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 2.4s ease-in-out, visibility 0s linear 2.4s;
 }
+#preloader::before { transition: opacity .7s var(--ease-ios); }
+#preloader.done::before { opacity: 0; }
 #preloader.done .preloader-inner { animation: preloaderInnerOut .55s var(--ease-ios) forwards; }
-@keyframes preloaderBleed {
-  0%   { opacity: 1; filter: blur(0) saturate(1); transform: scale(1); }
-  45%  { opacity: .85; filter: blur(18px) saturate(1.45); }
-  100% { opacity: 0; filter: blur(64px) saturate(1.9); transform: scale(1.08); visibility: hidden; }
-}
 @keyframes preloaderInnerOut {
   to { opacity: 0; transform: translateY(-10px) scale(1.04); }
 }
 @media (prefers-reduced-motion: reduce) {
-  #preloader.done { animation: none; opacity: 0; visibility: hidden; transition: opacity .4s; }
-  #preloader.done .preloader-inner { animation: none; }
+  #preloader.done { transition: opacity .4s; }
+  #preloader.done .preloader-inner { animation: none; opacity: 0; }
 }
 .preloader-inner { position: relative; text-align: center; animation: preloaderIn 1s var(--ease-ios); }
 .preloader-wordmark {
