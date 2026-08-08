@@ -127,11 +127,20 @@ function dropboxFor(dealType: Lead['dealType']): { to: string; agent: string } |
 /**
  * Build the dropbox body.
  *
- * ONLY fields the parser is known to accept are emitted. Extra lines are a
- * real risk: an unrecognised field can cause the whole message to be dropped,
- * and the drop is silent. Questionnaire context is deliberately excluded here
- * and kept in the log instead.
+ * The parser maps the known fields (name, email, phone, deal type, address)
+ * onto the contact, and — verified live — files the ENTIRE email body into a
+ * Custom Note on the contact. So after the parser fields, every remaining
+ * piece of questionnaire context is appended as its own line: it rides along
+ * in the note where the agent can read it.
+ *
+ * Context values are flattened to single lines here (the schema's newline
+ * guard covers the parser fields; context is a free-form record, so it is
+ * sanitised at this boundary instead).
  */
+const singleLine = (v: string) => v.replace(/[\r\n]+/g, ' ').trim();
+const contextLabel = (k: string) =>
+  k.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
+
 function formatDropboxBody(lead: Lead): string {
   const lines: string[] = [
     `First Name: ${lead.firstName}`,
@@ -141,6 +150,12 @@ function formatDropboxBody(lead: Lead): string {
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
   if (lead.dealType) lines.push(`Deal Type: ${lead.dealType}`);
   if (lead.sellerAddress) lines.push(`Seller Address: ${lead.sellerAddress}`);
+  for (const [key, value] of Object.entries(lead.context ?? {})) {
+    const v = singleLine(value);
+    if (v) lines.push(`${contextLabel(key)}: ${v.slice(0, 500)}`);
+  }
+  lines.push(`Submitted From: ${singleLine(lead.sourceUrl)}`);
+  lines.push(`Consent: agreed ${lead.consentTimestamp} — "${singleLine(lead.consentText).slice(0, 500)}"`);
   return lines.join('\n');
 }
 
