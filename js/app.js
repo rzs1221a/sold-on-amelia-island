@@ -1007,13 +1007,24 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
     // The lightbox trigger (wired once in seedLightboxDefaults) reads whichever
     // thumbnail carries .active at click time, so it stays correct here too.
     Lightbox.load(gallery, d.title || '');
-    const showInline = i => {
+    let currentPhoto = 0;
+    const showInline = (i, dir) => {
       const ph = gallery[i]; if (!ph || !main) return;
+      const slide = dir ?? (i === currentPhoto ? 0 : i > currentPhoto ? 1 : -1);
+      currentPhoto = i;
       const apply = () => {
         main.src = ph.image;
         main.alt = ph.alt || d.title || '';
         setBackdrop(ph.image);
         if (frame) frame.classList.remove('swapping');
+        // Direction-aware entrance: the new photo slides in from the side it
+        // was summoned from. Class is re-armed via a reflow so repeat swaps
+        // in the same direction still animate.
+        if (slide && !prefersReduced) {
+          main.classList.remove('slide-in-next', 'slide-in-prev');
+          void main.offsetWidth;
+          main.classList.add(slide > 0 ? 'slide-in-next' : 'slide-in-prev');
+        }
       };
       // Crossfade, unless the visitor asked for less motion.
       if (frame && !prefersReduced) {
@@ -1022,6 +1033,15 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
       } else apply();
       if (strip) strip.querySelectorAll('.featured-thumb').forEach((b, bi) => b.classList.toggle('active', bi === i));
     };
+    // Side arrows step through the gallery with wraparound.
+    const stepPhoto = dir => showInline((currentPhoto + dir + gallery.length) % gallery.length, dir);
+    const prevBtn = document.getElementById('featuredPrev');
+    const nextBtn = document.getElementById('featuredNext');
+    if (prevBtn && nextBtn) {
+      prevBtn.hidden = nextBtn.hidden = gallery.length < 2;
+      prevBtn.onclick = () => stepPhoto(-1);
+      nextBtn.onclick = () => stepPhoto(1);
+    }
 
     const strip = sec.querySelector('#featuredGallery');
     if (strip) {

@@ -352,6 +352,7 @@ nav#navbar.scrolled {
      column and dissolves into the panel — softly at every edge, and with a
      long fade where the photo side meets the content column. */
   .featured-media { padding: 0; gap: 0; }
+  .featured-stage { flex: 1 1 auto; min-height: 0; }
   .featured-photo-btn {
     width: 100%; aspect-ratio: auto; flex: 1 1 auto; min-height: 0;
     border-radius: 0; box-shadow: none; background: transparent;
@@ -413,14 +414,49 @@ nav#navbar.scrolled {
 }
 .featured-photo-btn > img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; transition: opacity .45s var(--ease-ios); }
 /* A barely-there drift, like a documentary pan. The frame and photo share the
-   same 3:2 ratio, so the slow zoom never reveals letterbox edges. */
+   same 3:2 ratio, so the slow zoom never reveals letterbox edges. The swap
+   slide animates the separate `translate` property so both can run at once. */
 @media (prefers-reduced-motion: no-preference) {
   .featured-photo-btn > img { animation: featuredDrift 26s ease-in-out infinite alternate; }
+  .featured-photo-btn > img.slide-in-next {
+    animation: slideInNext .55s var(--ease-ios), featuredDrift 26s ease-in-out infinite alternate;
+  }
+  .featured-photo-btn > img.slide-in-prev {
+    animation: slideInPrev .55s var(--ease-ios), featuredDrift 26s ease-in-out infinite alternate;
+  }
 }
 @keyframes featuredDrift {
   from { transform: scale(1.01) translate(0, 0); }
   to { transform: scale(1.05) translate(.6%, -.5%); }
 }
+@keyframes slideInNext { from { translate: 6% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes slideInPrev { from { translate: -6% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+
+/* The stage wraps the photo and its side arrows. */
+.featured-stage { position: relative; display: flex; flex-direction: column; min-width: 0; }
+.featured-nav {
+  position: absolute; top: 50%; translate: 0 -50%; z-index: 3;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(11,7,16,.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.22); color: var(--pearl);
+  font-size: 1.6rem; line-height: 1; padding-bottom: .2rem;
+  opacity: 0; transition: opacity .35s var(--ease-ios), background .3s, border-color .3s;
+}
+.featured-nav.prev { left: 1rem; }
+.featured-nav.next { right: 1rem; }
+.featured-stage:hover .featured-nav,
+.featured-nav:focus-visible { opacity: 1; }
+.featured-nav:hover { background: rgba(11,7,16,.82); border-color: rgba(138,169,84,.6); }
+/* Touch screens have no hover — keep the arrows quietly present. */
+@media (hover: none) { .featured-nav { opacity: .85; } }
+/* The little slide: each arrow bobs gently toward its direction. */
+@media (prefers-reduced-motion: no-preference) {
+  .featured-nav.prev { animation: navBobPrev 3.4s ease-in-out infinite; }
+  .featured-nav.next { animation: navBobNext 3.4s ease-in-out infinite; }
+}
+@keyframes navBobPrev { 0%, 100% { translate: 0 -50%; } 50% { translate: -5px -50%; } }
+@keyframes navBobNext { 0%, 100% { translate: 0 -50%; } 50% { translate: 5px -50%; } }
 .featured-photo-btn.swapping > img { opacity: 0; }
 .featured-expand {
   position: absolute; right: .9rem; bottom: .9rem;
