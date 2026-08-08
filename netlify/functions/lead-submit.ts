@@ -150,13 +150,51 @@ function formatDropboxBody(lead: Lead): string {
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
   if (lead.dealType) lines.push(`Deal Type: ${lead.dealType}`);
   if (lead.sellerAddress) lines.push(`Seller Address: ${lead.sellerAddress}`);
-  for (const [key, value] of Object.entries(lead.context ?? {})) {
-    const v = singleLine(value);
-    if (v) lines.push(`${contextLabel(key)}: ${v.slice(0, 500)}`);
-  }
-  lines.push(`Submitted From: ${singleLine(lead.sourceUrl)}`);
-  lines.push(`Consent: agreed ${lead.consentTimestamp} — "${singleLine(lead.consentText).slice(0, 500)}"`);
+  const story = narrative(lead);
+  if (story) lines.push('', story);
+  lines.push(
+    '',
+    `Submitted through soldonameliaisland.com (${singleLine(lead.sourceUrl)}). ` +
+      `Consent to be contacted was given on ${lead.consentTimestamp}: "${singleLine(lead.consentText).slice(0, 400)}"`
+  );
   return lines.join('\n');
+}
+
+/**
+ * The questionnaire, retold as a short briefing the agent can read at a
+ * glance. Pieces are optional — sentences simply drop out when the visitor
+ * skipped a step. Any context key this template doesn't know is appended
+ * afterwards so new questionnaire fields never get lost.
+ */
+function narrative(lead: Lead): string {
+  const ctx = Object.fromEntries(
+    Object.entries(lead.context ?? {}).map(([k, v]) => [k, singleLine(v).slice(0, 500)])
+  );
+  const used = new Set<string>();
+  const take = (k: string) => { used.add(k); return ctx[k] || ''; };
+  const sentences: string[] = [];
+
+  if (lead.dealType === 'Buyer') {
+    const vision = take('vision');
+    const budget = take('budget');
+    const timeline = take('timeline');
+    if (vision) sentences.push(`In their own words, ${lead.firstName} is looking for: "${vision}".`);
+    else sentences.push(`${lead.firstName} came through the guided buyer flow.`);
+    if (budget && timeline) sentences.push(`They're targeting ${budget}, with keys in hand ${timeline === 'ASAP' ? 'as soon as possible' : `in the "${timeline}" range`}.`);
+    else if (budget) sentences.push(`They're targeting ${budget}.`);
+    else if (timeline) sentences.push(`Their timeline: ${timeline}.`);
+  } else if (lead.dealType === 'Seller') {
+    const ptype = take('propertyType');
+    const timeline = take('timeline');
+    const where = lead.sellerAddress ? `their home at ${lead.sellerAddress}` : 'their home';
+    sentences.push(`${lead.firstName} is thinking about selling ${where}${ptype ? `, which they describe as: ${ptype}` : ''}.`);
+    if (timeline) sentences.push(`On timing, they said: "${timeline}".`);
+  }
+
+  for (const [key, value] of Object.entries(ctx)) {
+    if (!used.has(key) && value) sentences.push(`${contextLabel(key)}: ${value}.`);
+  }
+  return sentences.join(' ');
 }
 
 function json(status: number, body: unknown): Response {
