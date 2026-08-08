@@ -991,7 +991,12 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
     // The section's ambient glow is a blurred copy of the displayed photo —
     // keep it in step whenever the photo changes.
     const backdrop = document.getElementById('featuredBackdrop');
-    const setBackdrop = src => { if (backdrop && src) backdrop.style.backgroundImage = `url('${src}')`; };
+    const echo = document.getElementById('featuredPhotoEcho');
+    const setBackdrop = src => {
+      if (!src) return;
+      if (backdrop) backdrop.style.backgroundImage = `url('${src}')`;
+      if (echo) echo.style.backgroundImage = `url('${src}')`;
+    };
     if (main && gallery.length) {
       main.src = gallery[0].image;
       main.alt = gallery[0].alt || d.title || main.alt;
