@@ -127,11 +127,20 @@ function dropboxFor(dealType: Lead['dealType']): { to: string; agent: string } |
 /**
  * Build the dropbox body.
  *
- * ONLY fields the parser is known to accept are emitted. Extra lines are a
- * real risk: an unrecognised field can cause the whole message to be dropped,
- * and the drop is silent. Questionnaire context is deliberately excluded here
- * and kept in the log instead.
+ * The parser maps the known fields (name, email, phone, deal type, address)
+ * onto the contact, and — verified live — files the ENTIRE email body into a
+ * Custom Note on the contact. So after the parser fields, every remaining
+ * piece of questionnaire context is appended as its own line: it rides along
+ * in the note where the agent can read it.
+ *
+ * Context values are flattened to single lines here (the schema's newline
+ * guard covers the parser fields; context is a free-form record, so it is
+ * sanitised at this boundary instead).
  */
+const singleLine = (v: string) => v.replace(/[\r\n]+/g, ' ').trim();
+const contextLabel = (k: string) =>
+  k.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
+
 function formatDropboxBody(lead: Lead): string {
   const lines: string[] = [
     `First Name: ${lead.firstName}`,
@@ -141,7 +150,51 @@ function formatDropboxBody(lead: Lead): string {
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
   if (lead.dealType) lines.push(`Deal Type: ${lead.dealType}`);
   if (lead.sellerAddress) lines.push(`Seller Address: ${lead.sellerAddress}`);
+  const story = narrative(lead);
+  if (story) lines.push('', story);
+  lines.push(
+    '',
+    `Submitted through soldonameliaisland.com (${singleLine(lead.sourceUrl)}). ` +
+      `Consent to be contacted was given on ${lead.consentTimestamp}: "${singleLine(lead.consentText).slice(0, 400)}"`
+  );
   return lines.join('\n');
+}
+
+/**
+ * The questionnaire, retold as a short briefing the agent can read at a
+ * glance. Pieces are optional — sentences simply drop out when the visitor
+ * skipped a step. Any context key this template doesn't know is appended
+ * afterwards so new questionnaire fields never get lost.
+ */
+function narrative(lead: Lead): string {
+  const ctx = Object.fromEntries(
+    Object.entries(lead.context ?? {}).map(([k, v]) => [k, singleLine(v).slice(0, 500)])
+  );
+  const used = new Set<string>();
+  const take = (k: string) => { used.add(k); return ctx[k] || ''; };
+  const sentences: string[] = [];
+
+  if (lead.dealType === 'Buyer') {
+    const vision = take('vision');
+    const budget = take('budget');
+    const timeline = take('timeline');
+    if (vision) sentences.push(`In their own words, ${lead.firstName} is looking for: "${vision}".`);
+    else sentences.push(`${lead.firstName} came through the guided buyer flow.`);
+    if (budget && timeline) sentences.push(`They're targeting ${budget}, with keys in hand ${timeline === 'ASAP' ? 'as soon as possible' : `in the "${timeline}" range`}.`);
+    else if (budget) sentences.push(`They're targeting ${budget}.`);
+    else if (timeline) sentences.push(`Their timeline: ${timeline}.`);
+  } else if (lead.dealType === 'Seller') {
+    const ptype = take('propertyType');
+    const timeline = take('timeline');
+    const where = lead.sellerAddress ? `their home at ${lead.sellerAddress}` : 'their home';
+    sentences.push(`${lead.firstName} is thinking about selling ${where}${ptype ? `, which they describe as: ${ptype}` : ''}.`);
+    if (timeline) sentences.push(`On timing, they said: "${timeline}".`);
+  }
+
+  for (const [key, value] of Object.entries(ctx)) {
+    if (!used.has(key) && value) sentences.push(`${contextLabel(key)}: ${value}.`);
+  }
+  return sentences.join(' ');
 }
 
 function json(status: number, body: unknown): Response {
