@@ -200,12 +200,18 @@ nav#navbar.scrolled {
    ========================================================== */
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 .hero-slides { position: absolute; inset: 0; }
+/* Every slide drifts on the same clock, whether visible or not — a slide that
+   loses .active keeps the exact transform it had, so the crossfade is pure
+   opacity between two identically-moving layers. (Animating only .active
+   snapped the outgoing slide back to scale(1) mid-fade — the old jolt.) The
+   drift starts above 1 and alternates, so it never resets or shows an edge. */
 .hero-slide {
   position: absolute; inset: 0; background-size: cover; background-position: center;
-  opacity: 0; transition: opacity 2.2s ease; will-change: transform, opacity;
+  opacity: 0; transition: opacity 2.8s ease-in-out; will-change: transform, opacity;
+  animation: heroDrift 44s ease-in-out infinite alternate;
 }
-.hero-slide.active { opacity: 1; animation: kenBurns 16s ease-in-out forwards; }
-@keyframes kenBurns { from { transform: scale(1.0); } to { transform: scale(1.14) translate3d(-1.5%, 2%, 0); } }
+.hero-slide.active { opacity: 1; }
+@keyframes heroDrift { from { transform: scale(1.03); } to { transform: scale(1.12) translate3d(-1.2%, 1.6%, 0); } }
 .hero-scrim {
   position: absolute; inset: 0;
   background:
@@ -759,124 +765,6 @@ nav#navbar.scrolled {
 @keyframes sparkleFall { to { transform: translateY(120px) rotate(220deg); opacity: 0; } }
 
 /* ==========================================================
-   RESPONSIVE
-   ========================================================== */
-@media (max-width: 1150px) {
-  .nav-links { display: none; }
-  .duo-grid { grid-template-columns: 1fr; gap: 1.6rem; }
-  .duo-heart { flex-direction: row; padding: .6rem 0; }
-  .duo-heart span br { display: none; }
-}
-@media (max-width: 900px) {
-  .nav-actions .btn-nav { display: none; }
-  .nav-burger { display: flex; }
-  .featured-body { padding: 2.2rem 1.8rem; }
-  .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
-  .areas-grid { grid-template-columns: 1fr 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .pathways-banner { grid-template-columns: 1fr; }
-  .pathway { min-height: 340px; }
-  .hero-cards { grid-template-columns: 1fr; }
-  .hero-footerline { flex-wrap: wrap; justify-content: center; }
-  .hero-scrollcue { display: none; }
-}
-@media (max-width: 640px) {
-  body { padding-bottom: 86px; }
-  .mobile-sticky-bar { display: grid; }
-  .nav-inner { padding: 0 1.1rem; }
-  .nav-logo-box { display: none; }
-  .nav-actions { margin-left: auto; }
-  .nav-brand-text strong { font-size: .68rem; }
-  .hero-content { padding: calc(var(--nav-h) + 2rem) 1.2rem 1.5rem; gap: 2rem; }
-  .hero-footerline { padding: 0 1.2rem 5.5rem; }
-  .masthead-title { font-size: clamp(2.9rem, 14vw, 4rem); }
-  .masthead-names { letter-spacing: .18em; }
-  .masthead-tag { letter-spacing: .14em; font-size: .58rem; }
-  .hero-card { padding: 1.1rem 1.2rem; }
-  .hero-card-title { font-size: 1.2rem; }
-  .collection-grid, .dash-grid, .areas-grid,   .duo-card { padding: 2.4rem 1.6rem; }
-  .around-newsletter { padding: 2rem 1.5rem; }
-  .newsletter-form { flex-direction: column; }
-  .testimonial-stage { padding: 3rem 1.6rem; }
-  .footer-agents { gap: 2rem; flex-direction: column; }
-  .flow-chrome { padding: 1rem 1.1rem; }
-  .flow-agent-chip .meta strong { font-size: .72rem; }
-  .flow-stage { padding: 2rem 1.1rem 5rem; }
-  .flow-step h2 { font-size: 1.7rem; }
-  .chip-grid { gap: .5rem; }
-  .flow-chip { padding: .8rem 1.3rem; font-size: .72rem; }
-  .area-tile { height: 300px; }
-  .stats { padding: 3.5rem 1.2rem; }
-
-  /* ---------- Featured listing: compact, horizontal mobile layout ----------
-     Photos stay on top (the gallery block above, untouched); everything
-     below is tightened into scannable horizontal strips instead of one
-     long vertical list, so the card reads in a glance, not a scroll. */
-  .featured { padding: 0 1rem 3.5rem; }
-  .featured-inner { margin-bottom: 3.5rem; border-radius: 1.15rem; }
-  .featured-media { padding: 0; gap: 0; }
-  .featured-gallery { padding: .6rem .6rem 0; }
-  /* min-width: 0 at every level: the horizontally-scrolling spec/chip strips
-     below have wide, non-wrapping content by design (that's what makes them
-     scroll). Without this, flex/grid items default to min-width: auto and
-     refuse to shrink below that content's width, which forces every ancestor
-     — the body, the card, the whole section — to stretch to fit it instead
-     of letting the strip scroll internally. */
-  .featured-inner, .featured-body { min-width: 0; }
-  /* overflow: hidden makes the browser actually honor min-width: 0 for this
-     grid item's automatic minimum size — without it some engines still size
-     the 1fr track to the content's min-content width regardless. The
-     scrolling strips below manage their own overflow-x independently. */
-  .featured-body { width: 100%; padding: 1.5rem 1.4rem 1.7rem; overflow: hidden; }
-  .featured-body h2 { font-size: 1.6rem; margin-bottom: .7rem; }
-  .featured-headline { margin-bottom: .5rem; }
-  .kicker { font-size: .6rem; letter-spacing: .2em; margin-bottom: 0; }
-  .featured-badge { font-size: .52rem; padding: .4rem .8rem; }
-  .featured-price { margin-bottom: .8rem; }
-  .featured-price-value { font-size: 1.6rem; }
-  /* Spec cells become a single scrollable row — same info, a third the height.
-     Both min-width: 0 AND overflow-y: hidden (alongside overflow-x: auto)
-     are required for Chromium to treat this item's automatic minimum size
-     as zero in the ancestor grid/flex sizing — overflow-x alone isn't
-     enough, so without overflow-y set too, every ancestor up to the card
-     itself was stretching to fit this row's full unwrapped content width. */
-  .featured-specs {
-    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; gap: 0;
-    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.1rem; padding: 0 1.4rem;
-    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  .featured-specs::-webkit-scrollbar { display: none; }
-  .spec-cell { padding-right: 1rem; margin-right: 1rem; }
-  .spec-value { font-size: 1.1rem; }
-  /* Description clamps to 3 lines with a Read more toggle (JS-driven) so the
-     card doesn't front-load a long paragraph before the buttons and specs. */
-  .featured-desc { font-size: .88rem; margin-bottom: .3rem; }
-  .featured-desc-wrap { margin-bottom: 1.2rem; }
-  .featured-desc.clamped {
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .featured-desc-toggle { display: inline-block; }
-  /* Feature tags scroll horizontally in one row instead of wrapping to several. */
-  .featured-chips {
-    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
-    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.3rem; padding: 0 1.4rem;
-    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  .featured-chips::-webkit-scrollbar { display: none; }
-  .featured-chips span { flex-shrink: 0; }
-  /* CTAs sit side by side rather than stacking two full-width buttons.
-     min-width: 0 overrides flex items' default min-width: auto, which
-     would otherwise refuse to shrink past the button text's natural
-     width and push the row wider than the viewport. */
-  .featured-ctas { flex-wrap: nowrap; gap: .6rem; margin-bottom: .9rem; }
-  .featured-ctas .btn-accent, .featured-ctas .btn-outline {
-    flex: 1 1 0; min-width: 0; padding: .85rem .5rem; font-size: .56rem; letter-spacing: .08em;
-    text-align: center; line-height: 1.3; white-space: normal;
-  }
-  .featured-mls { margin-top: 0; }
-}
-
-/* ==========================================================
    PRODUCTION ADDITIONS
    ========================================================== */
 
@@ -920,8 +808,8 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
     animation-duration: .001ms !important; animation-iteration-count: 1 !important;
     transition-duration: .001ms !important; scroll-behavior: auto !important;
   }
-  .bg-ambient, .hero-slide.active { animation: none !important; }
-  .hero-slide.active { transform: none !important; }
+  .bg-ambient, .hero-slide { animation: none !important; }
+  .hero-slide { transform: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
   .ticker-track { animation: none !important; }
   .duo-portrait-ring { animation: none !important; }
@@ -1087,4 +975,147 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
   .lightbox-rail { display: none; }
   .lightbox-nav { display: none; } /* swipe instead */
   .lightbox-caption { font-size: .85rem; }
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 1150px) {
+  .nav-links { display: none; }
+  .duo-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+  .duo-heart { flex-direction: row; padding: .6rem 0; }
+  .duo-heart span br { display: none; }
+}
+@media (max-width: 900px) {
+  .nav-actions .btn-nav { display: none; }
+  .nav-burger { display: flex; }
+  .featured-body { padding: 2.2rem 1.8rem; }
+  .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
+  .areas-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .trust-grid { grid-template-columns: 1fr; gap: .6rem; }
+  .pathways-banner { grid-template-columns: 1fr; min-height: 0; }
+  .pathway { min-height: 0; height: 380px; }
+  .hero-cards { grid-template-columns: 1fr; }
+  .hero-footerline { flex-wrap: wrap; justify-content: center; }
+  .hero-scrollcue { display: none; }
+}
+@media (max-width: 640px) {
+  body { padding-bottom: 86px; }
+  .mobile-sticky-bar { display: grid; }
+  .nav-inner { padding: 0 1.1rem; }
+  .nav-logo-box { display: none; }
+  .nav-actions { margin-left: auto; }
+  .nav-brand-text strong { font-size: .68rem; }
+  .hero-content { padding: calc(var(--nav-h) + 2rem) 1.2rem 1.5rem; gap: 2rem; }
+  .hero-footerline { padding: 0 1.2rem 5.5rem; }
+  .masthead-title { font-size: clamp(2.9rem, 14vw, 4rem); }
+  .masthead-names { letter-spacing: .18em; }
+  .masthead-tag { letter-spacing: .14em; font-size: .58rem; }
+  .hero-card { padding: 1.1rem 1.2rem; }
+  .hero-card-title { font-size: 1.2rem; }
+  .duo-card { padding: 2.4rem 1.6rem; }
+  /* One clean column each — two side-by-side cards at phone width were
+     110px slivers with one word per line. */
+  .collection-grid { grid-template-columns: 1fr; gap: 1.1rem; }
+  .listing-img { height: 210px; }
+  .listing-info { padding: 1.2rem 1.4rem 1.4rem; }
+  .areas-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .area-tile { height: 240px; }
+  /* No hover on touch — the tile subtitles are always shown. */
+  .area-label span { opacity: 1; transform: none; }
+  /* Value props: compact 2×2, smaller serif so nothing hyphen-wraps. */
+  .stats { padding: 2.8rem 1.2rem; }
+  .stats-grid { gap: 1.4rem 1rem; }
+  .stat-num { font-size: 1.5rem; }
+  .stat-label { font-size: .54rem; letter-spacing: .18em; }
+  /* Trust panel: close the cavernous gaps. */
+  .trust { padding: .5rem 1rem 3rem; }
+  .trust-stage { padding: 2.4rem 1.4rem 2.4rem; }
+  .trust-stage h2 { margin-bottom: 1.2rem; }
+  .trust-item { padding: .9rem .2rem; }
+  .trust-icon { margin-bottom: .4rem; }
+  .pathway { height: 320px; }
+  .pathway-content { padding: 1.8rem 1.4rem; }
+  .news-cta { padding: 2.8rem 1.2rem 3.2rem; }
+  .section-head { margin-bottom: 2.2rem; }
+  .around-newsletter { padding: 2rem 1.5rem; }
+  .newsletter-form { flex-direction: column; }
+  .testimonial-stage { padding: 3rem 1.6rem; }
+  .footer-agents { gap: 2rem; flex-direction: column; }
+  .flow-chrome { padding: 1rem 1.1rem; }
+  .flow-agent-chip .meta strong { font-size: .72rem; }
+  .flow-stage { padding: 2rem 1.1rem 5rem; }
+  .flow-step h2 { font-size: 1.7rem; }
+  .chip-grid { gap: .5rem; }
+  .flow-chip { padding: .8rem 1.3rem; font-size: .72rem; }
+  .area-tile { height: 300px; }
+  .stats { padding: 3.5rem 1.2rem; }
+
+  /* ---------- Featured listing: compact, horizontal mobile layout ----------
+     Photos stay on top (the gallery block above, untouched); everything
+     below is tightened into scannable horizontal strips instead of one
+     long vertical list, so the card reads in a glance, not a scroll. */
+  .featured { padding: 0 1rem 3.5rem; }
+  .featured-inner { margin-bottom: 3.5rem; border-radius: 1.15rem; }
+  .featured-media { padding: 0; gap: 0; }
+  .featured-gallery { padding: .6rem .6rem 0; }
+  /* min-width: 0 at every level: the horizontally-scrolling spec/chip strips
+     below have wide, non-wrapping content by design (that's what makes them
+     scroll). Without this, flex/grid items default to min-width: auto and
+     refuse to shrink below that content's width, which forces every ancestor
+     — the body, the card, the whole section — to stretch to fit it instead
+     of letting the strip scroll internally. */
+  .featured-inner, .featured-body { min-width: 0; }
+  /* overflow: hidden makes the browser actually honor min-width: 0 for this
+     grid item's automatic minimum size — without it some engines still size
+     the 1fr track to the content's min-content width regardless. The
+     scrolling strips below manage their own overflow-x independently. */
+  .featured-body { width: 100%; padding: 1.5rem 1.4rem 1.7rem; overflow: hidden; }
+  .featured-body h2 { font-size: 1.6rem; margin-bottom: .7rem; }
+  .featured-headline { margin-bottom: .5rem; }
+  .kicker { font-size: .6rem; letter-spacing: .2em; margin-bottom: 0; }
+  .featured-badge { font-size: .52rem; padding: .4rem .8rem; }
+  .featured-price { margin-bottom: .8rem; }
+  .featured-price-value { font-size: 1.6rem; }
+  /* Spec cells become a single scrollable row — same info, a third the height.
+     Both min-width: 0 AND overflow-y: hidden (alongside overflow-x: auto)
+     are required for Chromium to treat this item's automatic minimum size
+     as zero in the ancestor grid/flex sizing — overflow-x alone isn't
+     enough, so without overflow-y set too, every ancestor up to the card
+     itself was stretching to fit this row's full unwrapped content width. */
+  .featured-specs {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; gap: 0;
+    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.1rem; padding: 0 1.4rem;
+    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .featured-specs::-webkit-scrollbar { display: none; }
+  .spec-cell { padding-right: 1rem; margin-right: 1rem; }
+  .spec-value { font-size: 1.1rem; }
+  /* Description clamps to 3 lines with a Read more toggle (JS-driven) so the
+     card doesn't front-load a long paragraph before the buttons and specs. */
+  .featured-desc { font-size: .88rem; margin-bottom: .3rem; }
+  .featured-desc-wrap { margin-bottom: 1.2rem; }
+  .featured-desc.clamped {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .featured-desc-toggle { display: inline-block; }
+  /* Feature tags scroll horizontally in one row instead of wrapping to several. */
+  .featured-chips {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.3rem; padding: 0 1.4rem;
+    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .featured-chips::-webkit-scrollbar { display: none; }
+  .featured-chips span { flex-shrink: 0; }
+  /* CTAs sit side by side rather than stacking two full-width buttons.
+     min-width: 0 overrides flex items' default min-width: auto, which
+     would otherwise refuse to shrink past the button text's natural
+     width and push the row wider than the viewport. */
+  .featured-ctas { flex-wrap: nowrap; gap: .6rem; margin-bottom: .9rem; }
+  .featured-ctas .btn-accent, .featured-ctas .btn-outline {
+    flex: 1 1 0; min-width: 0; padding: .85rem .5rem; font-size: .56rem; letter-spacing: .08em;
+    text-align: center; line-height: 1.3; white-space: normal;
+  }
+  .featured-mls { margin-top: 0; }
 }
