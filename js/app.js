@@ -882,19 +882,6 @@ function sprinkleSparkles() {
     reobserveReveals(grid);
   });
 
-  // --- Around Town events ---
-  get('/content/events.json').then(d => {
-    if (!d || !Array.isArray(d.events)) return;
-    const rail = document.getElementById('aroundRail'); if (!rail) return;
-    rail.innerHTML = d.events.map((e, i) => `
-      <div class="around-card glass reveal${i ? ' delay-' + Math.min(i * 100, 300) : ''}">
-        <span class="around-day">${esc(e.day)}</span>
-        <h4>${esc(e.title)}</h4>
-        <p>${esc(e.detail)}</p>
-      </div>`).join('');
-    reobserveReveals(rail);
-  });
-
   // --- Newsletter CTA block ---
   get('/content/newsletter.json').then(d => {
     if (!d) return;

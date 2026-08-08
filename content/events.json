@@ -1,9 +1,0 @@
-{
-  "events": [
-    { "day": "Wed", "title": "Fernandina Midweek Market", "detail": "14th & Lime · 9am–1pm" },
-    { "day": "Sat", "title": "Farmers & Art Market", "detail": "Downtown Fernandina · 9am–1pm" },
-    { "day": "Tue", "title": "Poetry Canteen Open Mic", "detail": "Story & Song Bookstore · 3:30pm" },
-    { "day": "Fri", "title": "Sounds on Centre", "detail": "Live music downtown · 6pm" },
-    { "day": "Sun", "title": "Sunrise on Main Beach", "detail": "Bring coffee. Trust us. · 6:45am" }
-  ]
-}

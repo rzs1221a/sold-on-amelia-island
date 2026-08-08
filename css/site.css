@@ -378,15 +378,6 @@ nav#navbar.scrolled {
    AROUND TOWN
    ========================================================== */
 .around { padding: 6rem 2rem; max-width: 1500px; margin: 0 auto; }
-.around-rail { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2rem; margin-bottom: 2.5rem; }
-.around-card { padding: 1.7rem 1.5rem; transition: transform .4s var(--ease-ios), border-color .4s; }
-.around-card:hover { transform: translateY(-5px); border-color: rgba(138,169,84,.4); }
-.around-day {
-  display: inline-block; font-size: .58rem; font-weight: 800; letter-spacing: .26em; text-transform: uppercase;
-  color: var(--fern); border: 1px solid rgba(138,169,84,.45); border-radius: 999px; padding: .35rem .85rem; margin-bottom: 1rem;
-}
-.around-card h4 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: .35rem; }
-.around-card p { font-size: .78rem; color: var(--ink-faint); }
 .around-newsletter { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.6rem 3rem; flex-wrap: wrap; }
 .around-newsletter h3 { font-size: 2rem; margin-bottom: .3rem; }
 .around-newsletter p { color: var(--ink-soft); font-size: .92rem; max-width: 460px; }
@@ -620,8 +611,7 @@ nav#navbar.scrolled {
   .featured-body { padding: 2.2rem 1.8rem; }
   .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
   .areas-grid { grid-template-columns: 1fr 1fr; }
-  .around-rail { grid-template-columns: repeat(2, 1fr); }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .pathways-banner { grid-template-columns: 1fr; }
   .pathway { min-height: 340px; }
   .hero-cards { grid-template-columns: 1fr; }
@@ -642,8 +632,7 @@ nav#navbar.scrolled {
   .masthead-tag { letter-spacing: .14em; font-size: .58rem; }
   .hero-card { padding: 1.1rem 1.2rem; }
   .hero-card-title { font-size: 1.2rem; }
-  .collection-grid, .dash-grid, .areas-grid, .around-rail { grid-template-columns: 1fr; }
-  .duo-card { padding: 2.4rem 1.6rem; }
+  .collection-grid, .dash-grid, .areas-grid,   .duo-card { padding: 2.4rem 1.6rem; }
   .around-newsletter { padding: 2rem 1.5rem; }
   .newsletter-form { flex-direction: column; }
   .testimonial-stage { padding: 3rem 1.6rem; }

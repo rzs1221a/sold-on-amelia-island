@@ -122,20 +122,6 @@ collections:
           - { name: button_label, label: "Button text", widget: string }
           - { name: link, label: "Button link (URL of your latest newsletter)", widget: string, hint: "Example: https://mailchi.mp/... - leave as #newsletter to scroll to the signup box." }
 
-      - name: "events"
-        label: "Around Town Events"
-        file: "content/events.json"
-        description: "Local happenings shown in the Around Town section. Add, remove, or reorder freely."
-        fields:
-          - name: events
-            label: "Events"
-            widget: list
-            summary: "{{fields.day}} — {{fields.title}}"
-            fields:
-              - { name: day, label: "Day badge", widget: string, hint: "Example: Sat" }
-              - { name: title, label: "Event name", widget: string }
-              - { name: detail, label: "Where & when", widget: string }
-
       - name: "areas"
         label: "Neighborhoods"
         file: "content/areas.json"
