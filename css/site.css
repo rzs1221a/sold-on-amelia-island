@@ -23,13 +23,17 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+/* overflow-x: clip (not hidden) on BOTH roots: decorative layers that bleed
+   past the viewport — the featured glow, the ticker — must not create a
+   horizontal pan area on touch devices, and `clip` removes the scrollable
+   overflow without turning the root into a scroll container. */
+html { scroll-behavior: smooth; scroll-padding-top: 96px; overflow-x: clip; }
 body {
   font-family: 'Inter', -apple-system, sans-serif;
   background: var(--night);
   color: var(--pearl);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 .serif { font-family: 'Playfair Display', serif; }
