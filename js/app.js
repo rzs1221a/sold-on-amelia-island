@@ -212,9 +212,19 @@ function setSlide(i) {
 function restartSlideTimer() {
   clearInterval(slideTimer);
   if (prefersReduced) return; // no auto-advance for reduced motion
-  slideTimer = setInterval(() => setSlide((slideIdx + 1) % slides.length), 7000);
+  slideTimer = setInterval(() => setSlide((slideIdx + 1) % slides.length), 9000);
 }
 restartSlideTimer();
+
+// Decode the hidden slides up front: the first crossfade used to race the
+// network, and a half-loaded background reads as a stutter.
+function warmHeroImages() {
+  slides.forEach(s => {
+    const m = (s.style.backgroundImage || '').match(/url\(["']?(.+?)["']?\)/);
+    if (m) { const img = new Image(); img.src = m[1]; }
+  });
+}
+window.addEventListener('load', warmHeroImages);
 
 /* ---------- Local time ---------- */
 function tickTime() {
@@ -1216,4 +1226,5 @@ function rebuildHeroSlides() {
   Array.from(dotsWrap.children).forEach(d => heroDots.push(d));
   slideIdx = 0;
   restartSlideTimer();
+  warmHeroImages(); // CMS slides arrive after load — warm these too
 }

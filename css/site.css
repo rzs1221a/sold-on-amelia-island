@@ -200,12 +200,18 @@ nav#navbar.scrolled {
    ========================================================== */
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 .hero-slides { position: absolute; inset: 0; }
+/* Every slide drifts on the same clock, whether visible or not — a slide that
+   loses .active keeps the exact transform it had, so the crossfade is pure
+   opacity between two identically-moving layers. (Animating only .active
+   snapped the outgoing slide back to scale(1) mid-fade — the old jolt.) The
+   drift starts above 1 and alternates, so it never resets or shows an edge. */
 .hero-slide {
   position: absolute; inset: 0; background-size: cover; background-position: center;
-  opacity: 0; transition: opacity 2.2s ease; will-change: transform, opacity;
+  opacity: 0; transition: opacity 2.8s ease-in-out; will-change: transform, opacity;
+  animation: heroDrift 44s ease-in-out infinite alternate;
 }
-.hero-slide.active { opacity: 1; animation: kenBurns 16s ease-in-out forwards; }
-@keyframes kenBurns { from { transform: scale(1.0); } to { transform: scale(1.14) translate3d(-1.5%, 2%, 0); } }
+.hero-slide.active { opacity: 1; }
+@keyframes heroDrift { from { transform: scale(1.03); } to { transform: scale(1.12) translate3d(-1.2%, 1.6%, 0); } }
 .hero-scrim {
   position: absolute; inset: 0;
   background:
@@ -920,8 +926,8 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
     animation-duration: .001ms !important; animation-iteration-count: 1 !important;
     transition-duration: .001ms !important; scroll-behavior: auto !important;
   }
-  .bg-ambient, .hero-slide.active { animation: none !important; }
-  .hero-slide.active { transform: none !important; }
+  .bg-ambient, .hero-slide { animation: none !important; }
+  .hero-slide { transform: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
   .ticker-track { animation: none !important; }
   .duo-portrait-ring { animation: none !important; }
