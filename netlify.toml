@@ -48,7 +48,13 @@ for = "/*"
   # line to go public.
   X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
+# Assets revalidate via ETag instead of being cached as immutable: images on
+# this site ARE replaced in place (CMS uploads, headshot/photo swaps), and an
+# immutable year-long cache made Safari keep serving old photos after a swap.
+# A 304 revalidation is cheap; a visitor staring at last month's headshot
+# isn't. If a fingerprinted-asset pipeline is ever added, immutable can come
+# back for the fingerprinted paths only.
 [[headers]]
 for = "/assets/*"
   [headers.values]
-  Cache-Control = "public, max-age=31536000, immutable"
+  Cache-Control = "public, max-age=0, must-revalidate"
