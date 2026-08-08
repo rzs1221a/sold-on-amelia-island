@@ -318,7 +318,11 @@ nav#navbar.scrolled {
    FEATURED + COLLECTION
    ========================================================== */
 .featured { padding: 3rem 2rem 6rem; max-width: 1500px; margin: 0 auto; }
-.featured-inner { display: grid; grid-template-columns: 1.3fr 1fr; overflow: hidden; margin-bottom: 5.5rem; }
+/* Photo on top, everything else stacked below — at every screen size, not
+   just mobile. A side-by-side split reads as two competing halves; stacked,
+   the photo gets full width to breathe and the details read as one clean
+   block underneath it. */
+.featured-inner { display: grid; grid-template-columns: 1fr; overflow: hidden; margin-bottom: 5.5rem; }
 /* min-width: 0 + overflow: hidden let this grid column shrink to its track's
    actual width instead of stretching to fit the thumbnail strip's full
    unwrapped content (12 photos wide) — the strip scrolls internally via its
@@ -332,7 +336,7 @@ nav#navbar.scrolled {
    its edges. Nothing is layered over the image. */
 .featured-photo-btn {
   position: relative; display: block; width: 100%; aspect-ratio: 3 / 2;
-  padding: 0; border-radius: 1.15rem; overflow: hidden; background: var(--night);
+  padding: 0; border-radius: 1.15rem 1.15rem 0 0; overflow: hidden; background: var(--night);
   cursor: zoom-in;
 }
 .featured-photo-btn > img { width: 100%; height: 100%; object-fit: contain; transition: opacity .45s var(--ease-ios); }
@@ -361,9 +365,12 @@ nav#navbar.scrolled {
   font-size: .58rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
   padding: .55rem 1.1rem; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.35);
 }
-.featured-body { padding: 3.2rem; display: flex; flex-direction: column; justify-content: center; }
+.featured-body { padding: 2.6rem 3.2rem 3.2rem; display: flex; flex-direction: column; }
 .featured-body h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1.2rem; }
-.featured-desc { color: var(--ink-soft); margin-bottom: 1.6rem; }
+/* Now that the body spans the photo's full width, cap the paragraph at a
+   comfortable reading measure instead of letting it stretch edge to edge —
+   everything else (price, specs, chips, CTAs) still uses the full width. */
+.featured-desc { color: var(--ink-soft); margin-bottom: 1.6rem; max-width: 70ch; }
 .featured-desc-toggle {
   display: none; /* shown only past the mobile breakpoint below */
   font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
@@ -643,9 +650,7 @@ nav#navbar.scrolled {
 @media (max-width: 900px) {
   .nav-actions .btn-nav { display: none; }
   .nav-burger { display: flex; }
-  .featured-inner { grid-template-columns: 1fr; }
   .featured-body { padding: 2.2rem 1.8rem; }
-  .featured-photo-btn { border-radius: 1.15rem 1.15rem 0 0; }
   .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
   .areas-grid { grid-template-columns: 1fr 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -690,7 +695,6 @@ nav#navbar.scrolled {
   .featured { padding: 0 1rem 3.5rem; }
   .featured-inner { margin-bottom: 3.5rem; border-radius: 1.15rem; }
   .featured-media { padding: 0; gap: 0; }
-  .featured-photo-btn { border-radius: 1.15rem 1.15rem 0 0; }
   .featured-gallery { padding: .6rem .6rem 0; }
   /* min-width: 0 at every level: the horizontally-scrolling spec/chip strips
      below have wide, non-wrapping content by design (that's what makes them
