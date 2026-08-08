@@ -319,7 +319,13 @@ nav#navbar.scrolled {
    ========================================================== */
 .featured { padding: 3rem 2rem 6rem; max-width: 1500px; margin: 0 auto; }
 .featured-inner { display: grid; grid-template-columns: 1.3fr 1fr; overflow: hidden; margin-bottom: 5.5rem; }
-.featured-media { display: flex; flex-direction: column; justify-content: center; gap: .55rem; padding: .55rem; }
+/* min-width: 0 + overflow: hidden let this grid column shrink to its track's
+   actual width instead of stretching to fit the thumbnail strip's full
+   unwrapped content (12 photos wide) — the strip scrolls internally via its
+   own overflow-x, this just stops that intrinsic width from leaking out to
+   every ancestor. Applies at every breakpoint: the media column can be
+   narrower than the strip's natural width well above the mobile cutoff. */
+.featured-media { display: flex; flex-direction: column; justify-content: center; gap: .55rem; padding: .55rem; min-width: 0; overflow: hidden; }
 /* The listing photos are 3:2. Locking the frame to that ratio and containing
    the image means the whole photograph is always visible — never cropped —
    and an odd-ratio photo from a future import letterboxes instead of losing
@@ -342,8 +348,15 @@ nav#navbar.scrolled {
 }
 .featured-photo-btn:hover .featured-expand,
 .featured-photo-btn:focus-visible .featured-expand { opacity: 1; transform: translateY(0); }
+/* Touch devices have no :hover, so the "view all photos" affordance would
+   otherwise never be visible — show it plainly instead of on-hover-only. */
+@media (hover: none) {
+  .featured-expand { opacity: 1; transform: translateY(0); }
+}
+.featured-headline { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; margin-bottom: .3rem; }
+.featured-headline .kicker { margin-bottom: 0; }
 .featured-badge {
-  align-self: flex-start; margin-bottom: 1rem;
+  flex-shrink: 0;
   background: linear-gradient(120deg, var(--fern), #a9c778); color: #0f1a09;
   font-size: .58rem; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
   padding: .55rem 1.1rem; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.35);
@@ -351,6 +364,11 @@ nav#navbar.scrolled {
 .featured-body { padding: 3.2rem; display: flex; flex-direction: column; justify-content: center; }
 .featured-body h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 1.2rem; }
 .featured-desc { color: var(--ink-soft); margin-bottom: 1.6rem; }
+.featured-desc-toggle {
+  display: none; /* shown only past the mobile breakpoint below */
+  font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--fern); margin: -1.1rem 0 1.4rem;
+}
 .featured-chips { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 2rem; }
 .featured-chips span {
   font-size: .6rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
@@ -627,6 +645,7 @@ nav#navbar.scrolled {
   .nav-burger { display: flex; }
   .featured-inner { grid-template-columns: 1fr; }
   .featured-body { padding: 2.2rem 1.8rem; }
+  .featured-photo-btn { border-radius: 1.15rem 1.15rem 0 0; }
   .collection-grid, .dash-grid { grid-template-columns: 1fr 1fr; }
   .areas-grid { grid-template-columns: 1fr 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -663,6 +682,74 @@ nav#navbar.scrolled {
   .flow-chip { padding: .8rem 1.3rem; font-size: .72rem; }
   .area-tile { height: 300px; }
   .stats { padding: 3.5rem 1.2rem; }
+
+  /* ---------- Featured listing: compact, horizontal mobile layout ----------
+     Photos stay on top (the gallery block above, untouched); everything
+     below is tightened into scannable horizontal strips instead of one
+     long vertical list, so the card reads in a glance, not a scroll. */
+  .featured { padding: 0 1rem 3.5rem; }
+  .featured-inner { margin-bottom: 3.5rem; border-radius: 1.15rem; }
+  .featured-media { padding: 0; gap: 0; }
+  .featured-photo-btn { border-radius: 1.15rem 1.15rem 0 0; }
+  .featured-gallery { padding: .6rem .6rem 0; }
+  /* min-width: 0 at every level: the horizontally-scrolling spec/chip strips
+     below have wide, non-wrapping content by design (that's what makes them
+     scroll). Without this, flex/grid items default to min-width: auto and
+     refuse to shrink below that content's width, which forces every ancestor
+     — the body, the card, the whole section — to stretch to fit it instead
+     of letting the strip scroll internally. */
+  .featured-inner, .featured-body { min-width: 0; }
+  /* overflow: hidden makes the browser actually honor min-width: 0 for this
+     grid item's automatic minimum size — without it some engines still size
+     the 1fr track to the content's min-content width regardless. The
+     scrolling strips below manage their own overflow-x independently. */
+  .featured-body { width: 100%; padding: 1.5rem 1.4rem 1.7rem; overflow: hidden; }
+  .featured-body h2 { font-size: 1.6rem; margin-bottom: .7rem; }
+  .featured-headline { margin-bottom: .5rem; }
+  .kicker { font-size: .6rem; letter-spacing: .2em; margin-bottom: 0; }
+  .featured-badge { font-size: .52rem; padding: .4rem .8rem; }
+  .featured-price { margin-bottom: .8rem; }
+  .featured-price-value { font-size: 1.6rem; }
+  /* Spec cells become a single scrollable row — same info, a third the height.
+     Both min-width: 0 AND overflow-y: hidden (alongside overflow-x: auto)
+     are required for Chromium to treat this item's automatic minimum size
+     as zero in the ancestor grid/flex sizing — overflow-x alone isn't
+     enough, so without overflow-y set too, every ancestor up to the card
+     itself was stretching to fit this row's full unwrapped content width. */
+  .featured-specs {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; gap: 0;
+    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.1rem; padding: 0 1.4rem;
+    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .featured-specs::-webkit-scrollbar { display: none; }
+  .spec-cell { padding-right: 1rem; margin-right: 1rem; }
+  .spec-value { font-size: 1.1rem; }
+  /* Description clamps to 3 lines with a Read more toggle (JS-driven) so the
+     card doesn't front-load a long paragraph before the buttons and specs. */
+  .featured-desc { font-size: .88rem; margin-bottom: .3rem; }
+  .featured-desc-wrap { margin-bottom: 1.2rem; }
+  .featured-desc.clamped {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .featured-desc-toggle { display: inline-block; }
+  /* Feature tags scroll horizontally in one row instead of wrapping to several. */
+  .featured-chips {
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    width: calc(100% + 2.8rem); margin: 0 -1.4rem 1.3rem; padding: 0 1.4rem;
+    min-width: 0; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .featured-chips::-webkit-scrollbar { display: none; }
+  .featured-chips span { flex-shrink: 0; }
+  /* CTAs sit side by side rather than stacking two full-width buttons.
+     min-width: 0 overrides flex items' default min-width: auto, which
+     would otherwise refuse to shrink past the button text's natural
+     width and push the row wider than the viewport. */
+  .featured-ctas { flex-wrap: nowrap; gap: .6rem; margin-bottom: .9rem; }
+  .featured-ctas .btn-accent, .featured-ctas .btn-outline {
+    flex: 1 1 0; min-width: 0; padding: .85rem .5rem; font-size: .56rem; letter-spacing: .08em;
+    text-align: center; line-height: 1.3; white-space: normal;
+  }
+  .featured-mls { margin-top: 0; }
 }
 
 /* ==========================================================
@@ -788,7 +875,7 @@ body.cursor-on :focus-visible { outline: 2px solid var(--fern); }
 
 /* Sits below the photo — never over it. */
 .featured-gallery {
-  display: flex; gap: .5rem; overflow-x: auto;
+  display: flex; gap: .5rem; overflow-x: auto; overflow-y: hidden; width: 100%; min-width: 0;
   scrollbar-width: none; scroll-behavior: smooth;
 }
 .featured-gallery::-webkit-scrollbar { display: none; }

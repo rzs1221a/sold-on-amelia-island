@@ -845,6 +845,49 @@ const Lightbox = (() => {
 })();
 
 /* ==========================================================
+   FEATURED-DESCRIPTION "READ MORE" (mobile)
+   The clamp itself is CSS, scoped to the mobile breakpoint. This just
+   decides whether the paragraph actually overflows three lines and,
+   if so, shows the toggle. Re-checked after CMS hydration (description
+   text can change) and on resize (crossing the breakpoint).
+   ========================================================== */
+const FeaturedDescClamp = (() => {
+  const desc = document.getElementById('featuredDesc');
+  const toggle = document.getElementById('featuredDescToggle');
+  if (!desc || !toggle) return { check() {} };
+
+  let expanded = false;
+
+  function check() {
+    if (expanded) return; // don't yank an open toggle shut mid-read
+    desc.classList.add('clamped');
+    // Clamping only applies under the mobile breakpoint (CSS-scoped); above
+    // it, clamped has no visual effect and scrollHeight === clientHeight.
+    const overflowing = desc.scrollHeight - desc.clientHeight > 2;
+    toggle.hidden = !overflowing;
+    if (!overflowing) desc.classList.remove('clamped');
+  }
+
+  toggle.addEventListener('click', () => {
+    expanded = !expanded;
+    desc.classList.toggle('clamped', !expanded);
+    toggle.textContent = expanded ? 'Read less' : 'Read more';
+    toggle.setAttribute('aria-expanded', String(expanded));
+  });
+
+  let resizeT;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(check, 200);
+  });
+
+  return { check };
+})();
+// Seed from the static default text once the page (and web fonts) settle;
+// hydrateFromCMS() re-checks again if the description changes.
+window.addEventListener('load', () => FeaturedDescClamp.check());
+
+/* ==========================================================
    CMS CONTENT HYDRATION
    Reads /content/*.json (edited by Kelly & Will at /admin) and
    applies it to the page. The HTML ships with sensible defaults,
@@ -935,6 +978,7 @@ const Lightbox = (() => {
     setTextIn(sec, '.kicker', d.kicker);
     setTextIn(sec, 'h2', d.title);
     setTextIn(sec, '.featured-desc', d.description);
+    FeaturedDescClamp.check();
     setTextIn(sec, '.featured-badge', d.badge || d.status);
 
     // Photos: `photos[]` is the real-listing gallery; `image` is the single-photo
