@@ -189,29 +189,39 @@ const countObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
 /* ---------- Hero slideshow ---------- */
+// Desktop screens only rotate photos sharp enough for the stretch; smaller
+// sources still serve phones, where their resolution is plenty. Evaluated
+// once per load.
+const heroWantsAll = !window.matchMedia('(min-width: 1024px)').matches;
+if (!heroWantsAll) {
+  document.querySelectorAll('.hero-slide[data-mobile-only]').forEach(el => el.remove());
+}
 const slides = Array.from(document.querySelectorAll('.hero-slide'));
 const dotsWrap = document.getElementById('heroDots');
 let slideIdx = 0, slideTimer;
 
-slides.forEach((_, i) => {
-  const d = document.createElement('button');
-  d.className = 'hero-dot interactive' + (i === 0 ? ' active' : '');
-  d.setAttribute('aria-label', 'Slide ' + (i + 1));
-  d.onclick = () => { setSlide(i); restartSlideTimer(); };
-  dotsWrap.appendChild(d);
-});
+// A one-photo hero needs no dots and no rotation — the slow drift still runs.
+if (slides.length > 1) {
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'hero-dot interactive' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.onclick = () => { setSlide(i); restartSlideTimer(); };
+    dotsWrap.appendChild(d);
+  });
+}
 const heroDots = Array.from(dotsWrap.children);
 
 function setSlide(i) {
   slides[slideIdx].classList.remove('active');
-  heroDots[slideIdx].classList.remove('active');
+  heroDots[slideIdx]?.classList.remove('active');
   slideIdx = i;
   slides[slideIdx].classList.add('active');
-  heroDots[slideIdx].classList.add('active');
+  heroDots[slideIdx]?.classList.add('active');
 }
 function restartSlideTimer() {
   clearInterval(slideTimer);
-  if (prefersReduced) return; // no auto-advance for reduced motion
+  if (prefersReduced || slides.length < 2) return; // no auto-advance
   slideTimer = setInterval(() => setSlide((slideIdx + 1) % slides.length), 9000);
 }
 restartSlideTimer();
@@ -925,10 +935,14 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
     setText('.masthead-tag', d.tagline);
 
     if (Array.isArray(d.slides) && d.slides.length) {
+      // Same desktop filter as the boot slides; if an editor unchecks every
+      // slide's desktop flag, fall back to the full list rather than a blank hero.
+      let slideList = heroWantsAll ? d.slides : d.slides.filter(s => s.desktop !== false);
+      if (!slideList.length) slideList = d.slides;
       const wrap = document.getElementById('heroSlides');
       const dots = document.getElementById('heroDots');
       if (wrap && dots) {
-        wrap.innerHTML = d.slides.map((s, i) =>
+        wrap.innerHTML = slideList.map((s, i) =>
           `<div class="hero-slide${i === 0 ? ' active' : ''}" role="img" aria-label="${esc(s.alt || '')}" style="background-image:url('${esc(s.image)}')"></div>`
         ).join('');
         dots.innerHTML = '';
@@ -1222,7 +1236,8 @@ function rebuildHeroSlides() {
   if (!newSlides.length || !dotsWrap) return;
   slides.length = 0; newSlides.forEach(s => slides.push(s));
   dotsWrap.innerHTML = '';
-  newSlides.forEach((_, i) => {
+  // A one-photo rotation gets no dots (restartSlideTimer also no-ops on it).
+  if (newSlides.length > 1) newSlides.forEach((_, i) => {
     const d = document.createElement('button');
     d.className = 'hero-dot interactive' + (i === 0 ? ' active' : '');
     d.setAttribute('aria-label', 'Slide ' + (i + 1));
