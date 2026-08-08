@@ -57,16 +57,33 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 #depth-pressure { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.82), #000); opacity: 0; }
 
 /* ---------- Preloader ---------- */
+/* Same world as the site behind it: the ambient cabernet-night gradient with
+   a soft glow pooled behind the wordmark, and the brand's fern + sky waves
+   drawing themselves in sequence. */
 #preloader {
-  position: fixed; inset: 0; z-index: 10000; background: var(--night);
+  position: fixed; inset: 0; z-index: 10000;
+  background: linear-gradient(-45deg, #0b0710, #1e0616, #40062a 55%, #0e1626 85%, #0b1220);
   display: flex; align-items: center; justify-content: center;
   transition: opacity .8s var(--ease-ios), visibility .8s;
 }
+#preloader::before {
+  content: ''; position: absolute; width: min(70vw, 640px); height: min(70vw, 640px);
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(151,10,82,.32), transparent 65%);
+  filter: blur(10px);
+}
 #preloader.done { opacity: 0; visibility: hidden; }
-.preloader-inner { text-align: center; animation: preloaderIn 1s var(--ease-ios); }
-.preloader-wordmark { font-family: 'Italiana', 'Playfair Display', serif; font-size: clamp(1.9rem, 6vw, 2.8rem); letter-spacing: .08em; text-transform: uppercase; color: var(--pearl); }
-.preloader-wave { width: 120px; margin: .6rem auto; color: var(--fern); }
-.preloader-wave path { stroke-dasharray: 200; stroke-dashoffset: 200; animation: waveDraw 1.6s var(--ease-ios) forwards .2s; }
+.preloader-inner { position: relative; text-align: center; animation: preloaderIn 1s var(--ease-ios); }
+.preloader-wordmark {
+  font-family: 'Italiana', 'Playfair Display', serif;
+  font-size: clamp(1.9rem, 6vw, 2.8rem); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--pearl);
+  text-shadow: 0 0 44px rgba(186,216,225,.22);
+}
+.preloader-wave { width: 132px; margin: .7rem auto .5rem; }
+.preloader-wave path { stroke-dasharray: 200; stroke-dashoffset: 200; }
+.preloader-wave .wave-fern { animation: waveDraw 1.6s var(--ease-ios) forwards .2s; }
+.preloader-wave .wave-sky { animation: waveDraw 1.6s var(--ease-ios) forwards .55s; }
 .preloader-sub { font-size: .65rem; letter-spacing: .4em; text-transform: uppercase; color: var(--ink-faint); }
 @keyframes waveDraw { to { stroke-dashoffset: 0; } }
 @keyframes preloaderIn { from { opacity: 0; transform: translateY(12px); } }
