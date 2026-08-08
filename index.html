@@ -282,14 +282,27 @@
 
   <!-- ============ LISTINGS (real BoldTrail search) ============ -->
   <section class="featured" id="listings">
+    <!-- Ambient glow: a blurred copy of whichever listing photo is on display,
+         so the section reads as lit by the home itself. Kept in sync with the
+         main photo by js/app.js. -->
+    <div class="featured-backdrop" id="featuredBackdrop" aria-hidden="true" style="background-image:url('./assets/img/oyster-bay/01.jpg')"></div>
     <div class="featured-inner glass-dark reveal">
       <div class="featured-media">
         <!-- The frame is locked to the photos' native 3:2 and the image is
              contained, never cropped. Nothing is allowed to overlay it. -->
-        <button class="featured-photo-btn interactive" type="button" id="featuredPhotoBtn" aria-label="Open full-screen photo gallery">
-          <img src="./assets/img/oyster-bay/01.jpg" alt="Front elevation of 96133 Oyster Bay Drive beneath mature oaks" width="2048" height="1365" loading="lazy" decoding="async" id="featuredMainPhoto">
-          <span class="featured-expand" aria-hidden="true">View all photos</span>
-        </button>
+        <div class="featured-stage">
+          <button class="featured-photo-btn interactive" type="button" id="featuredPhotoBtn" aria-label="Open full-screen photo gallery">
+            <!-- Blurred echo of the same photo fills the frame behind the sharp
+                 contained image, so letterboxed space reads as the photo's own
+                 light bleeding out instead of empty dark bars. -->
+            <span class="featured-photo-echo" id="featuredPhotoEcho" aria-hidden="true" style="background-image:url('./assets/img/oyster-bay/01.jpg')"></span>
+            <img src="./assets/img/oyster-bay/01.jpg" alt="Front elevation of 96133 Oyster Bay Drive beneath mature oaks" width="2048" height="1365" loading="lazy" decoding="async" id="featuredMainPhoto">
+            <span class="featured-expand" aria-hidden="true">View all photos</span>
+          </button>
+          <!-- Unhidden by JS once the gallery has more than one photo. -->
+          <button class="featured-nav prev interactive" type="button" id="featuredPrev" aria-label="Previous photo" hidden>‹</button>
+          <button class="featured-nav next interactive" type="button" id="featuredNext" aria-label="Next photo" hidden>›</button>
+        </div>
         <!-- Thumbnail strip sits below the photo, never on top of it. -->
         <div class="featured-gallery" id="featuredGallery" hidden></div>
       </div>
