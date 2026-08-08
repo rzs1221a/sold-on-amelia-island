@@ -53,9 +53,9 @@ const LeadSchema = z
     consentTimestamp: z.string().datetime(),
     sourceUrl: z.string().max(500),
 
-    // Context captured by the site's questionnaire. Not sent to the dropbox
-    // (no matching parser fields — unknown lines risk breaking the parse), but
-    // retained in the durable log so the agent's own notification has it.
+    // Context captured by the site's questionnaire. Included in the dropbox
+    // message as a narrative below the parser fields (kvCORE files the whole
+    // body into a Custom Note on the contact) and kept in the durable log.
     context: z.record(z.string(), z.string()).optional(),
 
     honeypot: z.string().optional()

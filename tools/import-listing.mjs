@@ -132,6 +132,14 @@ for (let i = 0; i < Math.min(photoUrls.length, MAX); i++) {
 }
 
 // ---------- write featured.json ----------
+// Re-importing the SAME listing (refreshed price/photos) keeps the hand-tuned
+// feature chips; a different address starts clean, since old chips would lie.
+let prevChips = [];
+try {
+  const prev = JSON.parse(readFileSync(join(ROOT, 'content', 'featured.json'), 'utf8'));
+  if (prev.title === street && Array.isArray(prev.chips)) prevChips = prev.chips;
+} catch { /* no existing file — fresh start */ }
+
 const featured = {
   kicker: city ? `${city}, Florida` : 'Amelia Island, Florida',
   title: street,
@@ -145,7 +153,7 @@ const featured = {
   })),
   image: '',
   badge: 'Featured Listing',
-  chips: [],
+  chips: prevChips,
   link: link || 'https://ameliaisland.heymannwilliams.com/search'
 };
 writeFileSync(join(ROOT, 'content', 'featured.json'), JSON.stringify(featured, null, 2) + '\n');
