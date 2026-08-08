@@ -79,10 +79,13 @@ renders incompletely, the in-account template wins):
 First Name:  Last Name:  Email:  Phone:  Deal Type:  Seller Address:
 ```
 
-Only these are sent. The questionnaire answers (budget, areas, timeline…) have no
-matching parser field, so they are deliberately **excluded** from the dropbox
-message — an unknown line risks silently voiding the whole lead. They're kept in
-the durable log and reach the agent through the Netlify notification instead.
+Those are the lines the parser maps onto contact fields. Below them the message
+carries the rest of what the site captured — the questionnaire retold as a short
+briefing paragraph (buyer vision/budget/timeline or seller property description/
+timing), the page the lead came from, and the consent record. Verified live:
+kvCORE files the **entire email body into a Custom Note** on the created
+contact, so the agent reads the whole story right on the contact record. The
+same data is also kept in the durable log.
 
 ### Environment variables
 
@@ -90,10 +93,15 @@ Set in Netlify → Project configuration → Environment variables (see `.env.ex
 
 | Variable | Purpose |
 |---|---|
-| `BOLDTRAIL_DROPBOX_EMAIL_BUYER` | Kelly's agent-scoped dropbox — buyer leads |
-| `BOLDTRAIL_DROPBOX_EMAIL_SELLER` | Will's agent-scoped dropbox — seller leads |
-| `RESEND_API_KEY` | Transport |
-| `LEAD_FROM_EMAIL` | Verified sender, e.g. `leads@soldonameliaisland.com` |
+| `GMAIL_APP_PASSWORD` | **Preferred transport** — Gmail SMTP app password (currently live) |
+| `GMAIL_USER` | Sending Gmail account (defaults to the verified one in code) |
+| `BOLDTRAIL_DROPBOX_EMAIL_BUYER` | Override Kelly's built-in dropbox address |
+| `BOLDTRAIL_DROPBOX_EMAIL_SELLER` | Override Will's built-in dropbox address |
+| `RESEND_API_KEY` | Fallback transport, used only when Gmail isn't configured |
+| `LEAD_FROM_EMAIL` | Resend-only verified sender, e.g. `leads@soldonameliaisland.com` |
+
+Both agents' dropbox addresses ship as defaults in `lead-submit.ts`; the env vars
+exist to rotate them without a deploy.
 
 **The dropbox addresses are unauthenticated write credentials.** Anyone holding one
 can inject contacts into the live CRM — no sender check, no key, no signature.

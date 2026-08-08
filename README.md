@@ -12,7 +12,7 @@ Static site, no build step: `index.html` + `css/site.css` + `js/app.js` + `asset
   "we're preparing your analysis" confirmation. Lead emailed to Will's BHHS Connect.
 - **Buyer flow (Kelly):** guided questionnaire → contact → confirmation + live MLS
   search links. Lead emailed to Kelly's BHHS Connect.
-- **Mortgage calculator**, **live BoldTrail listing/map links**, **working newsletter**,
+- **Live BoldTrail listing/map links**, **working newsletter**,
   cinematic hero, self-hosted imagery, full SEO/OG/schema, reduced-motion + a11y.
 
 ## How leads are delivered (Netlify Forms → BHHS Connect)
@@ -53,8 +53,8 @@ What they can change:
 - **About Kelly & Will** — names, titles, bios, phone, email, and optional real
   headshots (drop one in and it replaces the K/W monogram automatically)
 - **Featured Property** — title, description, photo, feature tags, link
-- **Listing Cards** — the three "search by lifestyle" cards and their BoldTrail links
-- **Around Town Events** — add/remove/reorder local happenings
+- **Listing Cards** — the three "search by lifestyle" cards (On Island, Amelia
+  Island Plantation, Nassau County) and their BoldTrail links
 - **Neighborhoods** — the four area tiles and the interactive-map button link
 - **Why Kelly & Will + Testimonials** — selling points, and real client testimonials
   (the testimonial block stays hidden until they add one)

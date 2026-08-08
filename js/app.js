@@ -977,6 +977,13 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
         if (a.role) route.title = a.role;
         if (a.phone) { route.phone = a.phone; route.prettyPhone = formatPhone(a.phone); }
         if (a.email) route.crmEmail = a.email;
+        // Keep the flow chip and hero-card avatars in step with a CMS headshot
+        // change — previously only the Meet section updated.
+        if (a.photo) {
+          route.photo = a.photo;
+          const heroAvatar = document.querySelector(`.hero-card-avatar.${key === 'kelly' ? 'kelly' : 'will'} img`);
+          if (heroAvatar) heroAvatar.src = a.photo;
+        }
       }
     });
   });
