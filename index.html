@@ -169,11 +169,15 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="top">
+    <!-- data-mobile-only marks slides whose source photos are ~1024px — fine
+         stretched across a phone, soft on a desktop. JS drops them from the
+         rotation on wide screens (and from hero.json via each slide's
+         "desktop" flag). -->
     <div class="hero-slides" id="heroSlides">
       <div class="hero-slide active" style="background-image:url('./assets/img/area-amelia-stock-shoot-093a-v2.jpg')"></div>
-      <div class="hero-slide" style="background-image:url('./assets/img/area-getmedia-17-v2.jpg')"></div>
-      <div class="hero-slide" style="background-image:url('./assets/img/area-winter-horseback-riding-v2.jpg')"></div>
-      <div class="hero-slide" style="background-image:url('./assets/img/area-img-2932-v2.jpg')"></div>
+      <div class="hero-slide" data-mobile-only style="background-image:url('./assets/img/area-getmedia-17-v2.jpg')"></div>
+      <div class="hero-slide" data-mobile-only style="background-image:url('./assets/img/area-winter-horseback-riding-v2.jpg')"></div>
+      <div class="hero-slide" data-mobile-only style="background-image:url('./assets/img/area-img-2932-v2.jpg')"></div>
     </div>
     <div class="hero-scrim"></div>
 

@@ -6,19 +6,23 @@
   "slides": [
     {
       "image": "/assets/img/area-amelia-stock-shoot-093a-v2.jpg",
-      "alt": "Aerial view of the Fernandina Harbor Marina at sunset"
+      "alt": "Aerial view of the Fernandina Harbor Marina at sunset",
+      "desktop": true
     },
     {
       "image": "/assets/img/area-getmedia-17-v2.jpg",
-      "alt": "Aerial view of oceanfront homes along the Amelia Island shoreline"
+      "alt": "Aerial view of oceanfront homes along the Amelia Island shoreline",
+      "desktop": false
     },
     {
       "image": "/assets/img/area-winter-horseback-riding-v2.jpg",
-      "alt": "Horseback riders on the beach at Amelia Island"
+      "alt": "Horseback riders on the beach at Amelia Island",
+      "desktop": false
     },
     {
       "image": "/assets/img/area-img-2932-v2.jpg",
-      "alt": "Pelicans flying over the surf at sunset"
+      "alt": "Pelicans flying over the surf at sunset",
+      "desktop": false
     }
   ]
 }

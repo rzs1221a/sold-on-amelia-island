@@ -37,6 +37,7 @@ collections:
             fields:
               - { name: image, label: "Photo", widget: image }
               - { name: alt, label: "Photo description (for accessibility)", widget: string }
+              - { name: desktop, label: "Sharp enough for desktop?", widget: boolean, default: true, required: false, hint: "Leave on for high-resolution photos (2000px+ wide). Turn OFF for smaller photos — they'll still show on phones, but desktop screens only rotate the sharp ones." }
 
       - name: "agents"
         label: "About Kelly & Will"
