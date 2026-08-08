@@ -5,7 +5,11 @@
   "description": "Kelly Marine & Will Henderson — Sold on Amelia Island. Static site; npm deps exist only for the Netlify Functions that ingest leads into BoldTrail.",
   "dependencies": {
     "@netlify/blobs": "^8.1.0",
+    "nodemailer": "^6.9.16",
     "resend": "^4.0.1",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.16"
   }
 }

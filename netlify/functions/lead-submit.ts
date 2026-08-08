@@ -15,6 +15,7 @@
  */
 import { getStore } from '@netlify/blobs';
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { z } from 'zod';
 
 /* ---------------------------------------------------------------------------
@@ -191,10 +192,16 @@ export default async (req: Request): Promise<Response> => {
   }
 
   const route = dropboxFor(lead.dealType);
+  // Transport preference: Gmail SMTP first (the proven path — the dropbox
+  // already parses mail from this account), Resend as the alternative.
+  // Gmail needs an app password: Google Account → Security → 2-Step
+  // Verification → App passwords, then set GMAIL_APP_PASSWORD in Netlify.
+  const gmailUser = process.env.GMAIL_USER || 'rzs1221a@gmail.com';
+  const gmailPass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s+/g, ''); // app passwords are shown with spaces
   const apiKey = process.env.RESEND_API_KEY;
-  // Default sender — the domain must be verified in the Resend account that
-  // owns RESEND_API_KEY. Override via env var to send from a different domain.
+  // Resend-only: sender domain must be verified in the Resend account.
   const from = process.env.LEAD_FROM_EMAIL || 'leads@soldonameliaisland.com';
+  const transport = gmailPass ? 'gmail' : apiKey ? 'resend' : null;
   const body = formatDropboxBody(lead);
 
   // Durable record written BEFORE the send, so a lead is traceable even if the
@@ -238,12 +245,11 @@ export default async (req: Request): Promise<Response> => {
   };
   await persist();
 
-  if (!route || !apiKey || !from) {
+  if (!route || !transport) {
     record.delivery.status = 'not_configured';
     record.delivery.error = [
       !route ? 'no dropbox address configured' : null,
-      !apiKey ? 'RESEND_API_KEY missing' : null,
-      !from ? 'LEAD_FROM_EMAIL missing' : null
+      !transport ? 'no mail transport configured (set GMAIL_APP_PASSWORD or RESEND_API_KEY)' : null
     ]
       .filter(Boolean)
       .join('; ');
@@ -259,21 +265,39 @@ export default async (req: Request): Promise<Response> => {
   }
 
   try {
-    const resend = new Resend(apiKey);
-    const { data, error } = await resend.emails.send({
-      from,
-      to: route.to,
-      subject: 'Add Contact', // exact — any prefix/suffix breaks the parser
-      text: body // plain text only; an HTML wrapper breaks the line-based parse
-    });
-    if (error) throw new Error(typeof error === 'string' ? error : JSON.stringify(error));
+    let providerId: string | null = null;
+    if (transport === 'gmail') {
+      const mailer = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: { user: gmailUser, pass: gmailPass }
+      });
+      const info = await mailer.sendMail({
+        from: gmailUser, // must be the authenticated account or Gmail rewrites it anyway
+        to: route.to,
+        subject: 'Add Contact', // exact — any prefix/suffix breaks the parser
+        text: body // plain text only; an HTML wrapper breaks the line-based parse
+      });
+      providerId = info.messageId ?? null;
+    } else {
+      const resend = new Resend(apiKey);
+      const { data, error } = await resend.emails.send({
+        from,
+        to: route.to,
+        subject: 'Add Contact',
+        text: body
+      });
+      if (error) throw new Error(typeof error === 'string' ? error : JSON.stringify(error));
+      providerId = data?.id ?? null;
+    }
 
     record.delivery.status = 'sent';
-    record.delivery.providerId = data?.id ?? null;
+    record.delivery.providerId = providerId;
     await persist();
 
     console.info(
-      `[lead-submit] ${correlationId} sent to ${route.agent} dropbox (resend id ${data?.id ?? 'n/a'})`
+      `[lead-submit] ${correlationId} sent to ${route.agent} dropbox via ${transport} (id ${providerId ?? 'n/a'})`
     );
     return json(200, { ok: true, correlationId });
   } catch (err) {
