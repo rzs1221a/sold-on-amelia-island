@@ -107,10 +107,16 @@ async function isRateLimited(ip: string): Promise<boolean> {
  * Each agent has their own agent-scoped dropbox, so the created contact is
  * owned by that agent directly rather than going through company lead rules.
  * ------------------------------------------------------------------------- */
+// Verified live agent-scoped dropbox addresses (Gmail "Add Contact" test
+// parsed successfully). Env vars still win, so either address can be rotated
+// from the Netlify dashboard without a deploy.
+const DROPBOX_WILL = 'leads+berkshirehathawayhomeservicesheymannwilliamsrealty11169-a-2000162@kvcore.com';
+const DROPBOX_KELLY = 'leads+berkshirehathawayhomeservicesheymannwilliamsrealty11169-a-1770460@kvcore.com';
+
 function dropboxFor(dealType: Lead['dealType']): { to: string; agent: string } | null {
   const shared = process.env.BOLDTRAIL_DROPBOX_EMAIL ?? '';
-  const seller = process.env.BOLDTRAIL_DROPBOX_EMAIL_SELLER || shared;
-  const buyer = process.env.BOLDTRAIL_DROPBOX_EMAIL_BUYER || shared;
+  const seller = process.env.BOLDTRAIL_DROPBOX_EMAIL_SELLER || shared || DROPBOX_WILL;
+  const buyer = process.env.BOLDTRAIL_DROPBOX_EMAIL_BUYER || shared || DROPBOX_KELLY;
   if (dealType === 'Seller') {
     return seller ? { to: seller, agent: 'Will Henderson' } : null;
   }

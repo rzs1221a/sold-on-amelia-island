@@ -334,9 +334,14 @@ nav#navbar.scrolled {
    the image means the whole photograph is always visible — never cropped —
    and an odd-ratio photo from a future import letterboxes instead of losing
    its edges. Nothing is layered over the image. */
+/* Cap the photo so the whole card fits on one screen: the frame keeps its
+   3:2 shape but its width is limited to whatever keeps the photo around
+   two-thirds of the viewport tall, centered in the card. On narrow screens
+   the width limit is larger than the card, so this is a no-op there. */
 .featured-photo-btn {
-  position: relative; display: block; width: 100%; aspect-ratio: 3 / 2;
-  padding: 0; border-radius: 1.15rem 1.15rem 0 0; overflow: hidden; background: var(--night);
+  position: relative; display: block; width: min(100%, calc(64vh * 3 / 2)); margin-inline: auto;
+  aspect-ratio: 3 / 2;
+  padding: 0; border-radius: 1rem; overflow: hidden; background: var(--night);
   cursor: zoom-in;
 }
 .featured-photo-btn > img { width: 100%; height: 100%; object-fit: contain; transition: opacity .45s var(--ease-ios); }
