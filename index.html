@@ -282,6 +282,10 @@
 
   <!-- ============ LISTINGS (real BoldTrail search) ============ -->
   <section class="featured" id="listings">
+    <!-- Ambient glow: a blurred copy of whichever listing photo is on display,
+         so the section reads as lit by the home itself. Kept in sync with the
+         main photo by js/app.js. -->
+    <div class="featured-backdrop" id="featuredBackdrop" aria-hidden="true" style="background-image:url('./assets/img/oyster-bay/01.jpg')"></div>
     <div class="featured-inner glass-dark reveal">
       <div class="featured-media">
         <!-- The frame is locked to the photos' native 3:2 and the image is

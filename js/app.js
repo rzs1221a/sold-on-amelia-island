@@ -988,9 +988,14 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
       : (d.image ? [{ image: d.image, alt: d.title || '' }] : []);
     const main = sec.querySelector('#featuredMainPhoto');
     const frame = sec.querySelector('#featuredPhotoBtn');
+    // The section's ambient glow is a blurred copy of the displayed photo —
+    // keep it in step whenever the photo changes.
+    const backdrop = document.getElementById('featuredBackdrop');
+    const setBackdrop = src => { if (backdrop && src) backdrop.style.backgroundImage = `url('${src}')`; };
     if (main && gallery.length) {
       main.src = gallery[0].image;
       main.alt = gallery[0].alt || d.title || main.alt;
+      setBackdrop(gallery[0].image);
     }
 
     // Hand the gallery to the lightbox and keep the inline photo in step with it.
@@ -1002,6 +1007,7 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
       const apply = () => {
         main.src = ph.image;
         main.alt = ph.alt || d.title || '';
+        setBackdrop(ph.image);
         if (frame) frame.classList.remove('swapping');
       };
       // Crossfade, unless the visitor asked for less motion.
