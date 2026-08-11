@@ -7,6 +7,15 @@ publish = "/"
 directory = "netlify/functions"
 node_bundler = "esbuild"
 
+# The apex is the only address this site answers on. Without this, the
+# netlify.app alias serves a complete second copy that browsers,
+# crawlers, and shared links can get stuck on.
+[[redirects]]
+from = "https://soldonameliaisland.netlify.app/*"
+to = "https://soldonameliaisland.com/:splat"
+status = 301
+force = true
+
 # Friendly path for the lead endpoint.
 [[redirects]]
 from = "/api/leads"
@@ -43,10 +52,6 @@ for = "/*"
   X-Content-Type-Options = "nosniff"
   Referrer-Policy = "strict-origin-when-cross-origin"
   Permissions-Policy = "geolocation=(), microphone=(), camera=()"
-  # PRE-LAUNCH: strongest de-indexing signal — applies to every response,
-  # including assets and any crawler that ignores robots.txt. Delete this
-  # line to go public.
-  X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
 # Assets revalidate via ETag instead of being cached as immutable: images on
 # this site ARE replaced in place (CMS uploads, headshot/photo swaps), and an
