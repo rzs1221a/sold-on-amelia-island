@@ -1,0 +1,19 @@
+# Every request to this retired address goes to the live site.
+#
+# 302, never 301: a permanent redirect here would be cached by the very
+# browsers this exists to rescue, and could never be retired afterwards.
+#
+# The ?ref=legacy marker is load-bearing. Safari keys its redirect cache on
+# the full URL, so redirecting to the bare apex hands visitors straight back
+# to the poisoned entry they just came from — an infinite loop. The query
+# string makes it a different cache key, so the stale entry does not apply.
+[[redirects]]
+  from = "/*"
+  to = "https://soldonameliaisland.com/:splat?ref=legacy"
+  status = 302
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-store"
