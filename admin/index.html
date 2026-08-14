@@ -6,19 +6,87 @@
   <meta name="robots" content="noindex">
   <title>Sold on Amelia Island — Edit Your Site</title>
   <link rel="icon" type="image/png" href="../assets/favicon-32-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css">
   <style>
     body { margin: 0; font-family: Inter, -apple-system, sans-serif; }
+    /* Branded loading state while the editor bundle downloads */
+    #nc-root:empty { display: grid; place-items: center; min-height: 100vh; }
     #nc-root:empty::after {
-      content: 'Loading your editor…';
-      display: block; padding: 4rem; text-align: center;
-      color: #670038; font-size: 1rem; letter-spacing: .08em;
+      content: 'Opening your editor…';
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: #670038;
+      letter-spacing: .04em;
+      animation: adminPulse 1.6s ease-in-out infinite;
     }
+    @keyframes adminPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
   </style>
 </head>
 <body>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
   <script>
+    /* ------------------------------------------------------------
+       CSS HOOKS FOR THE BRAND SKIN
+       Decap styles itself with emotion classes like
+       `css-1abc2d-AppHeader-button`: readable component labels fused
+       into one hashed class name. admin.css is written against clean
+       `.nc-<Label>` selectors; this one-shot pass rewrites each of
+       them (via CSSOM, so the file itself stays readable) into three
+       attribute selectors that together match a label at any position
+       inside an emotion class — end (`css-x-AppHeader`), before
+       another label (`css-x-AppHeader-button`), or before a sibling
+       class (`css-x-AppHeader e1xyz`) — without ever matching longer
+       labels that merely start the same (AppHeaderContent).
+       A static stylesheet transform, deliberately not a DOM observer:
+       mutating Decap's own elements as they render turns into a fight
+       with React that can wedge the page.
+       ------------------------------------------------------------ */
+    (function () {
+      var NC = /\.nc-([A-Za-z0-9]+)/;
+      function expand(selector) {
+        var variants = [selector];
+        for (var guard = 0; guard < 4; guard++) {
+          var next = [], changed = false;
+          variants.forEach(function (sel) {
+            var m = sel.match(NC);
+            if (!m) { next.push(sel); return; }
+            changed = true;
+            ['[class*="-' + m[1] + ' "]', '[class$="-' + m[1] + '"]', '[class*="-' + m[1] + '-"]']
+              .forEach(function (attr) { next.push(sel.replace(m[0], attr)); });
+          });
+          variants = next;
+          if (!changed) break;
+        }
+        return variants.join(', ');
+      }
+      function rewrite(rules) {
+        for (var i = 0; i < rules.length; i++) {
+          var rule = rules[i];
+          // Not an else-if: in browsers with CSS-nesting support every style
+          // rule carries a (usually empty) cssRules list of its own.
+          if (rule.selectorText && rule.selectorText.indexOf('.nc-') !== -1) {
+            try { rule.selectorText = expand(rule.selectorText); } catch (e) { /* keep original */ }
+          }
+          if (rule.cssRules && rule.cssRules.length) rewrite(rule.cssRules);
+        }
+      }
+      function run() {
+        for (var i = 0; i < document.styleSheets.length; i++) {
+          var sheet = document.styleSheets[i];
+          if ((sheet.href || '').indexOf('admin.css') === -1) continue;
+          try { rewrite(sheet.cssRules); } catch (e) { /* not loaded yet */ return false; }
+          return true;
+        }
+        return false;
+      }
+      if (!run()) window.addEventListener('load', run);
+    })();
+
     // Send invited users straight into the editor after they set a password.
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on('init', user => {
@@ -27,6 +95,107 @@
         }
       });
     }
+
+    /* ------------------------------------------------------------
+       FEATURED PROPERTY LIVE PREVIEW
+       The editor's right-hand pane renders the listing the way the
+       site's featured section does — dark card, serif address, price,
+       specs, chips — instead of Decap's plain field dump. Edits show
+       up in it as you type.
+       ------------------------------------------------------------ */
+    CMS.registerPreviewStyle(`
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+      body { margin: 0; background: #fdfbf7; font-family: 'Inter', sans-serif; }
+      .fp-wrap { padding: 28px; }
+      .fp-card {
+        background: linear-gradient(160deg, #17101d, #0b0710);
+        border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
+        overflow: hidden; color: #fdfbf7; max-width: 560px; margin: 0 auto;
+        box-shadow: 0 24px 60px -20px rgba(11,7,16,.5);
+      }
+      .fp-photo { position: relative; aspect-ratio: 3 / 2; background: #241a2b; }
+      .fp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .fp-photo .fp-empty {
+        position: absolute; inset: 0; display: grid; place-items: center;
+        color: rgba(253,251,247,.4); font-style: italic; font-family: 'Playfair Display', serif;
+      }
+      .fp-badge {
+        position: absolute; top: 14px; left: 14px; background: #670038; color: #fdfbf7;
+        font-size: .68rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+        padding: 6px 12px; border-radius: 999px;
+      }
+      .fp-count {
+        position: absolute; bottom: 12px; right: 14px; background: rgba(11,7,16,.65);
+        font-size: .72rem; padding: 4px 10px; border-radius: 999px; backdrop-filter: blur(4px);
+      }
+      .fp-body { padding: 22px 24px 26px; }
+      .fp-kicker { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: #8aa954; font-weight: 600; }
+      .fp-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 600; margin: .3rem 0 .5rem; }
+      .fp-price { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+      .fp-price strong { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: #bad8e1; font-weight: 500; }
+      .fp-price span { font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: #8aa954; }
+      .fp-specs { display: flex; flex-wrap: wrap; gap: 8px 22px; border-block: 1px solid rgba(255,255,255,.1); padding: 12px 0; margin-bottom: 14px; }
+      .fp-specs div { font-size: .9rem; }
+      .fp-specs small { display: block; font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(253,251,247,.45); }
+      .fp-desc { font-size: .9rem; line-height: 1.65; color: rgba(253,251,247,.72); margin-bottom: 16px; }
+      .fp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+      .fp-chips span {
+        font-size: .74rem; padding: 5px 12px; border-radius: 999px;
+        border: 1px solid rgba(186,216,225,.35); color: #bad8e1;
+      }
+      .fp-mls { font-size: .74rem; color: rgba(253,251,247,.45); }
+      .fp-note { max-width: 560px; margin: 14px auto 0; text-align: center; font-size: .78rem; color: #6f6276; font-style: italic; }
+    `, { raw: true });
+
+    var FeaturedPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var get = function (name) { return entry.getIn(['data', name]) || ''; };
+        var photos = entry.getIn(['data', 'photos']);
+        var photoList = photos && photos.toJS ? photos.toJS() : [];
+        var single = get('image');
+        var main = (photoList[0] && photoList[0].image) || single;
+        var mainAsset = main ? this.props.getAsset(main) : null;
+        var specs = [
+          ['Beds', get('beds')], ['Baths', get('baths')], ['Sq Ft', get('sqft')],
+          ['Lot', get('lot')], ['Built', get('year')]
+        ].filter(function (s) { return s[1]; });
+        var chips = entry.getIn(['data', 'chips']);
+        var chipList = chips && chips.toJS ? chips.toJS() : [];
+
+        return h('div', { className: 'fp-wrap' },
+          h('div', { className: 'fp-card' },
+            h('div', { className: 'fp-photo' },
+              mainAsset
+                ? h('img', { src: mainAsset.toString(), alt: '' })
+                : h('div', { className: 'fp-empty' }, 'Add photos to see them here'),
+              get('badge') ? h('div', { className: 'fp-badge' }, get('badge')) : null,
+              photoList.length > 1 ? h('div', { className: 'fp-count' }, photoList.length + ' photos') : null
+            ),
+            h('div', { className: 'fp-body' },
+              h('div', { className: 'fp-kicker' }, get('kicker')),
+              h('h1', { className: 'fp-title' }, get('title') || 'Property address'),
+              (get('price') || get('status')) ? h('div', { className: 'fp-price' },
+                get('price') ? h('strong', {}, get('price')) : null,
+                get('status') ? h('span', {}, get('status')) : null
+              ) : null,
+              specs.length ? h('div', { className: 'fp-specs' },
+                specs.map(function (s, i) {
+                  return h('div', { key: i }, h('small', {}, s[0]), s[1]);
+                })
+              ) : null,
+              get('description') ? h('p', { className: 'fp-desc' }, get('description')) : null,
+              chipList.length ? h('div', { className: 'fp-chips' },
+                chipList.map(function (c, i) { return h('span', { key: i }, c); })
+              ) : null,
+              get('mls') ? h('div', { className: 'fp-mls' }, 'MLS# ' + get('mls')) : null
+            )
+          ),
+          h('p', { className: 'fp-note' }, 'A preview of your featured listing — the live site adds the full photo gallery and buttons.')
+        );
+      }
+    });
+    CMS.registerPreviewTemplate('featured', FeaturedPreview);
   </script>
 </body>
 </html>
