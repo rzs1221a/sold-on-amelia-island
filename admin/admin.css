@@ -1,0 +1,420 @@
+/* ==========================================================
+   SOLD ON AMELIA ISLAND — ADMIN SKIN
+   Reskins Decap CMS in the site's own brand so editing feels
+   like part of the site, not a stock dashboard.
+
+   Decap renders with emotion CSS classes shaped `css-<hash>-<Label>`,
+   where <Label> is the component name and stays stable across builds
+   of the same major version. `.nc-<Label>` selectors here are virtual:
+   a one-shot script in index.html rewrites them via CSSOM into the
+   attribute selectors that match those emotion classes. Every label
+   used below was verified against the decap-cms 3.3.x bundle — if a
+   Decap upgrade ever renames one, that rule simply stops applying and
+   the editor falls back to its stock look for that piece, still usable.
+   ========================================================== */
+
+:root {
+  --adm-cabernet: #670038;
+  --adm-cabernet-bright: #970a52;
+  --adm-cabernet-deep: #45001f;
+  --adm-fern: #8aa954;
+  --adm-accent-grad: linear-gradient(120deg, #7dad74, #8ac2ab);
+  --adm-sky: #bad8e1;
+  --adm-pearl: #fdfbf7;
+  --adm-sand: #f6f0e6;
+  --adm-line: #e8dfd0;
+  --adm-line-soft: #efe8db;
+  --adm-ink: #2c2130;
+  --adm-ink-soft: #6f6276;
+  --adm-night: #0b0710;
+  --adm-radius: 14px;
+  --adm-shadow: 0 1px 2px rgba(43, 25, 44, .05), 0 10px 30px -12px rgba(103, 0, 56, .14);
+  --adm-shadow-lift: 0 2px 4px rgba(43, 25, 44, .06), 0 18px 44px -14px rgba(103, 0, 56, .24);
+  --adm-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Ground ---------- */
+body {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(151, 10, 82, .07), transparent 60%),
+    radial-gradient(900px 480px at -10% 110%, rgba(138, 169, 84, .09), transparent 60%),
+    var(--adm-pearl) !important;
+  color: var(--adm-ink);
+  -webkit-font-smoothing: antialiased;
+}
+#nc-root { min-height: 100vh; }
+::selection { background: var(--adm-fern); color: var(--adm-night); }
+
+/* ---------- App header: the site's deep-wine nav ---------- */
+.nc-AppHeader {
+  background: linear-gradient(115deg, var(--adm-cabernet-deep) 0%, var(--adm-cabernet) 55%, #7c0f47 100%) !important;
+  box-shadow: 0 10px 34px -14px rgba(69, 0, 31, .55) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.nc-AppHeaderContent { max-width: 1440px; padding: 0 28px; }
+.nc-AppHeaderNavLink {
+  color: rgba(253, 251, 247, .72) !important;
+  font-weight: 500;
+  letter-spacing: .02em;
+  border-radius: 999px;
+  padding: 8px 16px !important;
+  transition: color .25s var(--adm-ease), background .25s var(--adm-ease);
+}
+.nc-AppHeaderNavLink:hover,
+.nc-AppHeaderNavLink:focus {
+  color: var(--adm-pearl) !important;
+  background: rgba(255, 255, 255, .08);
+}
+.nc-AppHeaderNavLink.header-link-active {
+  color: var(--adm-pearl) !important;
+  background: rgba(255, 255, 255, .12);
+}
+.nc-AppHeaderNavLink.header-link-active svg,
+.nc-AppHeaderNavLink svg { color: currentColor !important; }
+.nc-AppHeaderButton { color: rgba(253, 251, 247, .78) !important; }
+.nc-AppHeaderButton:hover { color: var(--adm-pearl) !important; }
+/* "Quick add" — the site's coastal-green CTA */
+.nc-AppHeaderQuickNewButton {
+  background: var(--adm-accent-grad) !important;
+  color: var(--adm-night) !important;
+  font-weight: 600;
+  border-radius: 999px !important;
+  border: none !important;
+  box-shadow: 0 6px 18px -6px rgba(125, 173, 116, .55);
+  transition: transform .25s var(--adm-ease), box-shadow .25s var(--adm-ease);
+}
+.nc-AppHeaderQuickNewButton:hover {
+  background: var(--adm-accent-grad) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -8px rgba(125, 173, 116, .7);
+}
+.nc-AppHeaderQuickNewButton svg { color: var(--adm-night) !important; }
+
+/* ---------- Collection page ---------- */
+.nc-CollectionContainer { max-width: 1440px; margin: 0 auto; padding: 0 12px; }
+.nc-CollectionMain { padding-top: 34px; }
+.nc-CollectionTopContainer {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 6px 0 4px !important;
+}
+.nc-CollectionTopHeading,
+h1.nc-CollectionTopHeading {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 2.1rem !important;
+  font-weight: 600 !important;
+  color: var(--adm-night) !important;
+  letter-spacing: .01em;
+}
+.nc-CollectionTopDescription {
+  color: var(--adm-ink-soft) !important;
+  font-size: .95rem;
+  max-width: 62ch;
+}
+.nc-CollectionTopNewButton {
+  background: var(--adm-cabernet) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  box-shadow: 0 8px 22px -8px rgba(103, 0, 56, .5);
+  transition: background .25s var(--adm-ease), transform .25s var(--adm-ease);
+}
+.nc-CollectionTopNewButton:hover {
+  background: var(--adm-cabernet-bright) !important;
+  transform: translateY(-1px);
+}
+
+/* Sidebar — quiet card with pill links */
+.nc-SidebarContainer {
+  background: rgba(255, 255, 255, .72) !important;
+  border: 1px solid var(--adm-line-soft);
+  border-radius: var(--adm-radius) !important;
+  box-shadow: var(--adm-shadow) !important;
+  backdrop-filter: blur(10px);
+  padding: 12px !important;
+}
+.nc-SidebarHeading {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 1.05rem !important;
+  color: var(--adm-cabernet) !important;
+  padding: 4px 10px 8px !important;
+}
+.nc-SidebarNavLink {
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  color: var(--adm-ink) !important;
+  border-left: none !important;
+  transition: background .2s var(--adm-ease), color .2s var(--adm-ease);
+}
+.nc-SidebarNavLink:hover { background: var(--adm-sand) !important; color: var(--adm-cabernet) !important; }
+.nc-SidebarNavLink.sidebar-active {
+  background: rgba(103, 0, 56, .08) !important;
+  color: var(--adm-cabernet) !important;
+  font-weight: 600;
+}
+.nc-SidebarNavLink.sidebar-active svg,
+.nc-SidebarNavLink:hover svg { color: var(--adm-cabernet) !important; }
+.nc-SearchContainer { margin: 4px 10px 10px; }
+.nc-SearchInput {
+  background: var(--adm-pearl) !important;
+  border: 1px solid var(--adm-line) !important;
+  border-radius: 999px !important;
+  transition: border-color .2s, box-shadow .2s;
+}
+.nc-SearchInput:focus {
+  border-color: var(--adm-cabernet-bright) !important;
+  box-shadow: 0 0 0 3px rgba(151, 10, 82, .12) !important;
+}
+
+/* Content cards — the sections Kelly & Will click into */
+.nc-ListCard,
+.nc-Card {
+  border-radius: var(--adm-radius) !important;
+  border: 1px solid var(--adm-line-soft);
+  box-shadow: var(--adm-shadow) !important;
+  overflow: hidden;
+  transition: transform .3s var(--adm-ease), box-shadow .3s var(--adm-ease);
+}
+.nc-ListCard:hover,
+.nc-Card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--adm-shadow-lift) !important;
+}
+.nc-ListCardLink { padding: 18px 20px !important; }
+.nc-ListCardTitle,
+.nc-CardTitle,
+.nc-CardHeading {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 1.12rem !important;
+  color: var(--adm-night) !important;
+}
+.nc-CardBody { color: var(--adm-ink-soft) !important; }
+
+/* ---------- Editor ---------- */
+/* Top toolbar: warm glass instead of stark white */
+.nc-ToolbarContainer {
+  background: rgba(253, 251, 247, .88) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 24px -14px rgba(43, 25, 44, .25) !important;
+  border-bottom: 1px solid var(--adm-line-soft);
+}
+.nc-ToolbarSectionBackLink {
+  background: transparent !important;
+  color: var(--adm-ink-soft) !important;
+  transition: color .2s;
+  border-right: 1px solid var(--adm-line-soft) !important;
+}
+.nc-ToolbarSectionBackLink:hover { background: var(--adm-sand) !important; color: var(--adm-cabernet) !important; }
+.nc-BackCollection { color: inherit !important; }
+.nc-BackStatusUnchanged, .nc-BackStatusChanged { color: var(--adm-fern) !important; }
+
+/* Save = quiet wine outline; Publish = the site's green CTA */
+.nc-SaveButton {
+  background: transparent !important;
+  border: 1.5px solid var(--adm-cabernet) !important;
+  color: var(--adm-cabernet) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  transition: background .2s, color .2s;
+}
+.nc-SaveButton:hover { background: rgba(103, 0, 56, .07) !important; }
+.nc-PublishButton,
+.nc-PublishedToolbarButton,
+.nc-ToolbarSubSectionLast .nc-StyledDropdownButton {
+  background: var(--adm-accent-grad) !important;
+  color: var(--adm-night) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  box-shadow: 0 8px 20px -8px rgba(125, 173, 116, .6);
+}
+.nc-PublishButton::after,
+.nc-PublishedToolbarButton::after { border-top-color: var(--adm-night) !important; }
+.nc-DeleteButton {
+  background: transparent !important;
+  color: #a33030 !important;
+  border-radius: 999px !important;
+}
+.nc-DeleteButton:hover { background: rgba(163, 48, 48, .08) !important; }
+.nc-ToolbarSubSectionFirst .nc-DropdownButton { border-radius: 999px !important; }
+
+/* Editor layout: airy panes on the warm ground */
+.nc-EditorContainer { background: transparent !important; }
+.nc-ControlPaneContainer { padding: 28px 22px 80px !important; }
+
+/* Fields: calm floating labels, soft rounded inputs */
+.nc-ControlContainer { margin-bottom: 4px; }
+.nc-FieldLabel {
+  background: transparent !important;
+  color: var(--adm-cabernet) !important;
+  font-size: .72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 0 0 6px 2px !important;
+  border: none !important;
+}
+.nc-ControlHint {
+  color: var(--adm-ink-soft) !important;
+  font-size: .8rem !important;
+  font-style: italic;
+}
+.nc-ControlErrorsList { font-size: .8rem; }
+
+/* Decap draws each widget as a hard blue-bordered box on focus; soften
+   everything to the site's palette. Inputs get their own rounded frame. */
+.nc-ControlContainer input[type="text"],
+.nc-ControlContainer input[type="number"],
+.nc-ControlContainer input:not([type]),
+.nc-ControlContainer textarea,
+.nc-ControlContainer select,
+div[data-slate-editor="true"] {
+  font-family: 'Inter', -apple-system, sans-serif !important;
+  border-radius: 10px !important;
+  border-color: var(--adm-line) !important;
+  background: #fff !important;
+  color: var(--adm-ink) !important;
+  transition: border-color .2s, box-shadow .2s;
+}
+.nc-ControlContainer textarea { line-height: 1.55 !important; }
+
+/* Decap signals focus/hover by recoloring the label chip and the widget
+   outline in bright blue via inline emotion styles; our label is already
+   transparent, so just retint every border it touches. */
+.nc-ControlContainer > div { border-color: var(--adm-line) !important; border-radius: 10px; }
+.nc-ControlContainer input:focus,
+.nc-ControlContainer textarea:focus,
+.nc-ControlContainer select:focus {
+  border-color: var(--adm-cabernet-bright) !important;
+  box-shadow: 0 0 0 3px rgba(151, 10, 82, .1) !important;
+  outline: none;
+}
+
+/* List widget rows (photos, chips, cards) */
+.nc-StyledListItemTopBar {
+  background: var(--adm-sand) !important;
+  border: 1px solid var(--adm-line-soft) !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+.nc-NestedObjectLabel {
+  background: var(--adm-sand) !important;
+  border: 1px solid var(--adm-line-soft) !important;
+  border-top: none !important;
+  border-radius: 0 0 10px 10px !important;
+  color: var(--adm-ink) !important;
+}
+.nc-AddButton {
+  background: transparent !important;
+  border: 1.5px dashed var(--adm-fern) !important;
+  color: #5c7a33 !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  transition: background .2s;
+}
+.nc-AddButton:hover { background: rgba(138, 169, 84, .1) !important; }
+.nc-AddButton svg { color: #5c7a33 !important; }
+
+/* Object groups ("Kelly", "Will") */
+.nc-TopBarContainer {
+  background: var(--adm-sand) !important;
+  border-color: var(--adm-line-soft) !important;
+  border-radius: 10px 10px 0 0;
+}
+.nc-ExpandButton { color: var(--adm-ink) !important; font-weight: 600; }
+
+/* Image widget buttons */
+.nc-FileWidgetButton {
+  background: var(--adm-cabernet) !important;
+  color: var(--adm-pearl) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  transition: background .2s;
+}
+.nc-FileWidgetButton:hover { background: var(--adm-cabernet-bright) !important; }
+.nc-FileWidgetButtonRemove {
+  background: transparent !important;
+  color: #a33030 !important;
+  border-radius: 999px !important;
+}
+
+/* Boolean toggles → fern when on */
+.nc-ToggleBackground { background: var(--adm-line) !important; }
+input:checked + .nc-ToggleBackground,
+.nc-ToggleContainer[aria-checked="true"] .nc-ToggleBackground { background: var(--adm-fern) !important; }
+.nc-ToggleHandle { background: #fff !important; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+/* Editor / preview toggle rail */
+.nc-EditorToggle button { border-radius: 12px !important; }
+
+/* Preview pane sits on the same warm ground */
+.nc-PreviewPaneContainer { background: var(--adm-pearl) !important; }
+.nc-PreviewPaneFrame { background: var(--adm-pearl) !important; border: none !important; }
+
+/* Dropdown menus */
+.nc-DropdownList {
+  border-radius: 12px !important;
+  border: 1px solid var(--adm-line-soft) !important;
+  box-shadow: var(--adm-shadow-lift) !important;
+  overflow: hidden;
+}
+.nc-StyledDropdown { border-radius: 12px !important; }
+
+/* Media library + confirm dialogs (ReactModal) */
+.ReactModal__Content {
+  border-radius: var(--adm-radius) !important;
+  border: 1px solid var(--adm-line-soft) !important;
+  box-shadow: var(--adm-shadow-lift) !important;
+}
+.ReactModal__Overlay { background-color: rgba(11, 7, 16, .55) !important; backdrop-filter: blur(3px); }
+
+/* ---------- Login page: a doorway that matches the site ---------- */
+.nc-StyledAuthenticationPage {
+  background:
+    radial-gradient(900px 480px at 80% -10%, rgba(151, 10, 82, .35), transparent 60%),
+    radial-gradient(700px 420px at 10% 110%, rgba(138, 169, 84, .18), transparent 60%),
+    var(--adm-night) !important;
+}
+.nc-StyledAuthenticationPage::before {
+  content: 'Sold on Amelia Island';
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-weight: 600;
+  color: var(--adm-pearl);
+  letter-spacing: .02em;
+  margin-bottom: .35rem;
+}
+.nc-StyledAuthenticationPage::after {
+  content: 'Welcome back — sign in to edit your site.';
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: rgba(253, 251, 247, .6);
+  order: 1;
+  margin-top: 1.2rem;
+}
+/* Decap's own wordmark reads poorly on the night background (and 3.x
+   ignores logo_url here) — swap in the site's mark instead. */
+.nc-PageLogoIcon {
+  display: block;
+  width: 76px !important; height: 76px !important; margin-bottom: 6px;
+  background: url('/assets/apple-touch-icon-v2.png') center / contain no-repeat;
+  border-radius: 18px;
+}
+.nc-PageLogoIcon svg, .nc-PageLogoIcon img { display: none !important; }
+.nc-LoginButton {
+  background: var(--adm-accent-grad) !important;
+  color: var(--adm-night) !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  padding: 14px 28px !important;
+  box-shadow: 0 12px 30px -10px rgba(125, 173, 116, .55);
+  transition: transform .25s var(--adm-ease), box-shadow .25s var(--adm-ease);
+}
+.nc-LoginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px -10px rgba(125, 173, 116, .7);
+}
+.nc-LoginButton svg { color: var(--adm-night) !important; }
+
+/* ---------- Small dignities ---------- */
+.nc-AppMainContainer { max-width: 1440px; }
+.nc-Loader, .nc-LoaderText { color: var(--adm-cabernet) !important; }
+a { color: var(--adm-cabernet); }
