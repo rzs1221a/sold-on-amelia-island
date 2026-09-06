@@ -1,31 +1,41 @@
 {
-  "kicker": "River Glen · Yulee, Florida",
-  "title": "65860 Edgewater Drive",
-  "status": "For Sale",
-  "price": "$372,000",
-  "beds": "4",
-  "baths": "2",
-  "sqft": "1,812",
-  "lot": "0.21 ac",
-  "year": "2024",
-  "mls": "114870",
-  "description": "Inviting 4-bedroom, 2-bath home on a desirable corner lot in the River Glen community of Yulee. The open floor plan offers generous living space filled with natural light, and the interior has been thoughtfully updated for modern style and convenience. Energy-efficient features — including solar panels, efficient windows, and appliances — help dramatically reduce utility costs. Outside, a fully fenced yard with a rear gate offers privacy and easy vehicle access, while River Glen residents enjoy a swimming pool, kiddie pool, and kayak launch, plus close proximity to parks, shopping, dining, and major roadways.",
+  "baths": "",
   "photos": [
-    { "image": "/assets/img/65860-edgewater-drive/01.jpg", "alt": "Front elevation of 65860 Edgewater Drive with two-car garage" },
-    { "image": "/assets/img/65860-edgewater-drive/11.jpg", "alt": "Covered front entry with navy glass-paneled door" },
-    { "image": "/assets/img/65860-edgewater-drive/02.jpg", "alt": "Open living and dining area with sliders to the backyard" },
-    { "image": "/assets/img/65860-edgewater-drive/03.jpg", "alt": "White kitchen with island, herringbone backsplash, and stainless appliances" },
-    { "image": "/assets/img/65860-edgewater-drive/06.jpg", "alt": "Kitchen island with quartz counters and walk-in pantry" },
-    { "image": "/assets/img/65860-edgewater-drive/04.jpg", "alt": "Primary suite with tray ceiling" },
-    { "image": "/assets/img/65860-edgewater-drive/12.jpg", "alt": "Bedroom with tray ceiling and two bright windows" },
-    { "image": "/assets/img/65860-edgewater-drive/05.jpg", "alt": "Covered rear patio overlooking the fully fenced yard" },
-    { "image": "/assets/img/65860-edgewater-drive/07.jpg", "alt": "Rear elevation with rooftop solar array" },
-    { "image": "/assets/img/65860-edgewater-drive/09.jpg", "alt": "River Glen community pool with kiddie splash area" },
-    { "image": "/assets/img/65860-edgewater-drive/10.jpg", "alt": "River Glen kayak launch on the creek" },
-    { "image": "/assets/img/65860-edgewater-drive/08.jpg", "alt": "River Glen community fitness center" }
+    {
+      "image": "/assets/img/uploads/5-web-or-mls-2727-1st-ave-a-b-5.jpg",
+      "alt": "Welcome to 2727 1st Ave"
+    },
+    {
+      "image": "/assets/img/uploads/getmedia-51-.jpeg",
+      "alt": "One block to the sand - beach access 27!"
+    },
+    {
+      "image": "/assets/img/uploads/15-web-or-mls-2727-1st-ave-a-b-21.jpg",
+      "alt": "Updated Kitchen"
+    },
+    {
+      "image": "/assets/img/uploads/22-web-or-mls-2727-1st-ave-a-b-27.jpg",
+      "alt": "Full Bath upstairs"
+    }
   ],
-  "image": "",
-  "badge": "Featured Listing",
-  "chips": ["Corner Lot", "Solar Panels", "Built 2024", "Fully Fenced Yard", "Community Pool & Kayak Launch"],
-  "link": "https://www.heymannwilliams.com/property/225-114870-65860-edgewater-drive-yulee-FL-32097"
+  "badge": "LVP Flooring through main level",
+  "chips": [
+    "Corner Lot",
+    "Solar Panels",
+    "Built 2024",
+    "Fully Fenced Yard",
+    "Community Pool & Kayak Launch"
+  ],
+  "price": "$750,000",
+  "sqft": "2100",
+  "lot": "",
+  "beds": "",
+  "status": "For Sale",
+  "kicker": "1st Ave - Amelia Island",
+  "mls": "117274",
+  "title": "2727 1st Ave, Fernandina Beach, FL",
+  "link": "https://www.bhhsheymannwilliams.com/fernandina-beach/kelly-marine/cid-3063482/fl/2727-1st-avenue-32034/pid-439076622",
+  "image": "/assets/img/uploads/28-web-or-mls-2727-1st-ave-a-b-34.jpg",
+  "description": "Just one block from the beach and nestled on a peaceful, tree-filled lot, this updated duplex offers exceptional flexibility with no HOA and no flood zone. Rent both sides for strong income potential, live in one while renting the other, or reimagine the property as a spacious single-family beach retreat. Each 1,050 sqft. unit features an open-concept living area, half bath, mud/laundry room, private fenced backyard, two upstairs bedrooms, full bath, and abundant storage. Major improvements include newer windows, HVAC systems and ductwork, exterior resurfacing and paint, hot water heater, plus interior and appliance updates. Separate utilities and city water/sewer make ownership simple and tenant-friendly. 30-day minimum rentals are allowed. Conveniently located near restaurants, shopping, and grocery stores, this is a rare opportunity to own an affordable beachside property on Amelia Island.",
+  "year": ""
 }
