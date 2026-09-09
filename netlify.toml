@@ -26,6 +26,13 @@ force = true
 # Proxy BoldTrail property-alert email links through to the BoldTrail-served
 # host so they resolve on this domain instead of 404ing. These must stay
 # above any future catch-all redirect since Netlify matches top-down.
+#
+# SEO: these paths are served on soldonameliaisland.com at status 200, so they
+# must carry `X-Robots-Tag: noindex, follow`. That header CANNOT be set from a
+# [[headers]] block here — Netlify custom headers apply only to files it serves
+# from its own store, never to proxied content. It is set instead by
+# netlify/edge-functions/idx-noindex.ts, which runs ahead of these rules and
+# performs the same proxy. These rewrites remain as its fallback.
 [[redirects]]
 from = "/details/*"
 to = "https://ameliaisland.heymannwilliams.com/details/:splat"

@@ -1,0 +1,24 @@
+{
+  "draft": true,
+  "kicker": "Free Home Valuation",
+  "headline": "What Is My Amelia Island Home Worth?",
+  "intro": "[PLACEHOLDER — replace with human-written copy before publishing] One or two sentences: a local valuation built on street-level knowledge, not a national algorithm.",
+  "hero_image": "",
+  "hero_alt": "",
+  "sections": [
+    {
+      "heading": "Why an online estimate misses on Amelia Island",
+      "body": "[PLACEHOLDER — replace with human-written copy before publishing] Explain, specifically, what automated valuations get wrong here: flood zones and insurance, short-term rental restrictions by neighborhood and HOA, street-level differences (ocean side vs. marsh side, walkability to downtown Fernandina), and the thin comp sets on an island."
+    },
+    {
+      "heading": "What Will's valuation includes",
+      "body": "[PLACEHOLDER — replace with human-written copy before publishing] Live island comps, a walk-through, a pricing range with the reasoning behind it, and what to do (and not do) before listing."
+    },
+    {
+      "heading": "What happens after you ask",
+      "body": "[PLACEHOLDER — replace with human-written copy before publishing] Set expectations honestly: Will reviews the details, reaches out within a stated window, and there is no obligation to list."
+    }
+  ],
+  "cta_label": "Get My Home's Value",
+  "cta_blurb": "Answer a few questions about your home and Will prepares a personalized market analysis."
+}

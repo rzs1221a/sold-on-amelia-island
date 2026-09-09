@@ -930,7 +930,11 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
     }
     const h1 = document.querySelector('.masthead-title');
     if (h1 && d.headline_line_1) {
+      // The visually-hidden SEO phrase (#mastheadSeo) is part of the <h1> but
+      // not CMS-editable; detach it, rebuild the wordmark, re-attach it.
+      const seo = h1.querySelector('#mastheadSeo');
       h1.innerHTML = `${esc(d.headline_line_1)}<br>${esc(d.headline_line_2 || '')}<span class="masthead-dot">.com</span>`;
+      if (seo) h1.appendChild(seo);
     }
     setText('.masthead-tag', d.tagline);
 
@@ -1197,7 +1201,7 @@ window.addEventListener('load', () => FeaturedDescClamp.check());
       grid.innerHTML = d.items.map(it => `
         <div class="trust-item">
           <div class="trust-icon" aria-hidden="true">${esc(it.icon || '')}</div>
-          <h4>${esc(it.title)}</h4>
+          <h3>${esc(it.title)}</h3>
           <p>${esc(it.body)}</p>
         </div>`).join('');
     }
@@ -1250,3 +1254,24 @@ function rebuildHeroSlides() {
   restartSlideTimer();
   warmHeroImages(); // CMS slides arrive after load — warm these too
 }
+
+/* ----------------------------------------------------------
+   DEEP LINKS INTO THE LEAD FLOWS
+   The standalone pages (/sell-your-home-amelia-island/,
+   /amelia-island-home-value/, neighborhood pages) do not host a
+   form of their own: their buttons link to /#sell or /#buy so
+   every lead goes through this one flow, one consent capture,
+   one /api/leads path. The hash is cleared afterwards so a
+   reload or a share of the URL does not re-open the overlay.
+---------------------------------------------------------- */
+(function openFlowFromHash() {
+  const map = { '#sell': 'seller', '#home-value': 'seller', '#buy': 'buyer' };
+  const type = map[window.location.hash];
+  if (!type) return;
+  const go = () => {
+    openFlow(type);
+    if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+  };
+  if (document.readyState === 'complete') go();
+  else window.addEventListener('load', go, { once: true });
+})();

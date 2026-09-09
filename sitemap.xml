@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Add /sell-your-home-amelia-island/, /amelia-island-home-value/ and each
+     /neighborhoods/<slug>/ page here ONLY when its human-written copy has
+     shipped and its <meta name="robots"> has been flipped to index,follow. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://soldonameliaisland.com/</loc>
-    <lastmod>2026-07-21</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://soldonameliaisland.com/privacy.html</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
   </url>
 </urlset>
