@@ -163,3 +163,68 @@ collections:
             fields:
               - { name: quote, label: "What they said", widget: text }
               - { name: author, label: "Who said it", widget: string, hint: "Example: The Parkers, relocated from Atlanta" }
+
+  # ---------------------------------------------------------------
+  # STANDALONE PAGES — shells until human-written copy lands.
+  # Each page ships noindex and unlinked from the homepage nav. When
+  # the copy is final: untick "Still a draft" here, then (developer)
+  # flip the page's <meta name="robots"> to index,follow, add it to
+  # sitemap.xml and link it from the nav.
+  # ---------------------------------------------------------------
+  - name: "pages"
+    label: "Seller Pages"
+    files:
+      - name: "sell"
+        label: "Sell Your Home page"
+        file: "content/pages/sell.json"
+        description: "soldonameliaisland.com/sell-your-home-amelia-island/ — Will's process and why to list locally."
+        fields: &page_fields
+          - { name: draft, label: "Still a draft (shows a yellow 'draft' banner on the page)", widget: boolean, default: true }
+          - { name: kicker, label: "Small line above the headline", widget: string }
+          - { name: headline, label: "Headline", widget: string }
+          - { name: intro, label: "Intro paragraph", widget: text }
+          - { name: hero_image, label: "Large photo under the intro (optional)", widget: image, required: false }
+          - { name: hero_alt, label: "Photo description (for accessibility)", widget: string, required: false }
+          - name: sections
+            label: "Sections"
+            widget: list
+            summary: "{{fields.heading}}"
+            fields:
+              - { name: heading, label: "Heading", widget: string }
+              - { name: body, label: "Text", widget: text, hint: "Blank line between paragraphs. Start lines with '- ' for a bulleted list." }
+          - { name: cta_label, label: "Button text", widget: string }
+          - { name: cta_blurb, label: "Line above the button", widget: string }
+      - name: "home-value"
+        label: "Home Value page"
+        file: "content/pages/home-value.json"
+        description: "soldonameliaisland.com/amelia-island-home-value/ — why a local valuation beats an online estimate."
+        fields: *page_fields
+
+  - name: "neighborhoods"
+    label: "Neighborhood Pages"
+    label_singular: "Neighborhood Page"
+    folder: "content/neighborhoods"
+    extension: "json"
+    format: "json"
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    description: "One entry per neighborhood page under soldonameliaisland.com/neighborhoods/. Written from your own knowledge of each neighborhood — what living there is like, housing stock and price range, HOA, flood, beach access, rental rules, schools, who it suits. A developer creates each page first (tools/new-neighborhood.mjs); you write the copy here."
+    fields:
+      - { name: draft, label: "Still a draft (shows a yellow 'draft' banner on the page)", widget: boolean, default: true }
+      - { name: name, label: "Neighborhood name", widget: string }
+      - { name: kicker, label: "Small line above the headline", widget: string, default: "Amelia Island Neighborhoods" }
+      - { name: headline, label: "Headline", widget: string }
+      - { name: intro, label: "Intro paragraph", widget: text }
+      - { name: hero_image, label: "Large photo under the intro (optional)", widget: image, required: false }
+      - { name: hero_alt, label: "Photo description (for accessibility)", widget: string, required: false }
+      - name: sections
+        label: "Sections"
+        widget: list
+        summary: "{{fields.heading}}"
+        fields:
+          - { name: heading, label: "Heading", widget: string }
+          - { name: body, label: "Text", widget: text, hint: "Blank line between paragraphs. Start lines with '- ' for a bulleted list." }
+      - { name: cta_label, label: "Button text", widget: string }
+      - { name: cta_blurb, label: "Line above the button", widget: string }

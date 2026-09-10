@@ -35,8 +35,13 @@ Field mapping is in `LEAD_ROUTING` / `submitLead()` at the top of `js/app.js`.
    agents' direct emails now and swap in the CRM addresses anytime — no redeploy needed.)*
 3. **Domain:** Netlify → *Domain settings* → add `soldonameliaisland.com`, follow the DNS
    steps, enable HTTPS. (If the domain differs, update the canonical/OG/sitemap URLs.)
-4. **Analytics (optional):** paste a GA4 Measurement ID into `window.GA_MEASUREMENT_ID`
-   near the top of `index.html`.
+4. **Analytics:** paste the GA4 Measurement ID into `window.GA_MEASUREMENT_ID` at the
+   top of `js/analytics.js` (shared by every page). Until it is set nothing loads.
+   The file also fires a `generate_lead` event when a visitor reaches the buyer or
+   seller confirmation screen — import that event into Google Ads as the conversion —
+   and `sign_up` for the newsletter. When you set the ID, update the
+   "Cookies & analytics" paragraph in `privacy.html`, which currently says analytics
+   are not running.
 5. **Spam (optional):** Netlify → Forms → enable reCAPTCHA if volume warrants (honeypot
    is already active).
 
@@ -87,9 +92,47 @@ linking out to the live BoldTrail search.
 - Testimonials: real quotes go in the marked slot in the "trust" section of `index.html`.
 - Featured/collection cards link to the live Heymann Williams BoldTrail search.
 
+## Standalone pages (shells until the copy is written)
+
+Three routes exist beyond the homepage, each a real page with its own title,
+canonical, schema and `/admin` editor entry — but **noindex, not in the sitemap, and
+not linked from the nav** until human-written copy replaces the placeholders:
+
+| Route | Editor entry | Content file |
+|---|---|---|
+| `/sell-your-home-amelia-island/` | Seller Pages → Sell Your Home page | `content/pages/sell.json` |
+| `/amelia-island-home-value/` | Seller Pages → Home Value page | `content/pages/home-value.json` |
+| `/neighborhoods/<slug>/` | Neighborhood Pages | `content/neighborhoods/<slug>.json` |
+
+They hold no form of their own: their buttons open the homepage's guided flows
+(`/#sell`, `/#home-value`, `/#buy`), so every lead uses the one existing consent
+capture and the one `/api/leads` path.
+
+To add a neighborhood page (three, chosen by Kelly & Will, each written from their
+own knowledge — never generated):
+
+```
+node tools/new-neighborhood.mjs "Amelia Island Plantation"
+```
+
+When a page's copy is final: untick "Still a draft" in `/admin`, change the page's
+`<meta name="robots">` to `index, follow`, add it to `sitemap.xml`, and link it from
+the homepage nav — in that order.
+
 ## Notes
 
 - `netlify.toml` proxies `/details/*`, `/search/*`, `/property/*` to
   `ameliaisland.heymannwilliams.com`, and sets security + asset-cache headers.
+- Those proxied paths are kept **out of the index** by
+  `netlify/edge-functions/idx-noindex.ts`, which adds `X-Robots-Tag: noindex, follow`
+  (Netlify's own header rules don't apply to proxied content). After a deploy,
+  confirm with `curl -sI https://soldonameliaisland.com/search/ | grep -i x-robots`;
+  only once it is live should `robots.txt` gain `Disallow:` lines for those paths.
+- The homepage `<h1>` is the visible wordmark plus a visually-hidden search phrase
+  (`#mastheadSeo`); `js/app.js` preserves that span when the CMS headline loads.
+- The Google Fonts request lists only the weights `css/site.css` uses. Add a weight
+  to the `<link>` in `index.html` before using it in CSS.
+- The Netlify Identity widget is loaded on the homepage only when an
+  invite/recovery token hash is present, not for every visitor.
 - All content is intentionally honest — no fabricated stats, testimonials, or per-home
   valuations — appropriate for a licensed agent's public site.

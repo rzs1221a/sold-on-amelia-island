@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <title>SOLD ON AMELIA ISLAND | Kelly Marine &amp; Will Henderson — Coastal Real Estate</title>
-  <meta name="description" content="Kelly Marine &amp; Will Henderson — The Spouses Who Sell Houses. Berkshire Hathaway HomeServices Heymann Williams Realty. Buy and sell on Amelia Island, Fernandina Beach, Yulee, and Nassau County, Florida.">
+  <title>Amelia Island Real Estate | Fernandina Beach Realtors | Kelly &amp; Will</title>
+  <meta name="description" content="Amelia Island &amp; Fernandina Beach real estate with Kelly Marine &amp; Will Henderson, The Spouses Who Sell Houses. Local Realtors, BHHS Heymann Williams Realty.">
   <link rel="canonical" href="https://soldonameliaisland.com/">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0b0710">
@@ -30,53 +30,103 @@
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon-v2.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23670038'/%3E%3Cpath d='M8 40c6-8 14-8 20 0s14 8 20 0 8-6 8-6' stroke='%238aa954' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M8 50c6-6 14-6 20 0s14 6 20 0' stroke='%23bad8e1' stroke-width='3' fill='none' stroke-linecap='round' opacity='.7'/%3E%3C/svg%3E">
 
+  <!-- Font request carries only the weights css/site.css uses (audited 2026-09):
+       Playfair 400/500/600/700 + 400 italic, Inter 300/400/600/700/800,
+       Great Vibes, Italiana. Add a weight here before using it in CSS. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=Great+Vibes&family=Italiana&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;600;700;800&family=Great+Vibes&family=Italiana&display=swap" rel="stylesheet">
 
   <link rel="preload" as="image" href="./assets/img/area-amelia-stock-shoot-093a-v2.jpg">
   <link rel="stylesheet" href="./css/site.css">
 
-  <!-- Netlify Identity: required so invite/password-reset email links (which
-       land here, on the site root) open the account-setup modal, then send
-       Kelly & Will into the /admin editor. Harmless no-op until Identity is
-       enabled for this site in the Netlify dashboard. -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Structured data: one entity graph — the team (#organization), the site
+       (#website), and both agents as Persons employed by the team — all linked
+       by @id so validators resolve them as one entity rather than loose nodes.
 
-  <!-- Structured data: the team + both agents -->
+       DELIBERATELY OMITTED until real values are supplied (see SEO brief §8):
+         address   — brokerage office PostalAddress (Zander)
+         sameAs    — Google Business Profile, Facebook, Instagram, LinkedIn,
+                     Zillow, Realtor.com profile URLs (Zander/client)
+         geo, priceRange, openingHours — only if real values exist
+         aggregateRating — never without a real, verifiable review count
+       Add them to the #organization node; do not guess. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
-    "name": "Sold on Amelia Island — Kelly Marine & Will Henderson",
-    "image": "https://soldonameliaisland.com/assets/og-image.jpg",
-    "url": "https://soldonameliaisland.com/",
-    "telephone": "+1-904-321-6689",
-    "areaServed": ["Amelia Island", "Fernandina Beach", "Yulee", "Nassau County, Florida"],
-    "parentOrganization": {
-      "@type": "Organization",
-      "name": "Berkshire Hathaway HomeServices Heymann Williams Realty",
-      "url": "https://www.heymannwilliams.com"
-    },
-    "member": [
-      { "@type": "RealEstateAgent", "name": "Kelly Marine", "jobTitle": "Buyer Specialist", "telephone": "+1-678-677-0858", "email": "KellyMarineRealtor@gmail.com" },
-      { "@type": "RealEstateAgent", "name": "Will Henderson", "jobTitle": "Listing Specialist", "telephone": "+1-904-321-6689", "email": "Will@HeymannWilliamsRealty.com" }
+    "@graph": [
+      {
+        "@type": "RealEstateAgent",
+        "@id": "https://soldonameliaisland.com/#organization",
+        "name": "Sold on Amelia Island — Kelly Marine & Will Henderson",
+        "alternateName": "The Spouses Who Sell Houses",
+        "url": "https://soldonameliaisland.com/",
+        "image": "https://soldonameliaisland.com/assets/og-image.jpg",
+        "telephone": "+1-904-321-6689",
+        "email": "Will@HeymannWilliamsRealty.com",
+        "areaServed": [
+          { "@type": "Place", "name": "Amelia Island", "address": { "@type": "PostalAddress", "addressRegion": "FL", "addressCountry": "US" } },
+          { "@type": "City", "name": "Fernandina Beach", "address": { "@type": "PostalAddress", "addressLocality": "Fernandina Beach", "addressRegion": "FL", "addressCountry": "US" } },
+          { "@type": "City", "name": "Yulee", "address": { "@type": "PostalAddress", "addressLocality": "Yulee", "addressRegion": "FL", "addressCountry": "US" } },
+          { "@type": "AdministrativeArea", "name": "Nassau County, Florida", "address": { "@type": "PostalAddress", "addressRegion": "FL", "addressCountry": "US" } }
+        ],
+        "parentOrganization": {
+          "@type": "RealEstateAgent",
+          "@id": "https://www.heymannwilliams.com/#organization",
+          "name": "Berkshire Hathaway HomeServices Heymann Williams Realty",
+          "url": "https://www.heymannwilliams.com"
+        },
+        "employee": [
+          { "@id": "https://soldonameliaisland.com/#kelly-marine" },
+          { "@id": "https://soldonameliaisland.com/#will-henderson" }
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://soldonameliaisland.com/#kelly-marine",
+        "name": "Kelly Marine",
+        "jobTitle": "Buyer Specialist, Realtor",
+        "telephone": "+1-678-677-0858",
+        "email": "KellyMarineRealtor@gmail.com",
+        "image": "https://soldonameliaisland.com/assets/img/kelly-marine-v2.jpg",
+        "url": "https://soldonameliaisland.com/#duo",
+        "worksFor": { "@id": "https://soldonameliaisland.com/#organization" },
+        "spouse": { "@id": "https://soldonameliaisland.com/#will-henderson" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://soldonameliaisland.com/#will-henderson",
+        "name": "Will Henderson",
+        "jobTitle": "Listing Specialist, Realtor",
+        "telephone": "+1-904-321-6689",
+        "email": "Will@HeymannWilliamsRealty.com",
+        "image": "https://soldonameliaisland.com/assets/img/will-henderson-v2.jpg",
+        "url": "https://soldonameliaisland.com/#duo",
+        "worksFor": { "@id": "https://soldonameliaisland.com/#organization" },
+        "spouse": { "@id": "https://soldonameliaisland.com/#kelly-marine" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://soldonameliaisland.com/#website",
+        "url": "https://soldonameliaisland.com/",
+        "name": "Sold on Amelia Island",
+        "publisher": { "@id": "https://soldonameliaisland.com/#organization" },
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://soldonameliaisland.com/#webpage",
+        "url": "https://soldonameliaisland.com/",
+        "name": "Amelia Island Real Estate | Fernandina Beach Realtors | Kelly & Will",
+        "isPartOf": { "@id": "https://soldonameliaisland.com/#website" },
+        "about": { "@id": "https://soldonameliaisland.com/#organization" },
+        "primaryImageOfPage": "https://soldonameliaisland.com/assets/og-image.jpg",
+        "inLanguage": "en-US"
+      }
     ]
   }
   </script>
 
-  <!-- Google Analytics 4 — paste the Measurement ID to activate (no-op until set) -->
-  <script>
-    window.GA_MEASUREMENT_ID = ''; // e.g. 'G-XXXXXXXXXX'
-    if (window.GA_MEASUREMENT_ID) {
-      var s = document.createElement('script'); s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
-      document.head.appendChild(s);
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function(){ dataLayer.push(arguments); };
-      gtag('js', new Date()); gtag('config', window.GA_MEASUREMENT_ID);
-    }
-  </script>
 </head>
 <body>
 
@@ -123,7 +173,7 @@
   <!-- ============ NAVBAR ============ -->
   <nav id="navbar">
     <div class="nav-inner">
-      <a class="nav-brand interactive" href="#top" aria-label="Sold on Amelia Island — home">
+      <a class="nav-brand interactive" href="#top">
         <div class="nav-brand-text">
           <strong>SOLD ON AMELIA ISLAND</strong>
           <span>The Spouses Who Sell Houses</span>
@@ -161,7 +211,7 @@
       <div class="mm-divider"></div>
       <button class="mm-cta mm-cta-outline" onclick="toggleMobileMenu(); openFlow('seller')">What's My Home Worth? <span>Sell with Will</span></button>
       <button class="mm-cta mm-cta-accent" onclick="toggleMobileMenu(); openFlow('buyer')">Find My Coastal Home <span>Buy with Kelly</span></button>
-      <a href="https://www.heymannwilliams.com" target="_blank" rel="noopener" class="mm-logo"><img src="./assets/logo.png" alt="BHHS Heymann Williams Realty" width="120" height="30"></a>
+      <a href="https://www.heymannwilliams.com" target="_blank" rel="noopener" class="mm-logo"><img src="./assets/logo.png" alt="BHHS Heymann Williams Realty" width="120" height="30" loading="lazy" decoding="async"></a>
     </div>
   </div>
 
@@ -182,7 +232,7 @@
     <div class="hero-content">
       <div class="hero-masthead reveal">
         <span class="masthead-names">Kelly <span class="masthead-amp">&amp;</span> Will <span class="masthead-are">are</span></span>
-        <h1 class="masthead-title">Sold on<br>Amelia Island<span class="masthead-dot">.com</span></h1>
+        <h1 class="masthead-title">Sold on<br>Amelia Island<span class="masthead-dot">.com</span><span class="sr-only masthead-seo" id="mastheadSeo">: Amelia Island Real Estate, Sold by Locals Who Know the Island</span></h1>
         <p class="masthead-tag">The Spouses Who Sell Houses &nbsp;·&nbsp; Berkshire Hathaway HomeServices Heymann Williams Realty</p>
       </div>
 
@@ -462,17 +512,17 @@
       <div class="trust-grid">
         <div class="trust-item">
           <div class="trust-icon" aria-hidden="true">⚓</div>
-          <h4>Backed by Berkshire Hathaway</h4>
+          <h3>Backed by Berkshire Hathaway</h3>
           <p>The full marketing reach and trust of Berkshire Hathaway HomeServices Heymann Williams Realty, delivered by two agents who know every street.</p>
         </div>
         <div class="trust-item">
           <div class="trust-icon" aria-hidden="true">🤝</div>
-          <h4>Both sides of the table</h4>
+          <h3>Both sides of the table</h3>
           <p>Kelly represents buyers, Will represents sellers. Whichever move you're making, you have a dedicated specialist — never a part-timer.</p>
         </div>
         <div class="trust-item">
           <div class="trust-icon" aria-hidden="true">🏝️</div>
-          <h4>Local, full-time, all-in</h4>
+          <h3>Local, full-time, all-in</h3>
           <p>They live here, work here, and answer their own phones. Call or text and you reach Kelly or Will — not a call center.</p>
         </div>
       </div>
@@ -490,7 +540,7 @@
         <a href="mailto:KellyMarineRealtor@gmail.com" class="interactive">KellyMarineRealtor@gmail.com</a>
       </div>
       <a class="footer-logo interactive" href="https://www.heymannwilliams.com" target="_blank" rel="noopener">
-        <img src="./assets/logo.png" alt="Berkshire Hathaway HomeServices Heymann Williams Realty" width="160" height="34">
+        <img src="./assets/logo.png" alt="Berkshire Hathaway HomeServices Heymann Williams Realty" width="160" height="34" loading="lazy" decoding="async">
       </a>
       <div class="footer-agent">
         <strong>Will Henderson</strong><span>Listing Specialist · Realtor®</span>
@@ -520,7 +570,7 @@
     <div class="lightbox-stage">
       <button class="lightbox-nav prev interactive" id="lightboxPrev" aria-label="Previous photo">‹</button>
       <figure class="lightbox-figure">
-        <img id="lightboxImg" alt="">
+        <img id="lightboxImg" alt="" width="1600" height="1067" decoding="async">
         <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
       </figure>
       <button class="lightbox-nav next interactive" id="lightboxNext" aria-label="Next photo">›</button>
@@ -549,16 +599,30 @@
 
   <script src="./js/app.js"></script>
   <script src="./js/boldtrail.js"></script>
+  <!-- Google Analytics 4 + lead conversion event. The Measurement ID lives in
+       js/analytics.js (shared by every page); no-op until it is set. Loads after
+       app.js so it can observe the lead-flow confirmation screens. -->
+  <script src="./js/analytics.js"></script>
   <script>
-    // Invite / password-reset links from Netlify Identity land here with a
-    // #invite_token or #recovery_token. The widget auto-detects it and opens
-    // its modal; once Kelly or Will finish that, send them into the editor.
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-        }
-      });
+    // Netlify Identity: invite / password-reset / email-change links land here
+    // on the site root with a #invite_token, #recovery_token, #confirmation_token
+    // or #email_change_token hash. Only Kelly and Will ever arrive that way, so
+    // the widget is fetched ONLY when one of those hashes is present instead of
+    // on every public page view. It auto-detects the token, opens its modal,
+    // and once they finish we send them into the editor.
+    if (/^#(invite|recovery|confirmation|email_change)_token=/.test(window.location.hash)) {
+      var idw = document.createElement('script');
+      idw.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+      idw.onload = function () {
+        if (!window.netlifyIdentity) return;
+        window.netlifyIdentity.on('init', function (user) {
+          if (!user) {
+            window.netlifyIdentity.on('login', function () { document.location.href = '/admin/'; });
+          }
+        });
+        window.netlifyIdentity.init();
+      };
+      document.head.appendChild(idw);
     }
   </script>
 </body>
