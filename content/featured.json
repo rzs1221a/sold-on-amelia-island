@@ -1,41 +1,47 @@
 {
-  "baths": "",
+  "baths": "2",
   "photos": [
     {
-      "image": "/assets/img/uploads/5-web-or-mls-2727-1st-ave-a-b-5.jpg",
-      "alt": "Welcome to 2727 1st Ave"
+      "image": "/assets/img/uploads/2-web-or-mls-28411-grandview-manor-5119-1-.jpg",
+      "alt": "photo 1"
     },
     {
-      "image": "/assets/img/uploads/getmedia-51-.jpeg",
-      "alt": "One block to the sand - beach access 27!"
+      "image": "/assets/img/uploads/20-web-or-mls-28411-grandview-manor-5367.jpg",
+      "alt": "Photo 2"
     },
     {
-      "image": "/assets/img/uploads/15-web-or-mls-2727-1st-ave-a-b-21.jpg",
-      "alt": "Updated Kitchen"
+      "image": "/assets/img/uploads/16-web-or-mls-28411-grandview-manor-5399.jpg",
+      "alt": "Photo 3"
     },
     {
-      "image": "/assets/img/uploads/22-web-or-mls-2727-1st-ave-a-b-27.jpg",
-      "alt": "Full Bath upstairs"
+      "image": "/assets/img/uploads/46-web-or-mls-28411-grandview-manor-5239.jpg",
+      "alt": "Photo 4"
+    },
+    {
+      "image": "/assets/img/uploads/58-web-or-mls-28411-grandview-manor-aerial-6.jpg",
+      "alt": "Photo 5"
+    },
+    {
+      "image": "/assets/img/uploads/97-web-or-mls-watermans-bluff-amenities-26-of-27-.jpg",
+      "alt": "photo 6"
     }
   ],
-  "badge": "LVP Flooring through main level",
+  "badge": "That peaceful easy feeling",
   "chips": [
-    "Pedestrian and bike friendly 1st Ave",
-    "2 - 1050 sqft units",
-    "Fully Fenced Yard",
-    "List of updates available",
-    "Income Potential"
+    "Peaceful waterfront community",
+    "Large fenced yard - big enough for a pool",
+    "Flexible living spaces"
   ],
-  "price": "$750,000",
-  "sqft": "2100",
+  "price": "$675,000",
+  "sqft": "2253",
   "lot": "",
-  "beds": "",
+  "beds": "3",
   "status": "For Sale",
-  "kicker": "1st Ave - Amelia Island",
-  "mls": "117274",
-  "title": "2727 1st Ave, Fernandina Beach, FL",
-  "link": "https://www.bhhsheymannwilliams.com/fernandina-beach/kelly-marine/cid-3063482/fl/2727-1st-avenue-32034/pid-439076622",
-  "image": "/assets/img/uploads/28-web-or-mls-2727-1st-ave-a-b-34.jpg",
-  "description": "Just one block from the beach and nestled on a peaceful, tree-filled lot, this updated duplex offers exceptional flexibility with no HOA and no flood zone. Rent both sides for strong income potential, live in one while renting the other, or reimagine the property as a spacious single-family beach retreat. Each 1,050 sqft. unit features an open-concept living area, half bath, mud/laundry room, private fenced backyard, two upstairs bedrooms, full bath, and abundant storage. Major improvements include newer windows, HVAC systems and ductwork, exterior resurfacing and paint, hot water heater, plus interior and appliance updates. Separate utilities and city water/sewer make ownership simple and tenant-friendly. 30-day minimum rentals are allowed. Conveniently located near restaurants, shopping, and grocery stores, this is a rare opportunity to own an affordable beachside property on Amelia Island.",
-  "year": ""
+  "kicker": "Peaceful Lifestye in Waterman's Bluff",
+  "mls": "117865",
+  "title": "28411 Grandview Manor - Yulee, FL",
+  "link": "https://www.heymannwilliams.com/property/225-117865-28411-grandview-manor-yulee-FL-32097",
+  "image": "",
+  "description": "Discover Southern charm, natural beauty and comfortable elegance in this beautifully maintained single-story home in gated Waterman’s Bluff! Featuring hardwood floors, high coffered ceilings, custom fireplace, and a spacious kitchen. The flexible front room is ideal for dining, gathering or a home office, while the primary suite offers a relaxing retreat with a soaking tub and walk-in shower. Recent updates include fresh paint, new lighting, window coverings, and upgraded laundry and mudroom cabinetry. Step outside to an impressive fenced backyard featuring professionally designed landscaping, paver driveway and patio, landscape lighting, and a fully equipped outdoor kitchen - perfect for entertaining! Enjoy the screened porch and one of the neighborhood’s larger yards, with room for a future pool. Tankless water heater, whole-house water filtration, and an organized garage with epoxy floors and built-ins add convenience. Enjoy community dock and fishing access, kayaking, and the peaceful riverfront lifestyle all just minutes to the beaches of Amelia Island and the city life of Jacksonville.",
+  "year": "2015"
 }
