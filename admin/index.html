@@ -28,7 +28,12 @@
 </head>
 <body>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+  <!-- Pinned, not ^3.x: from 3.16.3 on, image fields open blank the first
+       time an entry loads (decaporg/decap-cms#8055: getAsset memoised, so
+       the widget never re-renders once the photo arrives). Kelly hit this on
+       the Featured Property photos. Bump only after #8055 is fixed and the
+       Featured Property photos are checked on a fresh /admin load. -->
+  <script src="https://unpkg.com/decap-cms@3.16.2/dist/decap-cms.js"></script>
   <script>
     /* ------------------------------------------------------------
        CSS HOOKS FOR THE BRAND SKIN
